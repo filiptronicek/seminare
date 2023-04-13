@@ -46,18 +46,15 @@ const Index = () => {
       return (
         <Space direction="vertical" size={8}>
           <div>
-            <img
-              src="https://app.supabase.io/img/supabase-dark.svg"
-              width="96"
-            />
             <Typography.Title level={3}>
-              Welcome to Supabase Auth
+              Semináře GTM
             </Typography.Title>
           </div>
           <Auth
             supabaseClient={supabase}
-            providers={['google', 'github']}
+            providers={['google']}
             view={authView}
+            onlyThirdPartyProviders={true}
             socialLayout="horizontal"
             socialButtonSize="xlarge"
           />
