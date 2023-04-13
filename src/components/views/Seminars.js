@@ -11,18 +11,17 @@ export default function SeminarsList() {
 
             let { data: seminars, error } = await supabase
                 .from('seminars')
-                .select('display_name')
+                .select('*')
 
             setSeminars(seminars);
-            console.log(seminars);
         })()
 
     }, []);
 
     return (
-        <ul>
+        <ul className='list-decimal'>
             {seminars && seminars.map((seminar) => (
-                <li key={seminar.id}>{seminar.display_name}</li>
+                <li key={seminar.id}>{seminar.display_name} ({seminar.teacher})</li>
             ))}
         </ul>
     );
