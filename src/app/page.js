@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import Auth from 'src/components/Auth';
 import { useAuth, VIEWS } from 'src/components/AuthProvider';
+import SeminarsList from 'src/components/views/Seminars';
 
 export default function Home() {
   const { initial, user, view, signOut } = useAuth();
@@ -24,6 +25,7 @@ export default function Home() {
         <Link className="button" href="/profile">
           Můj profil
         </Link>
+        <SeminarsList />
         <button type="button" className="button-inverse" onClick={signOut}>
           Odhlásit se
         </button>
