@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import supabase from 'src/lib/supabase-browser';
+import Card from '../Card';
 
 export default function SeminarsList() {
 
@@ -19,9 +20,9 @@ export default function SeminarsList() {
     }, []);
 
     return (
-        <ul className='list-decimal'>
+        <ul className='list-decimal flex flex-row'>
             {seminars && seminars.map((seminar) => (
-                <li key={seminar.id}>{seminar.display_name} ({seminar.teacher})</li>
+                <Card title={seminar.display_name} description={seminar.description}></Card>
             ))}
         </ul>
     );
