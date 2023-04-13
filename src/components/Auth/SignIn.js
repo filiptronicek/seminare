@@ -2,24 +2,11 @@
 
 import { useState } from 'react';
 import { Auth } from '@supabase/auth-ui-react'
-
-import { useAuth } from 'src/components/AuthProvider';
 import supabase from 'src/lib/supabase-browser';
 
 
 const SignIn = () => {
   const [errorMsg, setErrorMsg] = useState(null);
-
-  async function signIn(formData) {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.password,
-    });
-
-    if (error) {
-      setErrorMsg(error.message);
-    }
-  }
 
   return (
     <div className="card">

@@ -15,7 +15,7 @@ export default function SignOut() {
 
   return (
     <button type="button" className="button-inverse" onClick={handleSignOut}>
-      Sign Out
+      Odhlásit se
     </button>
   );
 }

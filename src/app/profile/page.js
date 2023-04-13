@@ -17,10 +17,9 @@ export default async function Profile() {
 
   return (
     <div className="card">
-      <h2>User Profile</h2>
+      <h2>{user.user_metadata.full_name}</h2>
+      <img src={user.user_metadata.picture} />
       <code className="highlight">{user.email}</code>
-      <div className="heading">Last Signed In:</div>
-      <code className="highlight">{new Date(user.last_sign_in_at).toUTCString()}</code>
       <Link className="button" href="/">
         Go Home
       </Link>
