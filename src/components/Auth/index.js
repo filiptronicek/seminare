@@ -1,11 +1,7 @@
 'use client';
 
-import { useAuth, VIEWS } from 'src/components/AuthProvider';
-
-import ResetPassword from './ResetPassword';
+import { useAuth } from 'src/components/AuthProvider';
 import SignIn from './SignIn';
-import SignUp from './SignUp';
-import UpdatePassword from './UpdatePassword';
 
 const Auth = ({ view: initialView }) => {
   let { view } = useAuth();
@@ -14,16 +10,7 @@ const Auth = ({ view: initialView }) => {
     view = initialView;
   }
 
-  switch (view) {
-    case VIEWS.UPDATE_PASSWORD:
-      return <UpdatePassword />;
-    case VIEWS.FORGOTTEN_PASSWORD:
-      return <ResetPassword />;
-    case VIEWS.SIGN_UP:
-      return <SignUp />;
-    default:
-      return <SignIn />;
-  }
+  return <SignIn />;
 };
 
 export default Auth;
