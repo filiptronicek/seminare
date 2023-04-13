@@ -57,15 +57,13 @@ const Index = () => {
             onlyThirdPartyProviders={true}
             socialLayout="horizontal"
             socialButtonSize="xlarge"
-          />
+          >
+          </Auth>
         </Space>
       )
 
     return (
       <Space direction="vertical" size={6}>
-        {authView === 'update_password' && (
-          <Auth.UpdatePassword supabaseClient={supabase} />
-        )}
         {user && (
           <>
             <Typography.Text>You're signed in</Typography.Text>
