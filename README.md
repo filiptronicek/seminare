@@ -1,29 +1,27 @@
-# Supabase Authentication
+<h1 align="center"><b>Next.js</b> + <b>Supabase</b> Auth</h1>
 
-This example shows how to use Supabase Auth on the client and server in both [API Routes](https://nextjs.org/docs/api-routes/introduction) and when using [server-side rendering (SSR)](https://nextjs.org/docs/basic-features/pages#server-side-rendering).
+<p align="center">
+  <a href="https://github.com/mryechkin/nextjs-supabase-auth/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/mryechkin/nextjs-supabase-auth?style=for-the-badge" alt="GitHub" />
+  </a>
+</p>
 
-## Deploy with Vercel
+<p align="center">
+  <img src="https://www.misha.wtf/_next/image?url=%2Fblog%2Fsupabase-auth-next-13%2Fcover.png&w=640&q=100" alt="Banner image" />
+</p>
 
-The Vercel deployment will guide you through creating a Supabase account and project. After installation of the Supabase integration, all relevant environment variables will be set up so that the project is usable immediately after deployment 🚀
+## Overview
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-supabase-auth-realtime-db&project-name=nextjs-with-supabase-auth&repository-name=nextjs-with-supabase-auth&integration-ids=oac_jUduyjQgOyzev1fjrW83NYOv)
+Sample project showing how to add authentication to [Next.js](https://nextjs.org/) 13+ using [Supabase](https://www.supabase.io/) **Auth** and the new (beta) [`app` directory](https://beta.nextjs.org/docs/app-directory-roadmap).
 
-## Running Locally
+This project is a supplement to [this guide](https://www.misha.wtf/blog/supabase-auth-next-13). See the link for a detailed tutorial.
 
-1. `cd` into this directory
-1. Run `npm install` to install dependencies
-1. Create a Supabase account and new project
-1. Copy `.env.local.example` into `.env.local` and add the project keys
-1. Run `npm run dev` to start the local development server
+## Author
 
-## Feedback and issues
+[Mykhaylo Ryechkin](https://github.com/mryechkin)
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+<a href="https://www.buymeacoffee.com/mryechkin" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-## More Supabase examples
+## License
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Next.js Slack Clone](https://github.com/supabase/supabase/tree/master/examples/slack-clone/nextjs-slack-clone)
-- [Next.js Todo List](https://github.com/supabase/supabase/tree/master/examples/todo-list)
-- [Next.js Live Tracker Map](https://github.com/supabase/supabase/tree/master/examples/with-leaflet)
-- [And many more...](https://github.com/supabase/supabase/tree/master/examples)
+[MIT](https://choosealicense.com/licenses/mit/)
