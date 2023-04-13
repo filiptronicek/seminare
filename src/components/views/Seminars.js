@@ -12,7 +12,7 @@ export default function SeminarsList() {
 
             let { data: seminars, error } = await supabase
                 .from('seminars')
-                .select('*')
+                .select('*');
 
             setSeminars(seminars);
         })()
