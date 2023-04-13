@@ -19,13 +19,13 @@ export default function Home() {
   if (user) {
     return (
       <div className="card">
-        <h2>Welcome!</h2>
+        <h2>Vítej u seminářů!</h2>
         <code className="highlight">{user.role}</code>
         <Link className="button" href="/profile">
-          Go to Profile
+          Můj profil
         </Link>
         <button type="button" className="button-inverse" onClick={signOut}>
-          Sign Out
+          Odhlásit se
         </button>
       </div>
     );
