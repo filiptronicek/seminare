@@ -3,15 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Head from "next/head";
-import { useUser } from "~/utils/hooks";
-import { getUserName } from "~/utils/user";
 
 export default function Home() {
   const supabase = createClientComponentClient();
-  const {data: userData} = useUser();
 
-  const handleSignOut = () => {
-    supabase.auth.signOut({}).catch(error => {
+  const handleSignIn = () => {
+    supabase.auth.signInWithOAuth({
+      provider: "google"
+    }).catch(error => {
       console.log(error);
     });
   }
@@ -27,7 +26,7 @@ export default function Home() {
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
           <Card>
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl">Pryč ze seminářů</CardTitle>
+              <CardTitle className="text-2xl">Pokračovat do seminářů</CardTitle>
               <CardDescription>
                 Přihlašování do aplikace probíhá přes školní Google účet.
               </CardDescription>
@@ -35,13 +34,9 @@ export default function Home() {
             <CardContent className="grid gap-4">
             </CardContent>
             <CardFooter>
-              <Button className="w-full" onClick={handleSignOut}>Odhlásit se</Button>
+              <Button className="w-full" onClick={handleSignIn}>Přihlásit se</Button>
             </CardFooter>
           </Card>
-          uživatel {userData && getUserName(userData)}
-            <pre>
-                {JSON.stringify(userData, null, 2)}
-            </pre>
         </div>
       </main>
     </>
