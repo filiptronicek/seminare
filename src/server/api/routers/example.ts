@@ -8,6 +8,16 @@ export const exampleRouter = createTRPCRouter({
             greeting: `Hello ${input.text}`,
         };
     }),
+    changeStudentClass: publicProcedure.input(z.object({ class: z.string() })).mutation(({ input, ctx }) => {
+        return ctx.db.student.update({
+            where: {
+                id: "",
+            },
+            data: {
+                class: input.class,
+            },
+        });
+    }),
     getAll: publicProcedure.query(({ ctx }) => {
         return ctx.db.student.findMany();
     }),

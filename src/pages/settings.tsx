@@ -11,36 +11,31 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { toast } from "@/components/ui/use-toast";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ACCESSIBLE_CLASSES } from "~/utils/constants";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { api } from "~/utils/api";
 
 const FormSchema = z.object({
-    currentClass: z
-        .string({
-            required_error: "Třída musí být zvolena.",
-        })
+    currentClass: z.string({
+        required_error: "Třída musí být zvolena.",
+    }),
 });
 
-export default function Home() {
+export default function Settings() {
     const { data: userData } = useUser();
+    const updateMutation = api.example.changeStudentClass.useMutation();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
     });
 
     const onSubmit = (data: z.infer<typeof FormSchema>) => {
-        console.log(data)
+        updateMutation.mutate({ class: data.currentClass });
         toast({
             title: "Třída byla úspěšně změněna",
         });
-    }
+    };
 
     if (!userData) {
         return null;
@@ -73,7 +68,14 @@ export default function Home() {
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="email">E-mail</Label>
-                            <Input type="email" id="email" placeholder="Tvůj e-mail" value={userData?.email} disabled readOnly />
+                            <Input
+                                type="email"
+                                id="email"
+                                placeholder="Tvůj e-mail"
+                                value={userData?.email}
+                                disabled
+                                readOnly
+                            />
                         </div>
                         <Form {...form}>
                             <form
@@ -93,16 +95,14 @@ export default function Home() {
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                {[...ACCESSIBLE_CLASSES].map((item) => (
-                                                    <SelectItem key={item} value={item}>
-                                                        {item}
-                                                    </SelectItem>
-                                                ))}
+                                                    {[...ACCESSIBLE_CLASSES].map((item) => (
+                                                        <SelectItem key={item} value={item}>
+                                                            {item}
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectContent>
                                             </Select>
-                                            <FormDescription>
-                                                Vyber si svou třídu.
-                                            </FormDescription>
+                                            <FormDescription>Vyber si svou třídu.</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
