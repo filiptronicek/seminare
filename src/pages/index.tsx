@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { Button } from "@/components/ui/button";
 
 import { api } from "~/utils/api";
 
@@ -14,6 +15,7 @@ export default function Home() {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
+          <Button>Pokračovat</Button>
           <p className="text-2x">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
           </p>
