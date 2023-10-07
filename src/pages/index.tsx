@@ -2,6 +2,7 @@ import Head from "next/head";
 import { Button } from "@/components/ui/button";
 
 import { api } from "~/utils/api";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -15,7 +16,19 @@ export default function Home() {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <Button>Pokračovat</Button>
+          <Card>
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-2xl">Pokračovat do seminářů</CardTitle>
+              <CardDescription>
+                Přihlašování do aplikace probíhá přes školní Google účet.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full">Přihlásit se</Button>
+            </CardFooter>
+          </Card>
           <p className="text-2x">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
           </p>
