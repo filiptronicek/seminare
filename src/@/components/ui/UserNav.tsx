@@ -8,20 +8,18 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { getUserAvatar, getUserName } from "~/utils/user";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 export const UserNav = ({ user }: { user: User }) => {
     const supabase = createClientComponentClient();
     const router = useRouter();
 
     const handleLogout = async () => {
-        await supabase.auth.signOut({}).catch((error) => {
-            console.log(error);
-        });
+        await supabase.auth.signOut();
         await router.push("/login");
     };
 
@@ -45,12 +43,17 @@ export const UserNav = ({ user }: { user: User }) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
-                        Nastavení
-                        <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                        <Link href={"/settings"}>Nastavení</Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleLogout}>Odhlásit se</DropdownMenuItem>
+                <DropdownMenuItem
+                    onClick={() => {
+                        handleLogout().catch(console.error);
+                    }}
+                >
+                    Odhlásit se
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );
