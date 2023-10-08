@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+model Student {
+    id                  String             @id @default(uuid())
+    class               String
+    fullName            String
+    events              Event[]            @relation("StudentEvents")
+    SingleEventOption   SingleEventOption? @relation(fields: [singleEventOptionId], references: [id])
+    singleEventOptionId String?
+    StudentEvent        StudentEvent[]
+}
+
+model Teacher {
+    id            String              @id @default(uuid())
+    fullName      String
+    options       SingleEventOption[] @relation()
+    TeacherOption TeacherOption[]
+}
+
+model Event {
+    id                      String              @id @default(uuid())
+    type                    String
+    title                   String
+    startDate               DateTime?
+    endDate                 DateTime?
+    options                 SingleEventOption[]
+    students                Student[]           @relation("StudentEvents")
+    allowMultipleSelections Boolean             @default(false)
+    StudentEvent            StudentEvent[]
+}
+
+model SingleEventOption {
+    id              String          @id @default(uuid())
+    maxParticipants Int?            @default(2147483647) // Large number for default "Infinity" value
+    title           String
+    description     String?
+    eventId         String
+    event           Event           @relation(fields: [eventId], references: [id])
+    teachers        Teacher[]
+    students        Student[]
+    TeacherOption   TeacherOption[]
+}
+
+// Helper tables for many-to-many relationships
+model StudentEvent {
+    studentId String
+    eventId   String
+
+    student Student @relation(fields: [studentId], references: [id])
+    event   Event   @relation(fields: [eventId], references: [id])
+
+    @@id([studentId, eventId])
+}
+
+model TeacherOption {
+    teacherId String
+    optionId  String
+
+    teacher Teacher           @relation(fields: [teacherId], references: [id])
+    option  SingleEventOption @relation(fields: [optionId], references: [id])
+
+    @@id([teacherId, optionId])
+}
+
+// enum EventType {
+//     WANDERTAG
+//     PROJECT_WEEK
+//     SEMINAR
+// }
