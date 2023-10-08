@@ -1,3 +1,7 @@
+image: gitpod/workspace-bun
+
 tasks:
-    - init: yarn
-      command: yarn dev
+    - init: |
+        bun install
+        cp .env.example .env
+      command: bun dev
