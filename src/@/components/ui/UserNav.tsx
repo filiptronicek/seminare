@@ -42,9 +42,9 @@ export const UserNav = ({ user }: { user: User }) => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                        <Link href={"/settings"}>Nastavení</Link>
-                    </DropdownMenuItem>
+                    <Link href={"/settings"}>
+                        <DropdownMenuItem>Nastavení</DropdownMenuItem>
+                    </Link>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
