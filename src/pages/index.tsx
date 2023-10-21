@@ -2,6 +2,7 @@
 
 import { SingleEvent } from "@/components/ui/Event";
 import type { Event } from "@prisma/client";
+import { api } from "~/utils/api";
 
 const mockEvent: Event = {
     id: "uuu",
@@ -15,16 +16,15 @@ const mockEvent: Event = {
 };
 
 export default function Home() {
+    const events = api.example.listEvents.useQuery();
+
     return (
         <section className="flex min-h-screen flex-col items-start px-12">
             <h1 className="text-4xl font-bold">
                 Nadcházející akce pro <u>1N</u>
             </h1>
             <div className="container mt-8 flex flex-row flex-wrap gap-4 justify-around">
-                <SingleEvent event={mockEvent}></SingleEvent>
-                <SingleEvent event={mockEvent}></SingleEvent>
-                <SingleEvent event={mockEvent}></SingleEvent>
-                <SingleEvent event={mockEvent}></SingleEvent>
+                {events.data?.map((event) => <SingleEvent key={event.id} event={event} />)}
             </div>
         </section>
     );

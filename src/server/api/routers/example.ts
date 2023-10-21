@@ -21,4 +21,7 @@ export const exampleRouter = createTRPCRouter({
     getAll: publicProcedure.query(({ ctx }) => {
         return ctx.db.student.findMany();
     }),
+    listEvents : publicProcedure.query(({ ctx }) => {
+        return ctx.db.event.findMany();
+    }),
 });

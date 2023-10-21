@@ -10,7 +10,7 @@ interface EventProps {
 
 export const SingleEvent = ({ event }: EventProps) => {
     return (
-        <Card className="max-w-lg">
+        <Card className="max-w-xl w-lg">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{event.title}</CardTitle>
                 <CardDescription>{event.description}</CardDescription>
