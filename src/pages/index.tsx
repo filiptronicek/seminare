@@ -1,23 +1,30 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useUser } from "~/utils/hooks";
-import { getUserName } from "~/utils/user";
+
+import { SingleEvent } from "@/components/ui/Event";
+import type { Event } from "@prisma/client";
+
+const mockEvent: Event = {
+    id: "uuu",
+    title: "Wandertag",
+    description:
+        "Wandertag je parádní procházka Prahou, na které se najdou noví i staří kamarádi, ba i učitelé a učitelky.",
+    startDate: new Date(),
+    endDate: new Date(new Date().getTime() + 1000 * 60 * 60 * 24),
+    type: "wandertag",
+    allowMultipleSelections: false,
+};
 
 export default function Home() {
-    const { data: userData } = useUser();
-
     return (
-        <section className="flex min-h-screen flex-col items-center justify-center">
-            <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-                <Card>
-                    <CardHeader className="space-y-1">
-                        <CardTitle className="text-2xl">Pryč ze seminářů</CardTitle>
-                        <CardDescription>Přihlašování do aplikace probíhá přes školní Google účet.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid gap-4"></CardContent>
-                </Card>
-                uživatel {userData && getUserName(userData)}
-                <pre>{JSON.stringify(userData, null, 2)}</pre>
+        <section className="flex min-h-screen flex-col items-start px-12">
+            <h1 className="text-4xl font-bold">
+                Nadcházející akce pro <u>1N</u>
+            </h1>
+            <div className="container mt-8 flex flex-row flex-wrap gap-4 justify-around">
+                <SingleEvent event={mockEvent}></SingleEvent>
+                <SingleEvent event={mockEvent}></SingleEvent>
+                <SingleEvent event={mockEvent}></SingleEvent>
+                <SingleEvent event={mockEvent}></SingleEvent>
             </div>
         </section>
     );

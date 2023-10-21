@@ -31,6 +31,7 @@ model Event {
     id                      String              @id @default(uuid())
     type                    String
     title                   String
+    description             String?
     startDate               DateTime?
     endDate                 DateTime?
     options                 SingleEventOption[]
