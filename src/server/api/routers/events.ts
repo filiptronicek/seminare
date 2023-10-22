@@ -1,23 +1,33 @@
+import type { SingleEventOption } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { getStudent } from "~/server/auth";
+
+interface EventOptionWithMembership extends SingleEventOption {
+    signedUp: boolean;
+}
 
 export const eventRouter = createTRPCRouter({
-    changeStudentClass: publicProcedure.input(z.object({ class: z.string() })).mutation(({ input, ctx }) => {
+    changeStudentClass: publicProcedure.input(z.object({ class: z.string() })).mutation(async ({ input, ctx }) => {
+        const student = await getStudent(ctx.auth, ctx.db);
+        if (!student)
+            throw new Error("Student not found");
         return ctx.db.student.update({
             where: {
-                id: "",
+                id: student.id,
             },
             data: {
                 class: input.class,
             },
         });
     }),
-    getAll: publicProcedure.query(({ ctx }) => {
-        return ctx.db.student.findMany();
+    getStudent: publicProcedure.query(({ ctx }) => {
+        return getStudent(ctx.auth, ctx.db);
     }),
     listEvents: publicProcedure.input(z.object({
         active: z.boolean().optional(),
+        // todo: class filter
     })).query(({ ctx, input }) => {
         const now = new Date();
         return ctx.db.event.findMany({
@@ -35,7 +45,11 @@ export const eventRouter = createTRPCRouter({
     getEvent: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {
         return ctx.db.event.findUnique({ where: { id: input.id } });
     }),
-    getEventOptions: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {
+    //todo: add membership handling
+    listEventOptions: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
+        const student = await getStudent(ctx.auth, ctx.db);
+        if (!student)
+            throw new Error("Student not found");
         return ctx.db.singleEventOption.findMany({ where: { eventId: input.id } });
     }),
 });

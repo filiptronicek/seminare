@@ -6,6 +6,7 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
+import { createPagesServerClient, type SupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
@@ -23,6 +24,10 @@ import { db } from "~/server/db";
 
 type CreateContextOptions = Record<string, never>;
 
+interface CreateInnerContextOptions extends Partial<CreateNextContextOptions> {
+    auth: SupabaseClient["auth"];
+}
+
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
  * it from here.
@@ -33,9 +38,10 @@ type CreateContextOptions = Record<string, never>;
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = (_opts: CreateContextOptions) => {
+const createInnerTRPCContext = (opts: CreateInnerContextOptions) => {
     return {
         db,
+        ...opts,
     };
 };
 
@@ -45,8 +51,14 @@ const createInnerTRPCContext = (_opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-    return createInnerTRPCContext({});
+export const createTRPCContext = (opts: CreateNextContextOptions) => {
+    const supabase = createPagesServerClient(opts);
+    const contextInner = createInnerTRPCContext({ auth: supabase.auth });
+    return {
+        ...contextInner,
+        req: opts.req,
+        res: opts.res,
+    };
 };
 
 /**

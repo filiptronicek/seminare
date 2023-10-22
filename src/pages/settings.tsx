@@ -22,6 +22,7 @@ const FormSchema = z.object({
 
 export default function Settings() {
     const { data: userData } = useUser();
+    const {data: studentData} = api.events.getStudent.useQuery();
     const updateMutation = api.events.changeStudentClass.useMutation();
 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -65,6 +66,7 @@ export default function Settings() {
                         readOnly
                     />
                 </div>
+                {studentData && (
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
@@ -73,6 +75,7 @@ export default function Settings() {
                         <FormField
                             control={form.control}
                             name="currentClass"
+                            defaultValue={studentData?.class ?? ""}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Třída</FormLabel>
@@ -98,6 +101,7 @@ export default function Settings() {
                         <Button type="submit">Uložit</Button>
                     </form>
                 </Form>
+                )}
             </div>
         </section>
     );

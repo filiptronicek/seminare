@@ -1,5 +1,4 @@
 import { SingleOption } from "@/components/ui/SingleEventOption";
-import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 
@@ -14,7 +13,7 @@ export default function Page() {
     const router = useRouter();
 
     const { data: event, error } = api.events.getEvent.useQuery({ id: normalizeId(router.query.id!) });
-    const { data: options, error: optionsError } = api.events.getEventOptions.useQuery({
+    const { data: options, error: optionsError } = api.events.listEventOptions.useQuery({
         id: normalizeId(router.query.id!),
     });
 
