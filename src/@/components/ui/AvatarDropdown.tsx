@@ -14,7 +14,7 @@ import { getUserAvatar, getUserName } from "~/utils/user";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-export const UserNav = ({ user }: { user: User }) => {
+export const AvatarDropdown = ({ user }: { user: User }) => {
     const supabase = createClientComponentClient();
     const router = useRouter();
 
