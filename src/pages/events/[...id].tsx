@@ -12,7 +12,6 @@ const normalizeId = (id: string | string[]) => {
 
 export default function Page() {
     const router = useRouter();
-    const { toast } = useToast();
 
     const { data: event, error } = api.events.getEvent.useQuery({ id: normalizeId(router.query.id!) });
     const { data: options, error: optionsError } = api.events.getEventOptions.useQuery({
