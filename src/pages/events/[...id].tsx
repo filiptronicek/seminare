@@ -6,11 +6,11 @@ const normalizeId = (id: string | string[]) => {
         return id[0]!;
     }
     return id;
-}
+};
 
 export default function Page() {
     const router = useRouter();
-    const { data: event, error } = api.example.getEvent.useQuery({ id: normalizeId(router.query.id!) });
+    const { data: event, error } = api.events.getEvent.useQuery({ id: normalizeId(router.query.id!) });
     return (
         <>
             {error && <div>failed to load</div>}

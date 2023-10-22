@@ -2,12 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-export const exampleRouter = createTRPCRouter({
-    hello: publicProcedure.input(z.object({ text: z.string() })).query(({ input }) => {
-        return {
-            greeting: `Hello ${input.text}`,
-        };
-    }),
+export const eventRouter = createTRPCRouter({
     changeStudentClass: publicProcedure.input(z.object({ class: z.string() })).mutation(({ input, ctx }) => {
         return ctx.db.student.update({
             where: {
@@ -34,6 +29,9 @@ export const exampleRouter = createTRPCRouter({
                     gte: now,
                 },
             } : {},
+            orderBy: {
+                signupStartDate: "asc",
+            }
         });
     }),
     getEvent: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {

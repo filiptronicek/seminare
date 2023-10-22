@@ -32,6 +32,8 @@ model Event {
   startDate               DateTime?
   endDate                 DateTime?
   allowMultipleSelections Boolean             @default(false)
+  signupEndDate           DateTime?           @map("signupEndDate")
+  signupStartDate         DateTime?           @map("signupStartDate")
   options                 SingleEventOption[]
   StudentEvent            StudentEvent[]
   students                Student[]           @relation("StudentEvents")

@@ -1,22 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
 import { SingleEvent } from "@/components/ui/Event";
-import type { Event } from "@prisma/client";
 import { api } from "~/utils/api";
 
-const mockEvent: Event = {
-    id: "uuu",
-    title: "Wandertag",
-    description:
-        "Wandertag je parádní procházka Prahou, na které se najdou noví i staří kamarádi, ba i učitelé a učitelky.",
-    startDate: new Date(),
-    endDate: new Date(new Date().getTime() + 1000 * 60 * 60 * 24),
-    type: "wandertag",
-    allowMultipleSelections: false,
-};
-
 export default function Home() {
-    const events = api.example.listEvents.useQuery();
+    const events = api.events.listEvents.useQuery({});
 
     return (
         <section className="flex min-h-screen flex-col items-start px-12">

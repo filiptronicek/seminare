@@ -22,7 +22,7 @@ const FormSchema = z.object({
 
 export default function Settings() {
     const { data: userData } = useUser();
-    const updateMutation = api.example.changeStudentClass.useMutation();
+    const updateMutation = api.events.changeStudentClass.useMutation();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
