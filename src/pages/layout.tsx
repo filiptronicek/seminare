@@ -3,6 +3,16 @@ import { UserNav } from "@/components/ui/UserNav";
 import { useUser } from "~/utils/hooks";
 import Head from "next/head";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import {
+    NavigationMenu,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import Link from "next/link";
+import { GraduationCap, Home } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const { data: userData } = useUser();
@@ -16,8 +26,38 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Head>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                 <main className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-                    <header className="flex items-center justify-end space-y-2">
-                        {userData && <UserNav user={userData} />}
+                    <header className="flex flex-row items-center justify-between">
+                        {userData && (
+                            <>
+                                <NavigationMenu>
+                                    <NavigationMenuList>
+                                        <NavigationMenuItem>
+                                            <Link href="/" legacyBehavior passHref className="">
+                                                <NavigationMenuLink
+                                                    className={cn(navigationMenuTriggerStyle(), "gap-2")}
+                                                >
+                                                    <Home className="h-6 w-6" />
+                                                    Nadcházející Akce
+                                                </NavigationMenuLink>
+                                            </Link>
+                                        </NavigationMenuItem>
+                                        <NavigationMenuItem>
+                                            <Link href="https://gymnaziumtm.cz" legacyBehavior passHref className="">
+                                                <NavigationMenuLink
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={cn(navigationMenuTriggerStyle(), "gap-2")}
+                                                >
+                                                    <GraduationCap className="h-6 w-6" />
+                                                    Stránky gymnázia
+                                                </NavigationMenuLink>
+                                            </Link>
+                                        </NavigationMenuItem>
+                                    </NavigationMenuList>
+                                </NavigationMenu>
+                                <UserNav user={userData} />
+                            </>
+                        )}
                     </header>
                     {children}
                 </main>
