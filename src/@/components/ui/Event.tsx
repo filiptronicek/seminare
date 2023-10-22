@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./car
 import { buttonVariants } from "./button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Calendar } from "lucide-react";
+import { Calendar, Mail } from "lucide-react";
 
 import dayjs from "dayjs";
 import czechLocale from "dayjs/locale/cs";
@@ -36,11 +36,18 @@ export const SingleEvent = ({ event }: EventProps) => {
             </CardHeader>
             <CardContent className="grid gap-4">
                 <>
-                    {event.signupStartDate && (
-                        <>
-                            <strong>Přihlášky od:</strong> {formatDate(dayjs(event.signupStartDate))}
-                        </>
-                    )}
+                    <div className="flex flew-row gap-2">
+                        {event.signupStartDate === event.signupEndDate ? (
+                            <>
+                                <Mail /> {formatDate(dayjs(event.signupStartDate))}
+                            </>
+                        ) : (
+                            <>
+                                <Mail /> {formatDate(dayjs(event.signupStartDate))} -{" "}
+                                {formatDate(dayjs(event.signupEndDate))}
+                            </>
+                        )}
+                    </div>
                     <div className="flex flew-row gap-2">
                         {event.startDate === event.endDate ? (
                             <>

@@ -24,7 +24,7 @@ export const randomEvent = (): Event => {
 
     const id = crypto.randomUUID();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const dateOfEvent = (dayjs.future() as dayjs.Dayjs).add(1, "week");
+    const dateOfEvent = (Math.random() > 0.5 ? (dayjs.future() as dayjs.Dayjs) : (dayjs.past() as dayjs.Dayjs)).add(1, "week");
     const dateOfEventEnd = dateOfEvent.add(1, "week");
 
     const signupStartDate = dateOfEvent.subtract(1, "week");

@@ -4,7 +4,7 @@ import { SingleEvent } from "@/components/ui/Event";
 import { api } from "~/utils/api";
 
 export default function Home() {
-    const events = api.events.listEvents.useQuery({});
+    const events = api.events.listEvents.useQuery({active: true});
 
     return (
         <section className="flex min-h-screen flex-col items-start px-12">

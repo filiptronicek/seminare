@@ -21,10 +21,8 @@ export const eventRouter = createTRPCRouter({
     })).query(({ ctx, input }) => {
         const now = new Date();
         return ctx.db.event.findMany({
-            take: 10, where: input.active ? {
-                startDate: {
-                    lte: now,
-                },
+            take: 10,
+            where: input.active ? {
                 endDate: {
                     gte: now,
                 },
