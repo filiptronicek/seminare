@@ -35,4 +35,7 @@ export const eventRouter = createTRPCRouter({
     getEvent: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {
         return ctx.db.event.findUnique({ where: { id: input.id } });
     }),
+    getEventOptions: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {
+        return ctx.db.singleEventOption.findMany({ where: { eventId: input.id } });
+    }),
 });

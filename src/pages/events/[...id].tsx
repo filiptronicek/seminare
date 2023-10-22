@@ -1,3 +1,5 @@
+import { SingleOption } from "@/components/ui/SingleEventOption";
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 
@@ -10,15 +12,31 @@ const normalizeId = (id: string | string[]) => {
 
 export default function Page() {
     const router = useRouter();
+    const { toast } = useToast();
+
     const { data: event, error } = api.events.getEvent.useQuery({ id: normalizeId(router.query.id!) });
+    const { data: options, error: optionsError } = api.events.getEventOptions.useQuery({
+        id: normalizeId(router.query.id!),
+    });
+
     return (
         <>
-            {error && <div>failed to load</div>}
+            {(error ?? optionsError) && <div>failed to load</div>}
             {event && (
-                <div>
-                    <h1>{event.title}</h1>
+                <section>
+                    <h1 className="text-4xl font-bold">{event.title}</h1>
                     <p>{event.description}</p>
-                </div>
+
+                    {options && (
+                        <div className="mt-8">
+                            <ul className="flex flex-wrap gap-4 justify-around">
+                                {options.map((option) => (
+                                    <SingleOption key={option.id} option={option} />
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </section>
             )}
         </>
     );

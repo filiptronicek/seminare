@@ -57,7 +57,23 @@ async function main() {
             create: randomEvent(),
             update: {},
         });
-        console.log(event);
+        for (let j = 0; j < 10; j++) {
+            const option = await db.singleEventOption.upsert({
+                where: {
+                    id: crypto.randomUUID(),
+                },
+                create: {
+                    id: crypto.randomUUID(),
+                    eventId: event.id,
+                    title: `Option ${j + 1}`,
+                    description: "Lorem ipsum dolor sit amet, consectetur ad",
+                    maxParticipants: Math.floor(Math.random() * 10),
+                },
+                update: {},
+            });
+            console.log(option.id);
+
+        }
     }
 }
 
