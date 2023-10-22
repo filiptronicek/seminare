@@ -12,10 +12,10 @@ model Student {
   class               String
   fullName            String
   singleEventOptionId String?
+  avatar              String?
   SingleEventOption   SingleEventOption? @relation(fields: [singleEventOptionId], references: [id])
   StudentEvent        StudentEvent[]
   events              Event[]            @relation("StudentEvents")
-  avatar              String?
 }
 
 model Teacher {

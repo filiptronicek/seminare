@@ -35,7 +35,7 @@ export const SingleOption = ({ option }: OptionProps) => {
         <Card key={option.id} className="max-w-md">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
-                <CardDescription>{option.description}</CardDescription>
+                <CardDescription className="truncate-3-lines">{option.description}</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
                 <Button disabled={isLoading} onClick={handleSignup}>

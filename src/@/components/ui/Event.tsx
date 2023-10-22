@@ -29,10 +29,10 @@ function formatDate(date: dayjs.Dayjs) {
 
 export const SingleEvent = ({ event }: EventProps) => {
     return (
-        <Card className="max-w-x">
+        <Card className="max-w-md">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{event.title}</CardTitle>
-                <CardDescription>{event.description}</CardDescription>
+                <CardDescription className="truncate-5-lines">{event.description}</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
                 <>

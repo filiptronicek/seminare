@@ -42,6 +42,7 @@ export const AvatarDropdown = ({ user }: { user: User }) => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
+                    {/* todo: make the link behave properly */}
                     <Link href={"/settings"}>
                         <DropdownMenuItem>Nastavení</DropdownMenuItem>
                     </Link>
