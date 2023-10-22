@@ -21,10 +21,22 @@ export const exampleRouter = createTRPCRouter({
     getAll: publicProcedure.query(({ ctx }) => {
         return ctx.db.student.findMany();
     }),
-    listEvents : publicProcedure.query(({ ctx }) => {
-        return ctx.db.event.findMany({take: 10});
+    listEvents: publicProcedure.input(z.object({
+        active: z.boolean().optional(),
+    })).query(({ ctx, input }) => {
+        const now = new Date();
+        return ctx.db.event.findMany({
+            take: 10, where: input.active ? {
+                startDate: {
+                    lte: now,
+                },
+                endDate: {
+                    gte: now,
+                },
+            } : {},
+        });
     }),
-    getEvent : publicProcedure.input(z.object({id: z.string()})).query(({input, ctx}) => {
-        return ctx.db.event.findUnique({where: {id: input.id}});
+    getEvent: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {
+        return ctx.db.event.findUnique({ where: { id: input.id } });
     }),
 });

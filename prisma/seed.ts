@@ -1,5 +1,6 @@
 import type { Event } from "@prisma/client";
 import { db } from "../src/server/db";
+import { EVENT_TYPE } from "@/lib/constants";
 
 const randomFromArray = <T>(array: T[]): T => {
     return array[Math.floor(Math.random() * array.length)] as T;
@@ -7,10 +8,10 @@ const randomFromArray = <T>(array: T[]): T => {
 
 export const randomEvent = (): Event => {
     const events = [
-        { title: "Wandertag", type: "WANDERTAG" },
-        { title: "Semináře", type: "SEMINAR" },
-        { title: "Projektový týden", type: "PROJECT_WEEK" },
-        { title: "Výlet", type: "TRIP" }
+        { title: "Wandertag", type: EVENT_TYPE.WANDERTAG },
+        { title: "Semináře", type: EVENT_TYPE.SEMINAR },
+        { title: "Projektový týden", type: EVENT_TYPE.PROJECT_WEEK },
+        { title: "Výlet", type: EVENT_TYPE.UNSPECIFIED }
     ];
 
     const id = crypto.randomUUID();
