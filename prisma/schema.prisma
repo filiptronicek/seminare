@@ -14,8 +14,7 @@ model Student {
   singleEventOptionId String?
   avatar              String?
   SingleEventOption   SingleEventOption? @relation(fields: [singleEventOptionId], references: [id])
-  StudentEvent        StudentEvent[]
-  events              Event[]            @relation("StudentEvents")
+  StudentOption       StudentOption[]
 }
 
 model Teacher {
@@ -36,8 +35,6 @@ model Event {
   signupEndDate           DateTime?           @map("signupEndDate")
   signupStartDate         DateTime?           @map("signupStartDate")
   options                 SingleEventOption[]
-  StudentEvent            StudentEvent[]
-  students                Student[]           @relation("StudentEvents")
 }
 
 model SingleEventOption {
@@ -48,17 +45,18 @@ model SingleEventOption {
   eventId         String
   event           Event           @relation(fields: [eventId], references: [id])
   students        Student[]
+  StudentOption   StudentOption[]
   TeacherOption   TeacherOption[]
   teachers        Teacher[]       @relation("SingleEventOptionToTeacher")
 }
 
-model StudentEvent {
+model StudentOption {
   studentId String
-  eventId   String
-  event     Event   @relation(fields: [eventId], references: [id])
-  student   Student @relation(fields: [studentId], references: [id])
+  optionId  String
+  option    SingleEventOption @relation(fields: [optionId], references: [id])
+  student   Student           @relation(fields: [studentId], references: [id])
 
-  @@id([studentId, eventId])
+  @@id([studentId, optionId])
 }
 
 model TeacherOption {

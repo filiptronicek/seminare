@@ -1,12 +1,7 @@
-import type { SingleEventOption } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { getStudent } from "~/server/auth";
-
-interface EventOptionWithMembership extends SingleEventOption {
-    signedUp: boolean;
-}
 
 export const eventRouter = createTRPCRouter({
     changeStudentClass: publicProcedure.input(z.object({ class: z.string() })).mutation(async ({ input, ctx }) => {
@@ -45,11 +40,78 @@ export const eventRouter = createTRPCRouter({
     getEvent: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {
         return ctx.db.event.findUnique({ where: { id: input.id } });
     }),
-    //todo: add membership handling
     listEventOptions: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
         const student = await getStudent(ctx.auth, ctx.db);
         if (!student)
             throw new Error("Student not found");
         return ctx.db.singleEventOption.findMany({ where: { eventId: input.id } });
     }),
+    getStudentSelectedEventOptions: publicProcedure.input(z.object({ eventId: z.string() })).query(async ({ ctx, input }) => {
+
+        const student = await getStudent(ctx.auth, ctx.db);
+        if (!student) throw new Error("Student not found");
+
+        return await ctx.db.singleEventOption.findMany({
+            where: {
+                AND: [
+                    { eventId: input.eventId },
+                    { StudentOption: { some: { studentId: student.id } } }
+                ]
+            }
+        });
+    }),
+    joinEventOption: publicProcedure.input(z.object({ optionId: z.string(), })).mutation(async ({ input, ctx }) => {
+        const student = await getStudent(ctx.auth, ctx.db);
+        if (!student) throw new Error("Student not found");
+
+        const option = await ctx.db.singleEventOption.findUnique({
+            where: { id: input.optionId },
+            include: { event: true }
+        });
+        if (!option) throw new Error("Event option not found");
+
+        if (!option.event.allowMultipleSelections && student.singleEventOptionId) {
+            throw new Error("Multiple selections not allowed for this event");
+        }
+
+        await ctx.db.studentOption.create({
+            data: {
+                studentId: student.id,
+                optionId: input.optionId
+            }
+        });
+
+        await ctx.db.student.update({
+            where: { id: student.id },
+            data: { singleEventOptionId: input.optionId }
+        });
+
+        return option;
+    }),
+    leaveEventOption: publicProcedure.input(z.object({ optionId: z.string(), })).mutation(async ({ input, ctx }) => {
+        const student = await getStudent(ctx.auth, ctx.db);
+        if (!student) throw new Error("Student not found");
+
+        const option = await ctx.db.singleEventOption.findUnique({
+            where: { id: input.optionId },
+        });
+        if (!option) throw new Error("Event option not found");
+
+        await ctx.db.studentOption.delete({
+            where: {
+                studentId_optionId: {
+                    studentId: student.id,
+                    optionId: input.optionId
+                }
+            }
+        });
+
+        await ctx.db.student.update({
+            where: { id: student.id },
+            data: { singleEventOptionId: null }
+        });
+
+        return option;
+    }),
+
 });

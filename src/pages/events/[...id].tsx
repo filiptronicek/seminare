@@ -1,5 +1,6 @@
 import { SingleOption } from "@/components/ui/SingleEventOption";
 import { useRouter } from "next/router";
+import { useMemo } from "react";
 import { api } from "~/utils/api";
 
 const normalizeId = (id: string | string[]) => {
@@ -12,9 +13,17 @@ const normalizeId = (id: string | string[]) => {
 export default function Page() {
     const router = useRouter();
 
-    const { data: event, error } = api.events.getEvent.useQuery({ id: normalizeId(router.query.id!) });
+    const eventId = useMemo(() => {
+        return normalizeId(router.query.id!);
+    }, [router.query.id]);
+
+    const { data: event, error } = api.events.getEvent.useQuery({ id: eventId });
     const { data: options, error: optionsError } = api.events.listEventOptions.useQuery({
-        id: normalizeId(router.query.id!),
+        id: eventId,
+    });
+
+    const { data: selectedOptions, refetch: refetchSelected } = api.events.getStudentSelectedEventOptions.useQuery({
+        eventId,
     });
 
     return (
@@ -25,11 +34,23 @@ export default function Page() {
                     <h1 className="text-4xl font-bold">{event.title}</h1>
                     <p>{event.description}</p>
 
+                    {event.allowMultipleSelections && (
+                        <p className="mt-4">
+                            <span className="font-bold">Poznámka:</span> Můžeš se přihlásit na více možností.
+                        </p>
+                    )}
+
                     {options && (
                         <div className="mt-8">
                             <ul className="flex flex-wrap gap-4 justify-around">
                                 {options.map((option) => (
-                                    <SingleOption key={option.id} option={option} />
+                                    <SingleOption
+                                        key={option.id}
+                                        refetchSelected={refetchSelected}
+                                        event={event}
+                                        option={option}
+                                        selected={selectedOptions}
+                                    />
                                 ))}
                             </ul>
                         </div>
