@@ -17,12 +17,12 @@ export default function Page() {
         return normalizeId(router.query.id!);
     }, [router.query.id]);
 
-    const { data: event, error } = api.events.getEvent.useQuery({ id: eventId });
-    const { data: options, error: optionsError } = api.events.listEventOptions.useQuery({
+    const { data: event, error } = api.singleEvent.getEvent.useQuery({ id: eventId });
+    const { data: options, error: optionsError } = api.singleEvent.listOptions.useQuery({
         id: eventId,
     });
 
-    const { data: selectedOptions, refetch: refetchSelected } = api.events.getStudentSelectedEventOptions.useQuery({
+    const { data: selectedOptions, refetch: refetchSelected } = api.singleEvent.listStudentOptions.useQuery({
         eventId,
     });
 

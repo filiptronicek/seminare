@@ -22,8 +22,8 @@ const FormSchema = z.object({
 
 export default function Settings() {
     const { data: userData } = useUser();
-    const {data: studentData} = api.events.getStudent.useQuery();
-    const updateMutation = api.events.changeStudentClass.useMutation();
+    const { data: studentData } = api.events.getStudent.useQuery();
+    const updateMutation = api.userSettings.changeStudentClass.useMutation();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -67,40 +67,40 @@ export default function Settings() {
                     />
                 </div>
                 {studentData && (
-                <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="grid w-full max-w-sm items-center gap-1.5 space-y-6"
-                    >
-                        <FormField
-                            control={form.control}
-                            name="currentClass"
-                            defaultValue={studentData?.class ?? ""}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Třída</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="..." />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {[...ACCESSIBLE_CLASSES].map((item) => (
-                                                <SelectItem key={item} value={item}>
-                                                    {item}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormDescription>Vyber si svou třídu.</FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button type="submit">Uložit</Button>
-                    </form>
-                </Form>
+                    <Form {...form}>
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            className="grid w-full max-w-sm items-center gap-1.5 space-y-6"
+                        >
+                            <FormField
+                                control={form.control}
+                                name="currentClass"
+                                defaultValue={studentData?.class ?? ""}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Třída</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="..." />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {[...ACCESSIBLE_CLASSES].map((item) => (
+                                                    <SelectItem key={item} value={item}>
+                                                        {item}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormDescription>Vyber si svou třídu.</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <Button type="submit">Uložit</Button>
+                        </form>
+                    </Form>
                 )}
             </div>
         </section>

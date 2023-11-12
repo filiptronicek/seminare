@@ -23,8 +23,8 @@ interface OptionProps {
 export const SingleOption = ({ option, selected, event, refetchSelected }: OptionProps) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const registerMutation = api.events.joinEventOption.useMutation();
-    const leaveMutation = api.events.leaveEventOption.useMutation();
+    const registerMutation = api.singleEvent.joinOption.useMutation();
+    const leaveMutation = api.singleEvent.leaveOption.useMutation();
 
     const isOptionSelected = useMemo(() => {
         return selected?.some((selectedOption) => selectedOption.id === option.id);
