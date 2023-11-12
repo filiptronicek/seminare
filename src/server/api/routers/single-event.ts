@@ -1,7 +1,9 @@
+import type { Buffer } from 'exceljs';
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { getStudent } from "~/server/auth";
+import { generateExcelForEvent } from "~/utils/data";
 
 export const singleEventRouter = createTRPCRouter({
     getEvent: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {
@@ -97,5 +99,18 @@ export const singleEventRouter = createTRPCRouter({
         });
 
         return option;
+    }),
+    // todo: add escalated privileges guard
+    // todo: add a proper file stream response
+    generateExcel: publicProcedure.input(z.object({ eventId: z.string() })).mutation(async ({ input, ctx }): Promise<Buffer> => {
+        const student = await getStudent(ctx.auth, ctx.db);
+        if (!student) throw new Error("Student not found");
+
+        const event = await ctx.db.event.findUnique({
+            where: { id: input.eventId },
+        });
+        if (!event) throw new Error("Event not found");
+
+        return generateExcelForEvent({ eventId: input.eventId, db: ctx.db });
     }),
 });
