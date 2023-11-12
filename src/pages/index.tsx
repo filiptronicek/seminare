@@ -12,7 +12,7 @@ export default function Home() {
             <h1 className="text-4xl font-bold">
                 Nadcházející akce pro <u>{studentData?.class}</u>
             </h1>
-            <div className="mt-8 flex flex-row flex-wrap gap-3 justify-start">
+            <div className="mt-8 flex flex-row flex-wrap gap-3 justify-around md:justify-start">
                 {events.data?.map((event) => <SingleEventCard key={event.id} event={event} />)}
             </div>
         </section>
