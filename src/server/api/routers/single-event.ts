@@ -36,6 +36,15 @@ export const singleEventRouter = createTRPCRouter({
         });
         if (!option) throw new Error("Event option not found");
 
+        // Guards against joining options before signup period starts or after it ends
+        // todo: optionally, allow admins to remove students from options anyway
+        if (option.event.signupStartDate && option.event.signupStartDate > new Date()) {
+            throw new Error("Signup period has not started yet");
+        }
+        if (option.event.signupEndDate && option.event.signupEndDate < new Date()) {
+            throw new Error("Signup period has ended");
+        }
+
         if (!option.event.allowMultipleSelections) {
             const existingOption = await ctx.db.studentOption.findFirst({
                 where: {
@@ -64,9 +73,19 @@ export const singleEventRouter = createTRPCRouter({
         if (!student) throw new Error("Student not found");
 
         const option = await ctx.db.singleEventOption.findUnique({
-            where: { id: input.optionId }
+            where: { id: input.optionId },
+            include: { event: true }
         });
         if (!option) throw new Error("Event option not found");
+
+        // Guards against leaving options before signup period starts or after it ends
+        // todo: optionally, allow admins to remove students from options anyway
+        if (option.event.signupStartDate && option.event.signupStartDate > new Date()) {
+            throw new Error("Signup period has not started yet");
+        }
+        if (option.event.signupEndDate && option.event.signupEndDate < new Date()) {
+            throw new Error("Signup period has ended");
+        }
 
         await ctx.db.studentOption.delete({
             where: {
