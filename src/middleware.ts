@@ -10,7 +10,6 @@ export async function middleware(req: NextRequest) {
 
     // todo: add the rest of the routes
     if (!session.data.session && ["/", "/settings"].includes(req.nextUrl.pathname)) {
-        console.log(req.nextUrl.pathname)
         const url = req.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url);

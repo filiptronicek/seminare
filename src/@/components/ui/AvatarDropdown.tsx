@@ -1,4 +1,8 @@
 import { createClientComponentClient, type User } from "@supabase/auth-helpers-nextjs";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { api } from "~/utils/api";
+import { getUserAvatar, getUserName } from "~/utils/user";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Button } from "./button";
 import {
@@ -10,16 +14,15 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "./dropdown-menu";
-import { getUserAvatar, getUserName } from "~/utils/user";
-import { useRouter } from "next/router";
-import Link from "next/link";
 
 export const AvatarDropdown = ({ user }: { user: User }) => {
     const supabase = createClientComponentClient();
     const router = useRouter();
+    const utils = api.useContext();
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
+        await utils.invalidate();
         await router.push("/login");
     };
 
