@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                <main className="flex h-full flex-1 flex-col space-y-8 p-8">
+                <main className="flex min-h-screen h-screen flex-1 flex-col space-y-8 p-8">
                     <header className="flex flex-row items-center justify-between">
                         {userData && (
                             <>
