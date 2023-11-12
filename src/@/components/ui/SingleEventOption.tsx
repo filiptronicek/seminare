@@ -7,8 +7,9 @@ import calendar from "dayjs/plugin/calendar";
 import { toast } from "./use-toast";
 import { ClipboardSignature, Loader2 } from "lucide-react";
 import { Button } from "./button";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { api } from "~/utils/api";
+import { cn } from "@/lib/utils";
 
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
@@ -21,8 +22,6 @@ interface OptionProps {
 }
 
 export const SingleOption = ({ option, selected, event, refetchSelected }: OptionProps) => {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-
     const registerMutation = api.singleEvent.joinOption.useMutation();
     const leaveMutation = api.singleEvent.leaveOption.useMutation();
 
@@ -31,17 +30,27 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
     }, [selected, option.id]);
     const noOptionSelected = useMemo(() => selected?.length === 0, [selected]);
 
+    const isSignupOpen = useMemo(() => {
+        const currentDate = dayjs();
+        return currentDate.isAfter(dayjs(event.signupStartDate)) && currentDate.isBefore(dayjs(event.signupEndDate));
+    }, [event.signupStartDate, event.signupEndDate]);
+
+    const buttonShown = useMemo(() => {
+        return isSignupOpen && (noOptionSelected || isOptionSelected || event.allowMultipleSelections);
+    }, [event.allowMultipleSelections, isOptionSelected, isSignupOpen, noOptionSelected]);
+
+    const isLoading = useMemo(() => {
+        return registerMutation.isLoading || leaveMutation.isLoading;
+    }, [registerMutation.isLoading, leaveMutation.isLoading]);
+
     const handleUpdate = async () => {
         const change = isOptionSelected ? "leave" : "join";
-        setIsLoading(true);
-
         if (change === "leave") {
             await leaveMutation.mutateAsync({ optionId: option.id });
         } else {
             await registerMutation.mutateAsync({ optionId: option.id });
         }
 
-        setIsLoading(false);
         refetchSelected();
         toast({
             title: `${change === "join" ? "Přihlášení" : "Odhlášení"} proběhlo úspěšně`,
@@ -53,12 +62,12 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
         <Card key={option.id} className="max-w-md min-h-[14rem]">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
-                <CardDescription className="truncate-3-lines">{option.description}</CardDescription>
+                <CardDescription className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>{option.description}</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
-                {(noOptionSelected || isOptionSelected || event.allowMultipleSelections) && (
+                {buttonShown && (
                     <Button disabled={isLoading} onClick={handleUpdate}>
-                        {isLoading ? (
+                        {(isLoading) ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         ) : (
                             <ClipboardSignature className="mr-2 h-4 w-4" />
