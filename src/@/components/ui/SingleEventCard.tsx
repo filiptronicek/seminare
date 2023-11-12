@@ -8,6 +8,8 @@ import { Calendar, Mail } from "lucide-react";
 import dayjs from "dayjs";
 import czechLocale from "dayjs/locale/cs";
 import calendar from "dayjs/plugin/calendar";
+import { useMemo } from "react";
+import { Badge } from "./badge";
 
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
@@ -28,10 +30,15 @@ function formatDate(date: dayjs.Dayjs) {
 }
 
 export const SingleEventCard = ({ event }: EventProps) => {
+    const isSignupOpen = useMemo(() => {
+        const currentDate = dayjs();
+        return currentDate.isAfter(dayjs(event.signupStartDate)) && currentDate.isBefore(dayjs(event.signupEndDate));
+    }, [event.signupStartDate, event.signupEndDate]);
+
     return (
         <Card className="max-w-md w-screen">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl">{event.title}</CardTitle>
+                <CardTitle className="text-2xl flex items-center gap-2">{event.title} {isSignupOpen && (<Badge>Přihlašování otevřeno</Badge>)} </CardTitle>
                 <CardDescription className="truncate-5-lines">{event.description}</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
