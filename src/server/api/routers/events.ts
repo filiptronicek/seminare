@@ -70,8 +70,18 @@ export const eventRouter = createTRPCRouter({
         });
         if (!option) throw new Error("Event option not found");
 
-        if (!option.event.allowMultipleSelections && student.singleEventOptionId) {
-            throw new Error("Multiple selections not allowed for this event");
+        if (!option.event.allowMultipleSelections) {
+            const existingOption = await ctx.db.studentOption.findFirst({
+                where: {
+                    studentId: student.id,
+                    option: {
+                        eventId: option.eventId
+                    }
+                }
+            });
+            if (existingOption) {
+                throw new Error("Multiple selections not allowed for this event");
+            }
         }
 
         await ctx.db.studentOption.create({
@@ -81,11 +91,6 @@ export const eventRouter = createTRPCRouter({
             }
         });
 
-        await ctx.db.student.update({
-            where: { id: student.id },
-            data: { singleEventOptionId: input.optionId }
-        });
-
         return option;
     }),
     leaveEventOption: publicProcedure.input(z.object({ optionId: z.string(), })).mutation(async ({ input, ctx }) => {
@@ -93,7 +98,7 @@ export const eventRouter = createTRPCRouter({
         if (!student) throw new Error("Student not found");
 
         const option = await ctx.db.singleEventOption.findUnique({
-            where: { id: input.optionId },
+            where: { id: input.optionId }
         });
         if (!option) throw new Error("Event option not found");
 
@@ -106,12 +111,6 @@ export const eventRouter = createTRPCRouter({
             }
         });
 
-        await ctx.db.student.update({
-            where: { id: student.id },
-            data: { singleEventOptionId: null }
-        });
-
         return option;
     }),
-
 });

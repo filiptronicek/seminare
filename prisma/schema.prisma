@@ -8,20 +8,17 @@ datasource db {
 }
 
 model Student {
-  id                  String             @id @default(uuid())
-  class               String
-  fullName            String
-  singleEventOptionId String?
-  avatar              String?
-  SingleEventOption   SingleEventOption? @relation(fields: [singleEventOptionId], references: [id])
-  StudentOption       StudentOption[]
+  id            String          @id @default(uuid())
+  class         String
+  fullName      String
+  avatar        String?
+  StudentOption StudentOption[]
 }
 
 model Teacher {
-  id            String              @id @default(uuid())
+  id            String          @id @default(uuid())
   fullName      String
   TeacherOption TeacherOption[]
-  options       SingleEventOption[] @relation("SingleEventOptionToTeacher")
 }
 
 model Event {
@@ -44,10 +41,8 @@ model SingleEventOption {
   description     String?
   eventId         String
   event           Event           @relation(fields: [eventId], references: [id])
-  students        Student[]
   StudentOption   StudentOption[]
   TeacherOption   TeacherOption[]
-  teachers        Teacher[]       @relation("SingleEventOptionToTeacher")
 }
 
 model StudentOption {
