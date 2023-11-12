@@ -6,3 +6,4 @@ tasks:
         bun install
         cp .env.example .env
       command: bun dev
+    - command: bunx prisma studio
