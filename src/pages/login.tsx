@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "@/components/ui/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { AuthError } from "@supabase/supabase-js";
 import Head from "next/head";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useUser } from "~/utils/hooks";
@@ -11,6 +14,7 @@ export default function Home() {
     const { data: userData } = useUser();
     const supabase = createClientComponentClient();
     const router = useRouter();
+    const search = useSearchParams();
 
     const handleSignIn = () => {
         supabase.auth
@@ -18,7 +22,8 @@ export default function Home() {
                 provider: "google",
             })
             .catch((error) => {
-                console.log(error);
+                if (error instanceof AuthError)
+                    console.log(error.cause);
             });
     };
 
@@ -27,6 +32,16 @@ export default function Home() {
             void router.push("/");
         }
     }, [router, userData]);
+
+    useEffect(() => {
+        if (!search) return;
+        if (search.get("error") === "server_error") {
+            toast({
+                title: "Chyba přihlášení",
+                description: "Nastala chyba při přihlašování, zkuste to prosím znovu. Účet musí být pod školní doménou.",
+            });
+        }
+    }, [search]);
 
     return (
         <>

@@ -6,8 +6,7 @@ async function fetchUserData(): Promise<User> {
 
     try {
         const user = await supabase.auth.getUser();
-        console.log(user);
-        if (!user) {
+        if (!user?.data?.user) {
             throw new Error("No user found");
         }
 
