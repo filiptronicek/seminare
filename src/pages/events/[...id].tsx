@@ -1,7 +1,9 @@
 import { SingleOption } from "@/components/ui/SingleEventOption";
+import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { api } from "~/utils/api";
+import { formatDate } from "~/utils/dates";
 
 const normalizeId = (id: string | string[]) => {
     if (Array.isArray(id)) {
@@ -26,12 +28,22 @@ export default function Page() {
         eventId,
     });
 
+    const isSignupOpen = useMemo(() => {
+        const currentDate = dayjs();
+        return currentDate.isAfter(dayjs(event?.signupStartDate)) && currentDate.isBefore(dayjs(event?.signupEndDate));
+    }, [event?.signupStartDate, event?.signupEndDate]);
+
+    const signupInThePast = useMemo(() => {
+        const currentDate = dayjs();
+        return currentDate.isAfter(dayjs(event?.signupEndDate));
+    }, [event?.signupEndDate]);
+
     return (
         <>
             {(error ?? optionsError) && <div>failed to load</div>}
             {event && (
                 <section>
-                    <h1 className="text-4xl font-bold">{event.title}</h1>
+                    <h1 className="text-4xl font-bold my-4">{event.title}</h1>
                     <p>{event.description}</p>
 
                     {event.allowMultipleSelections && (
@@ -39,6 +51,25 @@ export default function Page() {
                             <span className="font-bold">Poznámka:</span> Můžeš se přihlásit na více možností.
                         </p>
                     )}
+
+                    <span className="font-bold mt-4">
+                        {isSignupOpen ? (
+                            <>
+                                {/* Could convert to `<time>` */}
+                                Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
+                            </>
+                        ) : (
+                            signupInThePast ? (
+                                <>
+                                    Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}
+                                </>
+                            ) : (
+                                <>
+                                    Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}
+                                </>
+                            )
+                        )}
+                    </span>
 
                     {options && (
                         <div className="mt-8">

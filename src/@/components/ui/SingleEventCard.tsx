@@ -10,23 +10,13 @@ import czechLocale from "dayjs/locale/cs";
 import calendar from "dayjs/plugin/calendar";
 import { useMemo } from "react";
 import { Badge } from "./badge";
+import { formatDate } from "~/utils/dates";
 
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
 
 interface EventProps {
     event: Event;
-}
-
-function formatDate(date: dayjs.Dayjs) {
-    const inputDate = date;
-    const currentDate = dayjs();
-
-    if (inputDate.year() !== currentDate.year()) {
-        return inputDate.format("D. M. YYYY");
-    }
-
-    return inputDate.format("D. M.");
 }
 
 export const SingleEventCard = ({ event }: EventProps) => {
@@ -50,7 +40,7 @@ export const SingleEventCard = ({ event }: EventProps) => {
                             </>
                         ) : (
                             <>
-                                <Mail /> {formatDate(dayjs(event.signupStartDate))} -{" "}
+                                <Mail /> {formatDate(dayjs(event.signupStartDate))} -
                                 {formatDate(dayjs(event.signupEndDate))}
                             </>
                         )}
