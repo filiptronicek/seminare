@@ -62,7 +62,7 @@ async function main() {
     await db.singleEventOption.deleteMany({});
     await db.event.deleteMany({});
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 50 i++) {
         const event = await db.event.upsert({
             where: {
                 id: crypto.randomUUID(),
@@ -85,7 +85,6 @@ async function main() {
                 update: {},
             });
             console.log(option.id);
-
         }
     }
 }

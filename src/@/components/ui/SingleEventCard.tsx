@@ -27,9 +27,9 @@ function formatDate(date: dayjs.Dayjs) {
     return inputDate.format("D. M.");
 }
 
-export const SingleEvent = ({ event }: EventProps) => {
+export const SingleEventCard = ({ event }: EventProps) => {
     return (
-        <Card className="max-w-md">
+        <Card className="max-w-md w-screen">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{event.title}</CardTitle>
                 <CardDescription className="truncate-5-lines">{event.description}</CardDescription>

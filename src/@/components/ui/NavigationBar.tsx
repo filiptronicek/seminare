@@ -10,7 +10,7 @@ import { Home, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export const NavigationBar = ({}) => {
+export const NavigationBar = ({ }) => {
     return (
         <NavigationMenu>
             <NavigationMenuList>
@@ -18,7 +18,7 @@ export const NavigationBar = ({}) => {
                     <Link href="/" legacyBehavior passHref className="">
                         <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "gap-2")}>
                             <Home className="h-6 w-6" />
-                            Nadcházející Akce
+                            <span className="hidden sm:block">Nadcházející Akce</span>
                         </NavigationMenuLink>
                     </Link>
                 </NavigationMenuItem>
@@ -30,7 +30,7 @@ export const NavigationBar = ({}) => {
                             className={cn(navigationMenuTriggerStyle(), "gap-2")}
                         >
                             <GraduationCap className="h-6 w-6" />
-                            Stránky gymnázia
+                            <span className="hidden sm:block">Stránky gymnázia</span>
                         </NavigationMenuLink>
                     </Link>
                 </NavigationMenuItem>

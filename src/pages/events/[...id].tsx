@@ -42,7 +42,7 @@ export default function Page() {
 
                     {options && (
                         <div className="mt-8">
-                            <ul className="flex flex-wrap gap-4 justify-around">
+                            <ul className="flex flex-wrap gap-4 justify-start">
                                 {options.map((option) => (
                                     <SingleOption
                                         key={option.id}
