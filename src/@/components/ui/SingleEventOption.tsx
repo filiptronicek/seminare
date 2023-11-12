@@ -46,16 +46,38 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
     const handleUpdate = async () => {
         const change = isOptionSelected ? "leave" : "join";
         if (change === "leave") {
-            await leaveMutation.mutateAsync({ optionId: option.id });
+            await leaveMutation.mutateAsync({ optionId: option.id }, {
+                onError: (error) => {
+                    toast({
+                        title: "Nepodařilo se odhlásit",
+                        description: error.message,
+                    });
+                },
+                onSuccess: () => {
+                    refetchSelected();
+                    toast({
+                        title: "Odhlášení proběhlo úspěšně",
+                        description: `Byl jsi odhlášen z ${option.title}`,
+                    });
+                }
+            });
         } else {
-            await registerMutation.mutateAsync({ optionId: option.id });
+            await registerMutation.mutateAsync({ optionId: option.id }, {
+                onError: (error) => {
+                    toast({
+                        title: "Nepodařilo se přihlásit",
+                        description: error.message,
+                    });
+                },
+                onSuccess: () => {
+                    refetchSelected();
+                    toast({
+                        title: "Přihlášení proběhlo úspěšně",
+                        description: `Byl jsi přihlášen na ${option.title}`,
+                    });
+                }
+            });
         }
-
-        refetchSelected();
-        toast({
-            title: `${change === "join" ? "Přihlášení" : "Odhlášení"} proběhlo úspěšně`,
-            description: `Byl jsi ${change === "join" ? "přihlášen na" : "odhlášen z"} ${option.title}`,
-        });
     };
 
     return (
