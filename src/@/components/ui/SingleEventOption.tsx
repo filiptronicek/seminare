@@ -29,9 +29,7 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
     const isOptionSelected = useMemo(() => {
         return selected?.some((selectedOption) => selectedOption.id === option.id);
     }, [selected, option.id]);
-    const noOptionSelected = useMemo(() => {
-        return selected?.length === 0;
-    }, [selected]);
+    const noOptionSelected = useMemo(() => selected?.length === 0, [selected]);
 
     const handleUpdate = async () => {
         const change = isOptionSelected ? "leave" : "join";
@@ -52,7 +50,7 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
     };
 
     return (
-        <Card key={option.id} className="max-w-md">
+        <Card key={option.id} className="max-w-md min-h-[14rem]">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
                 <CardDescription className="truncate-3-lines">{option.description}</CardDescription>
