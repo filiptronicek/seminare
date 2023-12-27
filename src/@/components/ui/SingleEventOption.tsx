@@ -105,6 +105,11 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
                         {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                     </Button>
                 )}
+                {
+                    isOptionSelected && !buttonShown && (
+                        <span className="text-green-500 font-bold">Tebou zvoleno</span>
+                    )
+                }
             </CardContent>
         </Card>
     );
