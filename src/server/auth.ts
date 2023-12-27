@@ -22,3 +22,9 @@ export const getStudent = async (auth: SupabaseAuthClient, db: PrismaClient) => 
     if (!student) return await createStudent(auth, db);
     return student;
 };
+
+export const checkStudent = async (auth: SupabaseAuthClient, db: PrismaClient) => {
+    const student = await getStudent(auth, db);
+    if (!student) throw new Error("Student not found");
+    return student;
+}

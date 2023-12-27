@@ -2,21 +2,22 @@ import type { Buffer } from "exceljs";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { getStudent } from "~/server/auth";
+import { checkStudent, getStudent } from "~/server/auth";
 import { generateExcelForEvent } from "~/utils/data";
 
 export const singleEventRouter = createTRPCRouter({
-    getEvent: publicProcedure.input(z.object({ id: z.string() })).query(({ input, ctx }) => {
+    getEvent: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
+        await checkStudent(ctx.auth, ctx.db);
+
         return ctx.db.event.findUnique({ where: { id: input.id } });
     }),
     listOptions: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
-        const student = await getStudent(ctx.auth, ctx.db);
-        if (!student) throw new Error("Student not found");
+        await checkStudent(ctx.auth, ctx.db);
+
         return ctx.db.singleEventOption.findMany({ where: { eventId: input.id } });
     }),
     listStudentOptions: publicProcedure.input(z.object({ eventId: z.string() })).query(async ({ ctx, input }) => {
-        const student = await getStudent(ctx.auth, ctx.db);
-        if (!student) throw new Error("Student not found");
+        const student = await checkStudent(ctx.auth, ctx.db);
 
         return await ctx.db.singleEventOption.findMany({
             where: {
@@ -25,8 +26,7 @@ export const singleEventRouter = createTRPCRouter({
         });
     }),
     joinOption: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
-        const student = await getStudent(ctx.auth, ctx.db);
-        if (!student) throw new Error("Student not found");
+        const student = await checkStudent(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
@@ -67,8 +67,7 @@ export const singleEventRouter = createTRPCRouter({
         return option;
     }),
     leaveOption: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
-        const student = await getStudent(ctx.auth, ctx.db);
-        if (!student) throw new Error("Student not found");
+        const student = await checkStudent(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
