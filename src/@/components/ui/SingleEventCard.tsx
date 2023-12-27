@@ -42,7 +42,7 @@ export const SingleEventCard = ({ event }: EventProps) => {
                             </>
                         ) : (
                             <>
-                                <Mail /> {formatDate(dayjs(event.signupStartDate))} - &nbsp;
+                                <Mail /> {formatDate(dayjs(event.signupStartDate))}&nbsp;-&nbsp;
                                 {formatDate(dayjs(event.signupEndDate))}
                             </>
                         )}
@@ -54,7 +54,7 @@ export const SingleEventCard = ({ event }: EventProps) => {
                             </>
                         ) : (
                             <>
-                                <Calendar /> {formatDate(dayjs(event.startDate))} - &nbsp;{" "}
+                                <Calendar /> {formatDate(dayjs(event.startDate))}&nbsp;-&nbsp;
                                 {formatDate(dayjs(event.endDate))}
                             </>
                         )}
