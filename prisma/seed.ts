@@ -1,7 +1,7 @@
 import type { Event } from "@prisma/client";
 import { db } from "../src/server/db";
 import { EVENT_TYPE } from "@/lib/constants";
-import { LoremIpsum, loremIpsum } from "lorem-ipsum";
+import { LoremIpsum } from "lorem-ipsum";
 
 import dayjs from "dayjs";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -62,7 +62,7 @@ async function main() {
     await db.singleEventOption.deleteMany({});
     await db.event.deleteMany({});
 
-    for (let i = 0; i < 50 i++) {
+    for (let i = 0; i < 50; i++) {
         const event = await db.event.upsert({
             where: {
                 id: crypto.randomUUID(),
