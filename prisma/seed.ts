@@ -6,24 +6,24 @@ import { LoremIpsum } from "lorem-ipsum";
 import dayjs from "dayjs";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import dayjsRandom from 'dayjs-random'
+import dayjsRandom from "dayjs-random";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-dayjs.extend(dayjsRandom)
+dayjs.extend(dayjsRandom);
 
 const randomFromArray = <T>(array: T[]): T => {
     return array[Math.floor(Math.random() * array.length)] as T;
-}
+};
 
 const lorem = new LoremIpsum({
     sentencesPerParagraph: {
         max: 8,
-        min: 4
+        min: 4,
     },
     wordsPerSentence: {
         max: 16,
-        min: 4
-    }
+        min: 4,
+    },
 });
 
 export const randomEvent = (): Event => {
@@ -31,12 +31,15 @@ export const randomEvent = (): Event => {
         { title: "Wandertag", type: EVENT_TYPE.WANDERTAG },
         { title: "Semináře", type: EVENT_TYPE.SEMINAR },
         { title: "Projektový týden", type: EVENT_TYPE.PROJECT_WEEK },
-        { title: "Výlet", type: EVENT_TYPE.UNSPECIFIED }
+        { title: "Výlet", type: EVENT_TYPE.UNSPECIFIED },
     ];
 
     const id = crypto.randomUUID();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const dateOfEvent = (Math.random() > 0.5 ? (dayjs.future() as dayjs.Dayjs) : (dayjs.past() as dayjs.Dayjs)).add(1, "week");
+    const dateOfEvent = (Math.random() > 0.5 ? (dayjs.future() as dayjs.Dayjs) : (dayjs.past() as dayjs.Dayjs)).add(
+        1,
+        "week",
+    );
     const dateOfEventEnd = dateOfEvent.add(1, "week");
 
     const signupStartDate = dateOfEvent.subtract(1, "week");
@@ -51,13 +54,12 @@ export const randomEvent = (): Event => {
         signupStartDate: signupStartDate.toDate(),
         allowMultipleSelections: Math.random() > 0.5,
         description: lorem.generateParagraphs(2),
-    }
+    };
 
     return event;
-}
+};
 
 async function main() {
-
     // Clear database
     await db.singleEventOption.deleteMany({});
     await db.event.deleteMany({});

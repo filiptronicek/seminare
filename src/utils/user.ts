@@ -10,7 +10,7 @@ export const getUserName = (user: User): string => {
 
 export const getUserId = (user: User): string => {
     return user.id;
-}
+};
 
 export const getUserAvatar = (user: User): string => {
     if (!user.user_metadata) {
@@ -18,4 +18,4 @@ export const getUserAvatar = (user: User): string => {
     }
 
     return user.user_metadata.avatar_url;
-}
+};

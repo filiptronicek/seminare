@@ -58,16 +58,10 @@ export default function Page() {
                                 {/* Could convert to `<time>` */}
                                 Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
                             </>
+                        ) : signupInThePast ? (
+                            <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
                         ) : (
-                            signupInThePast ? (
-                                <>
-                                    Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}
-                                </>
-                            ) : (
-                                <>
-                                    Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}
-                                </>
-                            )
+                            <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>
                         )}
                     </span>
 

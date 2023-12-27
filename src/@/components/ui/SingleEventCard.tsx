@@ -28,7 +28,9 @@ export const SingleEventCard = ({ event }: EventProps) => {
     return (
         <Card className="max-w-md w-screen">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl flex items-center gap-2">{event.title} {isSignupOpen && (<Badge>Přihlašování otevřeno</Badge>)} </CardTitle>
+                <CardTitle className="text-2xl flex items-center gap-2">
+                    {event.title} {isSignupOpen && <Badge>Přihlašování otevřeno</Badge>}{" "}
+                </CardTitle>
                 <CardDescription className="truncate-5-lines">{event.description}</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
@@ -40,7 +42,7 @@ export const SingleEventCard = ({ event }: EventProps) => {
                             </>
                         ) : (
                             <>
-                                <Mail /> {formatDate(dayjs(event.signupStartDate))} -
+                                <Mail /> {formatDate(dayjs(event.signupStartDate))} - &nbsp;
                                 {formatDate(dayjs(event.signupEndDate))}
                             </>
                         )}
@@ -52,7 +54,8 @@ export const SingleEventCard = ({ event }: EventProps) => {
                             </>
                         ) : (
                             <>
-                                <Calendar /> {formatDate(dayjs(event.startDate))} - {formatDate(dayjs(event.endDate))}
+                                <Calendar /> {formatDate(dayjs(event.startDate))} - &nbsp;{" "}
+                                {formatDate(dayjs(event.endDate))}
                             </>
                         )}
                     </div>

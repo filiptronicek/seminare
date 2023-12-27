@@ -22,8 +22,7 @@ export default function Home() {
                 provider: "google",
             })
             .catch((error) => {
-                if (error instanceof AuthError)
-                    console.log(error.cause);
+                if (error instanceof AuthError) console.log(error.cause);
             });
     };
 
@@ -38,7 +37,8 @@ export default function Home() {
         if (search.get("error") === "server_error") {
             toast({
                 title: "Chyba přihlášení",
-                description: "Nastala chyba při přihlašování, zkuste to prosím znovu. Účet musí být pod školní doménou.",
+                description:
+                    "Nastala chyba při přihlašování, zkuste to prosím znovu. Účet musí být pod školní doménou.",
             });
         }
     }, [search]);

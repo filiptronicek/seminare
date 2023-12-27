@@ -11,7 +11,7 @@ import { userSettingsRouter } from "./routers/user-settings";
 export const appRouter = createTRPCRouter({
     events: eventRouter,
     singleEvent: singleEventRouter,
-    userSettings: userSettingsRouter
+    userSettings: userSettingsRouter,
 });
 
 // export type definition of API

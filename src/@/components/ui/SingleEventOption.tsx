@@ -46,37 +46,43 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
     const handleUpdate = async () => {
         const change = isOptionSelected ? "leave" : "join";
         if (change === "leave") {
-            await leaveMutation.mutateAsync({ optionId: option.id }, {
-                onError: (error) => {
-                    toast({
-                        title: "Nepodařilo se odhlásit",
-                        description: error.message,
-                    });
+            await leaveMutation.mutateAsync(
+                { optionId: option.id },
+                {
+                    onError: (error) => {
+                        toast({
+                            title: "Nepodařilo se odhlásit",
+                            description: error.message,
+                        });
+                    },
+                    onSuccess: () => {
+                        refetchSelected();
+                        toast({
+                            title: "Odhlášení proběhlo úspěšně",
+                            description: `Byl jsi odhlášen z ${option.title}`,
+                        });
+                    },
                 },
-                onSuccess: () => {
-                    refetchSelected();
-                    toast({
-                        title: "Odhlášení proběhlo úspěšně",
-                        description: `Byl jsi odhlášen z ${option.title}`,
-                    });
-                }
-            });
+            );
         } else {
-            await registerMutation.mutateAsync({ optionId: option.id }, {
-                onError: (error) => {
-                    toast({
-                        title: "Nepodařilo se přihlásit",
-                        description: error.message,
-                    });
+            await registerMutation.mutateAsync(
+                { optionId: option.id },
+                {
+                    onError: (error) => {
+                        toast({
+                            title: "Nepodařilo se přihlásit",
+                            description: error.message,
+                        });
+                    },
+                    onSuccess: () => {
+                        refetchSelected();
+                        toast({
+                            title: "Přihlášení proběhlo úspěšně",
+                            description: `Byl jsi přihlášen na ${option.title}`,
+                        });
+                    },
                 },
-                onSuccess: () => {
-                    refetchSelected();
-                    toast({
-                        title: "Přihlášení proběhlo úspěšně",
-                        description: `Byl jsi přihlášen na ${option.title}`,
-                    });
-                }
-            });
+            );
         }
     };
 
@@ -84,12 +90,14 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
         <Card key={option.id} className="max-w-md min-h-[14rem]">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
-                <CardDescription className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>{option.description}</CardDescription>
+                <CardDescription className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>
+                    {option.description}
+                </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
                 {buttonShown && (
                     <Button disabled={isLoading} onClick={handleUpdate}>
-                        {(isLoading) ? (
+                        {isLoading ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         ) : (
                             <ClipboardSignature className="mr-2 h-4 w-4" />

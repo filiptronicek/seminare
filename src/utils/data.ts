@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import ExcelJS from 'exceljs';
+import ExcelJS from "exceljs";
 
 /**
  * Generates an Excel spreadsheet for a specified event, with each event option as a separate worksheet.
@@ -10,7 +10,13 @@ import ExcelJS from 'exceljs';
  * @param {PrismaClient} params.db - The PrismaClient instance for database access.
  * @returns {Promise<Buffer>} A Promise that resolves to a buffer containing the Excel workbook data.
  */
-export const generateExcelForEvent = async ({ eventId, db }: { eventId: string, db: PrismaClient }): Promise<ExcelJS.Buffer> => {
+export const generateExcelForEvent = async ({
+    eventId,
+    db,
+}: {
+    eventId: string;
+    db: PrismaClient;
+}): Promise<ExcelJS.Buffer> => {
     const workbook = new ExcelJS.Workbook();
 
     const options = await db.singleEventOption.findMany({
@@ -18,22 +24,22 @@ export const generateExcelForEvent = async ({ eventId, db }: { eventId: string, 
         include: {
             StudentOption: {
                 include: {
-                    student: true
-                }
-            }
-        }
+                    student: true,
+                },
+            },
+        },
     });
 
     // Process each event option
-    options.forEach(option => {
+    options.forEach((option) => {
         const sheet = workbook.addWorksheet(option.title);
 
         sheet.columns = [
-            { header: 'Jméno', key: 'fullName' },
-            { header: 'Třída', key: 'class' }
+            { header: "Jméno", key: "fullName" },
+            { header: "Třída", key: "class" },
         ];
 
-        option.StudentOption.forEach(so => {
+        option.StudentOption.forEach((so) => {
             sheet.addRow({
                 fullName: so.student.fullName,
                 class: so.student.class,
@@ -44,4 +50,4 @@ export const generateExcelForEvent = async ({ eventId, db }: { eventId: string, 
     // await workbook.xlsx.writeFile('EventAttendees.xlsx');
 
     return await workbook.xlsx.writeBuffer();
-}
+};

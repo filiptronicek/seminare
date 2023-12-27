@@ -10,12 +10,12 @@ export async function middleware(req: NextRequest) {
 
     // todo: add the rest of the routes
     if (!session.data.session && ["/", "/settings"].includes(req.nextUrl.pathname)) {
-        const url = req.nextUrl.clone()
-        url.pathname = '/login'
+        const url = req.nextUrl.clone();
+        url.pathname = "/login";
         return NextResponse.redirect(url);
     } else if (session.data.session?.user && req.nextUrl.pathname === "/login") {
-        const url = req.nextUrl.clone()
-        url.pathname = '/'
+        const url = req.nextUrl.clone();
+        url.pathname = "/";
         return NextResponse.redirect(url);
     }
 
