@@ -44,18 +44,17 @@ export default function Page() {
             {event && (
                 <section>
                     <h1 className="text-4xl font-bold my-4">{event.title}</h1>
-                    <p>{event.description}</p>
 
                     {event.allowMultipleSelections && (
-                        <p className="mt-4">
+                        <p className="my-1">
                             <span className="font-bold">Poznámka:</span> Můžeš se přihlásit na více možností.
                         </p>
                     )}
 
-                    <span className="font-bold mt-4">
+                    <span className="font-bold">
                         {isSignupOpen ? (
                             <>
-                                {/* Could convert to `<time>` */}
+                                {/* todo: convert to `<time>` */}
                                 Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
                             </>
                         ) : signupInThePast ? (
@@ -64,6 +63,8 @@ export default function Page() {
                             <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>
                         )}
                     </span>
+
+                    <p className="mt-6">{event.description}</p>
 
                     {options && (
                         <div className="mt-8">
