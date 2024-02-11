@@ -9,7 +9,7 @@ datasource db {
 
 model Student {
   id            String          @id @default(uuid())
-  class         String
+  class         String?
   fullName      String
   avatar        String?
   StudentOption StudentOption[]

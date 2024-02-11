@@ -7,6 +7,7 @@ export const userSettingsRouter = createTRPCRouter({
     changeStudentClass: publicProcedure.input(z.object({ class: z.string() })).mutation(async ({ input, ctx }) => {
         const student = await getStudent(ctx.auth, ctx.db);
         if (!student) throw new Error("Student not found");
+
         return ctx.db.student.update({
             where: {
                 id: student.id,

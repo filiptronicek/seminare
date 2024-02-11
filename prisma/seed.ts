@@ -63,6 +63,7 @@ async function main() {
     // Clear database
     await db.singleEventOption.deleteMany({});
     await db.event.deleteMany({});
+    await db.student.deleteMany({});
 
     for (let i = 0; i < 50; i++) {
         const event = await db.event.upsert({
