@@ -6,7 +6,7 @@ import { SingleEventCard } from "@/components/ui/SingleEventCard";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "~/utils/api";
-import { ClassForm } from "./settings";
+import { ClassForm } from "../@/components/user/ClassForm";
 import { Loader2 } from "lucide-react";
 
 export default function Home() {
