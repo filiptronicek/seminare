@@ -52,16 +52,14 @@ export default function Page() {
                     )}
 
                     <span className="font-bold">
-                        {isSignupOpen ? (
+                        {isSignupOpen ?
                             <>
                                 {/* todo: convert to `<time>` */}
                                 Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
                             </>
-                        ) : signupInThePast ? (
+                        : signupInThePast ?
                             <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
-                        ) : (
-                            <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>
-                        )}
+                        :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
                     </span>
 
                     <p className="mt-6">{event.description}</p>

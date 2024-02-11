@@ -18,13 +18,14 @@ export const eventRouter = createTRPCRouter({
             const now = new Date();
             return ctx.db.event.findMany({
                 take: 10,
-                where: input.active
-                    ? {
-                          endDate: {
-                              gte: now,
-                          },
-                      }
-                    : {},
+                where:
+                    input.active ?
+                        {
+                            endDate: {
+                                gte: now,
+                            },
+                        }
+                    :   {},
                 orderBy: {
                     signupStartDate: "asc",
                 },
