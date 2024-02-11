@@ -22,7 +22,7 @@ const FormSchema = z.object({
 
 export default function Settings() {
     const { data: userData } = useUser();
-    const { data: studentData } = api.events.getStudent.useQuery();
+    const { data: student, isLoading: isStudentLoading, isError: isStudentError } = api.events.getStudent.useQuery();
     const updateMutation = api.userSettings.changeStudentClass.useMutation();
 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -66,7 +66,7 @@ export default function Settings() {
                         readOnly
                     />
                 </div>
-                {studentData && (
+                {!isStudentLoading && !isStudentError && (
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(onSubmit)}
@@ -75,7 +75,7 @@ export default function Settings() {
                             <FormField
                                 control={form.control}
                                 name="currentClass"
-                                defaultValue={studentData?.class ?? ""}
+                                defaultValue={student?.class ?? [...ACCESSIBLE_CLASSES][0]}
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Třída</FormLabel>
