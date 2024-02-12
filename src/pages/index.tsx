@@ -10,8 +10,8 @@ import { ClassForm } from "../@/components/user/ClassForm";
 import { Loader2 } from "lucide-react";
 
 export default function Home() {
-    const events = api.events.listEvents.useQuery({ active: true });
     const { data: user, isLoading, isError } = api.events.getStudent.useQuery();
+    const events = api.events.listEvents.useQuery({ active: true, class: user?.class });
 
     if (!isLoading && !user?.class) {
         return (

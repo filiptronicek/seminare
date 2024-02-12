@@ -1,7 +1,9 @@
 import type { Event } from "@prisma/client";
 import { db } from "../src/server/db";
+import {CLASSES} from "../src/@/lib/constants";
 import { EVENT_TYPE } from "@/lib/constants";
 import { LoremIpsum } from "lorem-ipsum";
+import {random, sampleSize} from 'lodash';
 
 import dayjs from "dayjs";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -45,6 +47,9 @@ export const randomEvent = (): Event => {
     const signupStartDate = dateOfEvent.subtract(1, "week");
     const signupEndDate = signupStartDate.add(1, "day");
 
+    const numberOfClasses = random(1, 3);
+    const randomSample = sampleSize(CLASSES, numberOfClasses);
+
     const event: Event = {
         ...randomFromArray(events),
         id,
@@ -54,6 +59,7 @@ export const randomEvent = (): Event => {
         signupStartDate: signupStartDate.toDate(),
         allowMultipleSelections: Math.random() > 0.5,
         description: lorem.generateParagraphs(2),
+        visibleToClasses: randomSample
     };
 
     return event;
