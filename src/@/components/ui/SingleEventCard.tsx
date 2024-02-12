@@ -15,11 +15,10 @@ import { formatDate } from "~/utils/dates";
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
 
-interface EventProps {
+interface Props {
     event: Event;
 }
-
-export const SingleEventCard = ({ event }: EventProps) => {
+export const SingleEventCard = ({ event }: Props) => {
     const isSignupOpen = useMemo(() => {
         const currentDate = dayjs();
         return currentDate.isAfter(dayjs(event.signupStartDate)) && currentDate.isBefore(dayjs(event.signupEndDate));

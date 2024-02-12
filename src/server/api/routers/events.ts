@@ -12,26 +12,24 @@ export const eventRouter = createTRPCRouter({
         .input(
             z.object({
                 active: z.boolean().optional(),
-                class: z.enum(CLASSES)
+                class: z.enum(CLASSES),
             }),
         )
         .query(({ ctx, input }) => {
             const now = new Date();
             return ctx.db.event.findMany({
                 take: 10,
-                where:
-                {
-
-                    ...input.active ?
+                where: {
+                    ...(input.active ?
                         {
                             endDate: {
                                 gte: now,
                             },
                         }
-                        : {},
+                    :   {}),
                     visibleToClasses: {
-                        has: input.class
-                    }
+                        has: input.class,
+                    },
                 },
                 orderBy: {
                     signupStartDate: "asc",

@@ -1,9 +1,8 @@
 import type { Event } from "@prisma/client";
 import { db } from "../src/server/db";
-import {CLASSES} from "../src/@/lib/constants";
-import { EVENT_TYPE } from "@/lib/constants";
+import { CLASSES, EVENT_TYPE } from "../src/@/lib/constants";
 import { LoremIpsum } from "lorem-ipsum";
-import {random, sampleSize} from 'lodash';
+import { random, sampleSize, sample } from "lodash";
 
 import dayjs from "dayjs";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -12,10 +11,6 @@ import dayjsRandom from "dayjs-random";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 dayjs.extend(dayjsRandom);
-
-const randomFromArray = <T>(array: T[]): T => {
-    return array[Math.floor(Math.random() * array.length)] as T;
-};
 
 const lorem = new LoremIpsum({
     sentencesPerParagraph: {
@@ -34,7 +29,7 @@ export const randomEvent = (): Event => {
         { title: "Semináře", type: EVENT_TYPE.SEMINAR },
         { title: "Projektový týden", type: EVENT_TYPE.PROJECT_WEEK },
         { title: "Výlet", type: EVENT_TYPE.UNSPECIFIED },
-    ];
+    ] as const;
 
     const id = crypto.randomUUID();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -50,8 +45,38 @@ export const randomEvent = (): Event => {
     const numberOfClasses = random(1, 3);
     const randomSample = sampleSize(CLASSES, numberOfClasses);
 
-    const event: Event = {
-        ...randomFromArray(events),
+    const eventBase = sample(events)!;
+
+    if (eventBase.type === EVENT_TYPE.SEMINAR) {
+        const applicableToClass = sample(CLASSES);
+        const availableBranches = [
+            { id: "humanitarian", label: "Humanitní" },
+            { id: "science", label: "Přírodovědná" },
+            { id: "universal", label: "Univerzální" },
+        ];
+        const requiredHours = random(3, 8);
+
+        return {
+            title: `${eventBase.title} (${applicableToClass})`,
+            type: eventBase.type,
+            id,
+            startDate: dateOfEvent.toDate(),
+            endDate: dateOfEventEnd.toDate(),
+            signupEndDate: signupEndDate.toDate(),
+            signupStartDate: new Date(),
+            allowMultipleSelections: true,
+            description: lorem.generateParagraphs(2),
+            visibleToClasses: [applicableToClass],
+            metadata: {
+                requiredHours,
+                availableBranches,
+            },
+        };
+    }
+
+    return {
+        title: eventBase.title,
+        type: eventBase.type,
         id,
         startDate: dateOfEvent.toDate(),
         endDate: dateOfEventEnd.toDate(),
@@ -59,14 +84,14 @@ export const randomEvent = (): Event => {
         signupStartDate: signupStartDate.toDate(),
         allowMultipleSelections: Math.random() > 0.5,
         description: lorem.generateParagraphs(2),
-        visibleToClasses: randomSample
+        visibleToClasses: randomSample,
+        metadata: {},
     };
-
-    return event;
 };
 
 async function main() {
     // Clear database
+    await db.studentOption.deleteMany();
     await db.singleEventOption.deleteMany({});
     await db.event.deleteMany({});
     await db.student.deleteMany({});
