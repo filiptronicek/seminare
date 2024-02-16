@@ -47,9 +47,8 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
     }, [event.signupStartDate, event.signupEndDate]);
 
     const buttonShown = useMemo(() => {
-        if (!canSelect) return false;
         return isSignupOpen && (noOptionSelected || isOptionSelected || event.allowMultipleSelections);
-    }, [canSelect, event.allowMultipleSelections, isOptionSelected, isSignupOpen, noOptionSelected]);
+    }, [event.allowMultipleSelections, isOptionSelected, isSignupOpen, noOptionSelected]);
 
     const isLoading = useMemo(() => {
         return registerMutation.isLoading || leaveMutation.isLoading;
@@ -112,17 +111,17 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
                     <span className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>
                         {option.description}
                     </span>
-                    <span>
-                        {optionMeta?.hoursPerWeek ?? "Není k dispozici"} hodin týdně
-                    </span>
+                    <span>{optionMeta?.hoursPerWeek ?? "Není k dispozici"} hodin týdně</span>
                 </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
-                {(buttonShown || (isOptionSelected && !canSelect)) && (
-                    <Button disabled={isLoading} onClick={handleUpdate}>
-                        {isLoading ?
+                {(buttonShown || !canSelect) && (
+                    <Button disabled={isLoading || (!isOptionSelected && !canSelect)} onClick={handleUpdate}>
+                        {isLoading ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            : <ClipboardSignature className="mr-2 h-4 w-4" />}
+                        ) : (
+                            <ClipboardSignature className="mr-2 h-4 w-4" />
+                        )}
                         {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                     </Button>
                 )}

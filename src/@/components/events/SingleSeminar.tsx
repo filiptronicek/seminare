@@ -35,9 +35,9 @@ export const SingleSeminar = ({ id }: Props) => {
 
     const hoursSelected = useMemo(() => {
         if (!selectedOptions) return 0;
-            
+
         return selectedOptions.reduce((acc, option) => {
-            const {hoursPerWeek} = parseSeminarOptionMeta(option.metadata);
+            const { hoursPerWeek } = parseSeminarOptionMeta(option.metadata);
 
             return acc + hoursPerWeek;
         }, 0);
@@ -62,33 +62,44 @@ export const SingleSeminar = ({ id }: Props) => {
                     <h1 className="text-4xl font-bold my-4">{event.title}</h1>
 
                     <span className="font-bold">
-                        {isSignupOpen ?
+                        {isSignupOpen ? (
                             <>
                                 {/* todo: convert to `<time>` */}
                                 Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
                             </>
-                        : signupInThePast ?
+                        ) : signupInThePast ? (
                             <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
-                        :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
+                        ) : (
+                            <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>
+                        )}
                     </span>
 
-                    <span className="font-bold">Zbývající hodiny k vybrání: {(seminarMetadata?.requiredHours ?? 0) - hoursSelected}</span>
+                    <span className="font-bold">
+                        Zbývající hodiny k vybrání: {(seminarMetadata?.requiredHours ?? 0) - hoursSelected}
+                    </span>
 
                     <span className="mt-6">{event.description}</span>
 
                     {options && (
                         <div className="mt-8">
                             <ul className="flex flex-wrap gap-4 justify-start">
-                                {options.map((option) => (
-                                    <SingleSeminarOptionListing
-                                        key={option.id}
-                                        refetchSelected={refetchSelected}
-                                        event={event}
-                                        option={option}
-                                        selected={selectedOptions}
-                                        canSelect={(seminarMetadata?.requiredHours ?? 0) > hoursSelected}
-                                    />
-                                ))}
+                                {options.map((option) => {
+                                    const optionMeta = parseSeminarOptionMeta(option.metadata);
+                                    const canSelect =
+                                        optionMeta.hoursPerWeek <=
+                                        (seminarMetadata?.requiredHours ?? 0) - hoursSelected;
+
+                                    return (
+                                        <SingleSeminarOptionListing
+                                            key={option.id}
+                                            refetchSelected={refetchSelected}
+                                            event={event}
+                                            option={option}
+                                            selected={selectedOptions}
+                                            canSelect={canSelect}
+                                        />
+                                    );
+                                })}
                             </ul>
                         </div>
                     )}
