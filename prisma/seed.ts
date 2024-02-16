@@ -1,4 +1,4 @@
-import type { Event } from "@prisma/client";
+import type { Event, SingleEventOption } from "@prisma/client";
 import { db } from "../src/server/db";
 import { CLASSES, EVENT_TYPE } from "../src/@/lib/constants";
 import { LoremIpsum } from "lorem-ipsum";
@@ -22,6 +22,12 @@ const lorem = new LoremIpsum({
         min: 4,
     },
 });
+
+const availableBranches = [
+    { id: "humanitarian", label: "Humanitní" },
+    { id: "science", label: "Přírodovědná" },
+    { id: "universal", label: "Univerzální" },
+];
 
 export const randomEvent = (): Event => {
     const events = [
@@ -49,11 +55,6 @@ export const randomEvent = (): Event => {
 
     if (eventBase.type === EVENT_TYPE.SEMINAR) {
         const applicableToClass = sample(CLASSES);
-        const availableBranches = [
-            { id: "humanitarian", label: "Humanitní" },
-            { id: "science", label: "Přírodovědná" },
-            { id: "universal", label: "Univerzální" },
-        ];
         const requiredHours = random(3, 8);
 
         return {
@@ -89,6 +90,31 @@ export const randomEvent = (): Event => {
     };
 };
 
+export const randomOption = ({id, type}: {id: string; type: string}, i: number): SingleEventOption => {
+    if (type === "SEMINAR") {
+        return {
+            id: crypto.randomUUID(),
+            eventId: id,
+            title: `Seminář ${i}`,
+            description: lorem.generateParagraphs(1),
+            maxParticipants: null,
+            metadata: {
+                hoursPerWeek: random(1,2)!,
+                branch: sample(availableBranches)!
+            }
+        }
+    }
+
+    return {
+        id: crypto.randomUUID(),
+        eventId: id,
+        title: `Možnost ${i}`,
+        description: lorem.generateParagraphs(1),
+        maxParticipants: Math.floor(Math.random() * 10),
+        metadata: null,
+    }
+}
+
 async function main() {
     // Clear database
     await db.studentOption.deleteMany();
@@ -109,13 +135,7 @@ async function main() {
                 where: {
                     id: crypto.randomUUID(),
                 },
-                create: {
-                    id: crypto.randomUUID(),
-                    eventId: event.id,
-                    title: `Option ${j + 1}`,
-                    description: lorem.generateParagraphs(1),
-                    maxParticipants: Math.floor(Math.random() * 10),
-                },
+                create: randomOption(event, j+1),
                 update: {},
             });
             console.log(option.id);

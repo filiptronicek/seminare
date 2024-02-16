@@ -1,27 +1,37 @@
 import type { Event, SingleEventOption } from "@prisma/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 
 import dayjs from "dayjs";
 import czechLocale from "dayjs/locale/cs";
 import calendar from "dayjs/plugin/calendar";
-import { toast } from "./use-toast";
+import { toast } from "../ui/use-toast";
 import { ClipboardSignature, Loader2 } from "lucide-react";
-import { Button } from "./button";
+import { Button } from "../ui/button";
 import { useMemo } from "react";
 import { api } from "~/utils/api";
 import { cn } from "@/lib/utils";
 
+import { z } from "zod";
+
+const schema = z.object({
+    hoursPerWeek: z.number(),
+    branch: z.object({ id: z.string(), label: z.string() }),
+});
+
+const parseSeminarOptionMeta = (data: unknown): z.infer<typeof schema> => {
+    return schema.parse(data);
+};
+
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
 
-interface OptionProps {
+interface Props {
     option: SingleEventOption;
     selected: SingleEventOption[] | undefined;
     refetchSelected: () => void;
     event: Event;
 }
-
-export const SingleOption = ({ option, selected, event, refetchSelected }: OptionProps) => {
+export const SingleSeminarOptionListing = ({ option, selected, event, refetchSelected }: Props) => {
     const registerMutation = api.singleEvent.joinOption.useMutation();
     const leaveMutation = api.singleEvent.leaveOption.useMutation();
 
@@ -42,6 +52,14 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
     const isLoading = useMemo(() => {
         return registerMutation.isLoading || leaveMutation.isLoading;
     }, [registerMutation.isLoading, leaveMutation.isLoading]);
+
+    const optionMeta = useMemo(() => {
+        if (!option?.metadata) return null;
+
+        return parseSeminarOptionMeta(option.metadata);
+    }, [option]);
+
+    console.log(option.metadata)
 
     const handleUpdate = async () => {
         const change = isOptionSelected ? "leave" : "join";
@@ -90,8 +108,13 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
         <Card key={option.id} className="max-w-md min-h-[14rem]">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
-                <CardDescription className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>
-                    {option.description}
+                <CardDescription>
+                    <p className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>
+                        {option.description}
+                    </p>
+                    <p>
+                        {optionMeta?.hoursPerWeek ?? "ff"}
+                    </p>
                 </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
@@ -99,7 +122,7 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
                     <Button disabled={isLoading} onClick={handleUpdate}>
                         {isLoading ?
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        :   <ClipboardSignature className="mr-2 h-4 w-4" />}
+                            : <ClipboardSignature className="mr-2 h-4 w-4" />}
                         {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                     </Button>
                 )}

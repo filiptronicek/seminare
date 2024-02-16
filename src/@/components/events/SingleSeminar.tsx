@@ -2,8 +2,9 @@ import dayjs from "dayjs";
 import { useMemo } from "react";
 import { api } from "~/utils/api";
 import { formatDate } from "~/utils/dates";
-import { SingleOption } from "../ui/SingleEventOption";
+import { SingleOption } from "./SingleEventOption";
 import { z } from "zod";
+import { SingleSeminarOptionListing } from "./SingleSeminarOptionListing";
 
 const schema = z.object({
     requiredHours: z.number(),
@@ -70,7 +71,7 @@ export const SingleSeminar = ({ id }: Props) => {
                         <div className="mt-8">
                             <ul className="flex flex-wrap gap-4 justify-start">
                                 {options.map((option) => (
-                                    <SingleOption
+                                    <SingleSeminarOptionListing
                                         key={option.id}
                                         refetchSelected={refetchSelected}
                                         event={event}
