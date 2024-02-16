@@ -29,7 +29,7 @@ const availableBranches = [
     { id: "universal", label: "Univerzální" },
 ];
 
-export const randomEvent = (options?: { forceSeminar: boolean; classChoice?: string[] }): Event => {
+export const randomEvent = (): Event => {
     const events = [
         { title: "Wandertag", type: EVENT_TYPE.WANDERTAG },
         { title: "Projektový týden", type: EVENT_TYPE.PROJECT_WEEK },
