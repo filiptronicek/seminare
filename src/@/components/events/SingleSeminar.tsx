@@ -2,9 +2,8 @@ import dayjs from "dayjs";
 import { useMemo } from "react";
 import { api } from "~/utils/api";
 import { formatDate } from "~/utils/dates";
-import { SingleOption } from "./SingleEventOption";
 import { z } from "zod";
-import { SingleSeminarOptionListing } from "./SingleSeminarOptionListing";
+import { SingleSeminarOptionListing, parseSeminarOptionMeta } from "./SingleSeminarOptionListing";
 
 const schema = z.object({
     requiredHours: z.number(),
@@ -34,6 +33,16 @@ export const SingleSeminar = ({ id }: Props) => {
         eventId: id,
     });
 
+    const hoursSelected = useMemo(() => {
+        if (!selectedOptions) return 0;
+            
+        return selectedOptions.reduce((acc, option) => {
+            const {hoursPerWeek} = parseSeminarOptionMeta(option.metadata);
+
+            return acc + hoursPerWeek;
+        }, 0);
+    }, [selectedOptions]);
+
     const isSignupOpen = useMemo(() => {
         const currentDate = dayjs();
         return currentDate.isAfter(dayjs(event?.signupStartDate)) && currentDate.isBefore(dayjs(event?.signupEndDate));
@@ -48,7 +57,7 @@ export const SingleSeminar = ({ id }: Props) => {
         <>
             {(error ?? optionsError) && <div>failed to load</div>}
             {event && (
-                <section>
+                <section className="flex flex-col gap-1">
                     {event.metadata && JSON.stringify(event.metadata)}
                     <h1 className="text-4xl font-bold my-4">{event.title}</h1>
 
@@ -63,9 +72,9 @@ export const SingleSeminar = ({ id }: Props) => {
                         :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
                     </span>
 
-                    <p>Zbývající hodiny k vybrání: {seminarMetadata?.requiredHours}</p>
+                    <span className="font-bold">Zbývající hodiny k vybrání: {(seminarMetadata?.requiredHours ?? 0) - hoursSelected}</span>
 
-                    <p className="mt-6">{event.description}</p>
+                    <span className="mt-6">{event.description}</span>
 
                     {options && (
                         <div className="mt-8">
@@ -77,6 +86,7 @@ export const SingleSeminar = ({ id }: Props) => {
                                         event={event}
                                         option={option}
                                         selected={selectedOptions}
+                                        canSelect={(seminarMetadata?.requiredHours ?? 0) > hoursSelected}
                                     />
                                 ))}
                             </ul>

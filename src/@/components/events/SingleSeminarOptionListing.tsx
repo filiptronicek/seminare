@@ -18,7 +18,7 @@ const schema = z.object({
     branch: z.object({ id: z.string(), label: z.string() }),
 });
 
-const parseSeminarOptionMeta = (data: unknown): z.infer<typeof schema> => {
+export const parseSeminarOptionMeta = (data: unknown): z.infer<typeof schema> => {
     return schema.parse(data);
 };
 
@@ -28,10 +28,11 @@ dayjs.locale(czechLocale);
 interface Props {
     option: SingleEventOption;
     selected: SingleEventOption[] | undefined;
-    refetchSelected: () => void;
     event: Event;
+    canSelect: boolean;
+    refetchSelected: () => void;
 }
-export const SingleSeminarOptionListing = ({ option, selected, event, refetchSelected }: Props) => {
+export const SingleSeminarOptionListing = ({ option, selected, event, canSelect, refetchSelected }: Props) => {
     const registerMutation = api.singleEvent.joinOption.useMutation();
     const leaveMutation = api.singleEvent.leaveOption.useMutation();
 
@@ -46,8 +47,9 @@ export const SingleSeminarOptionListing = ({ option, selected, event, refetchSel
     }, [event.signupStartDate, event.signupEndDate]);
 
     const buttonShown = useMemo(() => {
+        if (!canSelect) return false;
         return isSignupOpen && (noOptionSelected || isOptionSelected || event.allowMultipleSelections);
-    }, [event.allowMultipleSelections, isOptionSelected, isSignupOpen, noOptionSelected]);
+    }, [canSelect, event.allowMultipleSelections, isOptionSelected, isSignupOpen, noOptionSelected]);
 
     const isLoading = useMemo(() => {
         return registerMutation.isLoading || leaveMutation.isLoading;
@@ -58,8 +60,6 @@ export const SingleSeminarOptionListing = ({ option, selected, event, refetchSel
 
         return parseSeminarOptionMeta(option.metadata);
     }, [option]);
-
-    console.log(option.metadata)
 
     const handleUpdate = async () => {
         const change = isOptionSelected ? "leave" : "join";
@@ -109,16 +109,16 @@ export const SingleSeminarOptionListing = ({ option, selected, event, refetchSel
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
                 <CardDescription>
-                    <p className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>
+                    <span className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>
                         {option.description}
-                    </p>
-                    <p>
-                        {optionMeta?.hoursPerWeek ?? "ff"}
-                    </p>
+                    </span>
+                    <span>
+                        {optionMeta?.hoursPerWeek ?? "Není k dispozici"} hodin týdně
+                    </span>
                 </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
-                {buttonShown && (
+                {(buttonShown || (isOptionSelected && !canSelect)) && (
                     <Button disabled={isLoading} onClick={handleUpdate}>
                         {isLoading ?
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
