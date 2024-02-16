@@ -5,6 +5,7 @@ tasks:
           npm i -g bun
           bun install
           cp .env.example .env
+          ./scripts/gitpod.sh
           bun run db:push
           bun run prisma/seed.ts
       command: bun dev
