@@ -1,4 +1,4 @@
-import type { Event } from "@prisma/client";
+import type { Event, SingleEventOption } from "@prisma/client";
 import { db } from "../src/server/db";
 import { CLASSES, EVENT_TYPE } from "../src/@/lib/constants";
 import { LoremIpsum } from "lorem-ipsum";
@@ -23,10 +23,15 @@ const lorem = new LoremIpsum({
     },
 });
 
+const availableBranches = [
+    { id: "humanitarian", label: "Humanitní" },
+    { id: "science", label: "Přírodovědná" },
+    { id: "universal", label: "Univerzální" },
+];
+
 export const randomEvent = (): Event => {
     const events = [
         { title: "Wandertag", type: EVENT_TYPE.WANDERTAG },
-        { title: "Semináře", type: EVENT_TYPE.SEMINAR },
         { title: "Projektový týden", type: EVENT_TYPE.PROJECT_WEEK },
         { title: "Výlet", type: EVENT_TYPE.UNSPECIFIED },
     ] as const;
@@ -47,33 +52,6 @@ export const randomEvent = (): Event => {
 
     const eventBase = sample(events)!;
 
-    if (eventBase.type === EVENT_TYPE.SEMINAR) {
-        const applicableToClass = sample(CLASSES);
-        const availableBranches = [
-            { id: "humanitarian", label: "Humanitní" },
-            { id: "science", label: "Přírodovědná" },
-            { id: "universal", label: "Univerzální" },
-        ];
-        const requiredHours = random(3, 8);
-
-        return {
-            title: `${eventBase.title} (${applicableToClass})`,
-            type: eventBase.type,
-            id,
-            startDate: dateOfEvent.toDate(),
-            endDate: dateOfEventEnd.toDate(),
-            signupEndDate: signupEndDate.toDate(),
-            signupStartDate: new Date(),
-            allowMultipleSelections: true,
-            description: lorem.generateParagraphs(2),
-            visibleToClasses: [applicableToClass],
-            metadata: {
-                requiredHours,
-                availableBranches,
-            },
-        };
-    }
-
     return {
         title: eventBase.title,
         type: eventBase.type,
@@ -88,6 +66,63 @@ export const randomEvent = (): Event => {
         metadata: {},
     };
 };
+
+const randomSeminar = (className: string): Event => {
+    const id = crypto.randomUUID();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const dateOfEvent = dayjs().add(
+        1,
+        "week",
+    );
+    const dateOfEventEnd = dateOfEvent.add(1, "week");
+
+    const signupStartDate = dateOfEvent.subtract(1, "week");
+    const signupEndDate = signupStartDate.add(1, "day");
+
+    const requiredHours = random(3, 8);
+
+    return {
+        title: `Semináře (${className})`,
+        type: EVENT_TYPE.SEMINAR,
+        id,
+        startDate: dateOfEvent.toDate(),
+        endDate: dateOfEventEnd.toDate(),
+        signupEndDate: signupEndDate.toDate(),
+        signupStartDate: signupStartDate.toDate(),
+        allowMultipleSelections: true,
+        description: lorem.generateParagraphs(2),
+        visibleToClasses: [className],
+        metadata: {
+            requiredHours,
+            availableBranches,
+        },
+    };
+};
+
+const randomSeminarOption = (event: Event, i: number): SingleEventOption => {
+    return {
+        id: crypto.randomUUID(),
+        eventId: event.id,
+        title: `Seminář ${i}`,
+        description: lorem.generateParagraphs(1),
+        maxParticipants: null,
+        metadata: {
+            hoursPerWeek: random(1, 2)!,
+            branch: sample(availableBranches)!
+        }
+    }
+}
+
+export const randomOption = ({ id }: { id: string }, i: number): SingleEventOption => {
+    return {
+        id: crypto.randomUUID(),
+        eventId: id,
+        title: `Možnost ${i}`,
+        description: lorem.generateParagraphs(1),
+        maxParticipants: Math.floor(Math.random() * 10),
+        metadata: null,
+    }
+}
 
 async function main() {
     // Clear database
@@ -105,20 +140,33 @@ async function main() {
             update: {},
         });
         for (let j = 0; j < 10; j++) {
-            const option = await db.singleEventOption.upsert({
+            await db.singleEventOption.upsert({
                 where: {
                     id: crypto.randomUUID(),
                 },
-                create: {
-                    id: crypto.randomUUID(),
-                    eventId: event.id,
-                    title: `Option ${j + 1}`,
-                    description: lorem.generateParagraphs(1),
-                    maxParticipants: Math.floor(Math.random() * 10),
-                },
+                create: randomOption(event, j + 1),
                 update: {},
             });
-            console.log(option.id);
+        }
+    }
+
+    const seminarClasses = ["5G", "6G", "7G", "8G"];
+    for (const className of seminarClasses) {
+        const event = await db.event.upsert({
+            where: {
+                id: crypto.randomUUID(),
+            },
+            create: randomSeminar(className),
+            update: {},
+        });
+        for (let j = 0; j < 10; j++) {
+            await db.singleEventOption.upsert({
+                where: {
+                    id: crypto.randomUUID(),
+                },
+                create: randomSeminarOption(event, j + 1),
+                update: {},
+            });
         }
     }
 }

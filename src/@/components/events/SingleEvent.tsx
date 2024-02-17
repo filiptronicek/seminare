@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { useMemo } from "react";
 import { api } from "~/utils/api";
 import { formatDate } from "~/utils/dates";
-import { SingleOption } from "../ui/SingleEventOption";
+import { SingleOption } from "./SingleEventOption";
 
 type Props = {
     id: string;

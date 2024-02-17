@@ -33,7 +33,7 @@ model Event {
   signupStartDate         DateTime?           @map("signupStartDate")
   options                 SingleEventOption[]
   visibleToClasses        String[]
-  metadata        Json?
+  metadata                Json?
 }
 
 model SingleEventOption {
@@ -43,6 +43,7 @@ model SingleEventOption {
   description     String?
   eventId         String
   event           Event           @relation(fields: [eventId], references: [id])
+  metadata        Json?
   StudentOption   StudentOption[]
   TeacherOption   TeacherOption[]
 }
