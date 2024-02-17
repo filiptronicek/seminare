@@ -13,7 +13,7 @@ export default function Home() {
             return <Loader2 className="animate-spin" />;
         }
 
-        <ClassDialog />;
+        return <ClassDialog />;
     }
 
     if (isLoading) {

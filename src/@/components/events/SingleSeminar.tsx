@@ -58,7 +58,6 @@ export const SingleSeminar = ({ id }: Props) => {
             {(error ?? optionsError) && <div>failed to load</div>}
             {event && (
                 <section className="flex flex-col gap-1">
-                    {event.metadata && JSON.stringify(event.metadata)}
                     <h1 className="text-4xl font-bold my-4">{event.title}</h1>
 
                     <span className="font-bold">
