@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import { type User, createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useQuery } from "@tanstack/react-query";
 
 async function fetchUserData(): Promise<User> {
     const supabase = createClientComponentClient();
@@ -19,5 +19,9 @@ async function fetchUserData(): Promise<User> {
 
 // Define useUser hook
 export function useUser() {
-    return useQuery({ queryKey: ["user"], queryFn: fetchUserData, staleTime: 1000 * 60 * 60 * 24 });
+    return useQuery({
+        queryKey: ["user"],
+        queryFn: fetchUserData,
+        staleTime: 1000 * 60 * 60 * 24,
+    });
 }

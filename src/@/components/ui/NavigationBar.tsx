@@ -1,3 +1,6 @@
+import { cn } from "@/lib/utils";
+import { GraduationCap, Home } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 import {
     NavigationMenu,
@@ -6,9 +9,6 @@ import {
     NavigationMenuList,
     navigationMenuTriggerStyle,
 } from "./navigation-menu";
-import { Home, GraduationCap } from "lucide-react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 export const NavigationBar = ({}) => {
     return (

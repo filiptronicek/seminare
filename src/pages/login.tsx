@@ -57,7 +57,7 @@ export default function Home() {
                             <CardTitle className="text-2xl">Pokračovat do seminářů</CardTitle>
                             <CardDescription>Přihlašování do aplikace probíhá přes školní Google účet.</CardDescription>
                         </CardHeader>
-                        <CardContent className="grid gap-4"></CardContent>
+                        <CardContent className="grid gap-4" />
                         <CardFooter>
                             <Button className="w-full" onClick={handleSignIn}>
                                 Přihlásit se

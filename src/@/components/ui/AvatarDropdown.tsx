@@ -1,4 +1,4 @@
-import { createClientComponentClient, type User } from "@supabase/auth-helpers-nextjs";
+import { type User, createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";

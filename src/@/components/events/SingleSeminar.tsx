@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import { useMemo } from "react";
+import { z } from "zod";
 import { api } from "~/utils/api";
 import { formatDate } from "~/utils/dates";
-import { z } from "zod";
 import { SingleSeminarOptionListing, parseSeminarOptionMeta } from "./SingleSeminarOptionListing";
 
 const schema = z.object({
@@ -61,16 +61,14 @@ export const SingleSeminar = ({ id }: Props) => {
                     <h1 className="text-4xl font-bold my-4">{event.title}</h1>
 
                     <span className="font-bold">
-                        {isSignupOpen ? (
+                        {isSignupOpen ?
                             <>
                                 {/* todo: convert to `<time>` */}
                                 Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
                             </>
-                        ) : signupInThePast ? (
+                        : signupInThePast ?
                             <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
-                        ) : (
-                            <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>
-                        )}
+                        :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
                     </span>
 
                     <span className="font-bold">

@@ -1,16 +1,16 @@
-import type { Event } from "@prisma/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
-import { buttonVariants } from "./button";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import type { Event } from "@prisma/client";
 import { Calendar, Mail } from "lucide-react";
+import Link from "next/link";
+import { buttonVariants } from "./button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 
 import dayjs from "dayjs";
 import czechLocale from "dayjs/locale/cs";
 import calendar from "dayjs/plugin/calendar";
 import { useMemo } from "react";
-import { Badge } from "./badge";
 import { formatDate } from "~/utils/dates";
+import { Badge } from "./badge";
 
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);

@@ -1,9 +1,9 @@
 "use client";
 
-import { api } from "~/utils/api";
-import { Loader2 } from "lucide-react";
-import { ClassDialog } from "@/components/user/ClassDialog";
 import { EventList } from "@/components/events/EventList";
+import { ClassDialog } from "@/components/user/ClassDialog";
+import { Loader2 } from "lucide-react";
+import { api } from "~/utils/api";
 
 export default function Home() {
     const { data: user, isLoading, isError } = api.events.getStudent.useQuery();

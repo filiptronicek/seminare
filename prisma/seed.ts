@@ -70,10 +70,7 @@ export const randomEvent = (): Event => {
 const randomSeminar = (className: string): Event => {
     const id = crypto.randomUUID();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const dateOfEvent = dayjs().add(
-        1,
-        "week",
-    );
+    const dateOfEvent = dayjs().add(1, "week");
     const dateOfEventEnd = dateOfEvent.add(1, "week");
 
     const signupStartDate = dateOfEvent.subtract(1, "week");
@@ -108,10 +105,10 @@ const randomSeminarOption = (event: Event, i: number): SingleEventOption => {
         maxParticipants: null,
         metadata: {
             hoursPerWeek: random(1, 2)!,
-            branch: sample(availableBranches)!
-        }
-    }
-}
+            branch: sample(availableBranches)!,
+        },
+    };
+};
 
 export const randomOption = ({ id }: { id: string }, i: number): SingleEventOption => {
     return {
@@ -121,8 +118,8 @@ export const randomOption = ({ id }: { id: string }, i: number): SingleEventOpti
         description: lorem.generateParagraphs(1),
         maxParticipants: Math.floor(Math.random() * 10),
         metadata: null,
-    }
-}
+    };
+};
 
 async function main() {
     // Clear database

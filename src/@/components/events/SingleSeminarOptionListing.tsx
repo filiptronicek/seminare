@@ -1,15 +1,15 @@
 import type { Event, SingleEventOption } from "@prisma/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 
+import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import czechLocale from "dayjs/locale/cs";
 import calendar from "dayjs/plugin/calendar";
-import { toast } from "../ui/use-toast";
 import { ClipboardSignature, Loader2 } from "lucide-react";
-import { Button } from "../ui/button";
 import { useMemo } from "react";
 import { api } from "~/utils/api";
-import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { toast } from "../ui/use-toast";
 
 import { z } from "zod";
 
@@ -117,11 +117,9 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
             <CardContent className="grid gap-4">
                 {(buttonShown || !canSelect) && (
                     <Button disabled={isLoading || (!isOptionSelected && !canSelect)} onClick={handleUpdate}>
-                        {isLoading ? (
+                        {isLoading ?
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                            <ClipboardSignature className="mr-2 h-4 w-4" />
-                        )}
+                        :   <ClipboardSignature className="mr-2 h-4 w-4" />}
                         {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                     </Button>
                 )}

@@ -19,7 +19,9 @@ export const getStudent = async (auth: SupabaseAuthClient, db: PrismaClient) => 
     const user = await auth.getUser();
     if (!user.data.user) return null;
 
-    const student = await db.student.findUnique({ where: { id: user.data.user.id } });
+    const student = await db.student.findUnique({
+        where: { id: user.data.user.id },
+    });
     if (!student) return await createStudent(auth, db);
 
     return student;

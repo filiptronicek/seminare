@@ -14,7 +14,9 @@ export const singleEventRouter = createTRPCRouter({
     listOptions: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
         await checkStudent(ctx.auth, ctx.db);
 
-        return ctx.db.singleEventOption.findMany({ where: { eventId: input.id } });
+        return ctx.db.singleEventOption.findMany({
+            where: { eventId: input.id },
+        });
     }),
     listStudentOptions: publicProcedure.input(z.object({ eventId: z.string() })).query(async ({ ctx, input }) => {
         const student = await checkStudent(ctx.auth, ctx.db);

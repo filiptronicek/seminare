@@ -1,6 +1,6 @@
-import { api } from "~/utils/api";
 import type { Class } from "@/lib/constants";
 import { Loader2 } from "lucide-react";
+import { api } from "~/utils/api";
 import { SingleEventCard } from "../ui/SingleEventCard";
 
 type Props = {
@@ -16,7 +16,10 @@ export const EventList = ({ user }: Props) => {
         isError,
         data: events,
         isLoading,
-    } = api.events.listEvents.useQuery({ active: true, class: user.class! as Class });
+    } = api.events.listEvents.useQuery({
+        active: true,
+        class: user.class! as Class,
+    });
 
     if (isError) {
         return "Naskytla se chyba v načítání uživatelských dat";
