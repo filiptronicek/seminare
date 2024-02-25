@@ -1,18 +1,9 @@
 import dayjs from "dayjs";
 import { useMemo } from "react";
-import { z } from "zod";
 import { api } from "~/utils/api";
 import { formatDate } from "~/utils/dates";
-import { SingleSeminarOptionListing, parseSeminarOptionMeta } from "./SingleSeminarOptionListing";
-
-const schema = z.object({
-    requiredHours: z.number(),
-    availableBranches: z.array(z.object({ id: z.string(), label: z.string() })),
-});
-
-const parseSeminarMeta = (data: unknown): z.infer<typeof schema> => {
-    return schema.parse(data);
-};
+import { SingleSeminarOptionListing } from "./SingleSeminarOptionListing";
+import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
 type Props = {
     id: string;

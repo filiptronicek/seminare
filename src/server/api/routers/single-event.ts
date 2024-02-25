@@ -1,9 +1,11 @@
+import { EVENT_TYPE } from "@/lib/constants";
 import type { Buffer } from "exceljs";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { checkStudent, getStudent } from "~/server/auth";
 import { generateExcelForEvent } from "~/utils/data";
+import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
 export const singleEventRouter = createTRPCRouter({
     getEvent: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
@@ -56,6 +58,38 @@ export const singleEventRouter = createTRPCRouter({
             });
             if (existingOption) {
                 throw new Error("Multiple selections not allowed for this event");
+            }
+        }
+
+        if (option.event.type === EVENT_TYPE.SEMINAR.toString()) {
+            const hasMeta = !!option.event.metadata;
+            if (!hasMeta) throw new Error("Server error: Seminar events require metadata");
+
+            const parsedData = parseSeminarMeta(option.event.metadata);
+            const selectedOptions = await ctx.db.studentOption.findMany({
+                where: {
+                    studentId: student.id,
+                    option: {
+                        eventId: option.eventId,
+                    },
+                },
+                include: {
+                    option: {
+                        select: {
+                            metadata: true,
+                        },
+                    },
+                },
+            });
+
+            const hoursSelected = selectedOptions.reduce((acc, selectedOption) => {
+                const { hoursPerWeek } = parseSeminarOptionMeta(selectedOption.option.metadata);
+                return acc + hoursPerWeek;
+            }, 0);
+
+            const { hoursPerWeek } = parseSeminarOptionMeta(option.metadata);
+            if (hoursSelected + hoursPerWeek > parsedData.requiredHours) {
+                throw new Error("You cannot select more hours than required");
             }
         }
 

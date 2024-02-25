@@ -10,17 +10,7 @@ import { useMemo } from "react";
 import { api } from "~/utils/api";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
-
-import { z } from "zod";
-
-const schema = z.object({
-    hoursPerWeek: z.number(),
-    branch: z.object({ id: z.string(), label: z.string() }),
-});
-
-export const parseSeminarOptionMeta = (data: unknown): z.infer<typeof schema> => {
-    return schema.parse(data);
-};
+import { parseSeminarOptionMeta } from "~/utils/seminars";
 
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
