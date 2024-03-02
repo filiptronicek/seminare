@@ -23,7 +23,7 @@ export const eventRouter = createTRPCRouter({
             }
 
             return ctx.db.event.findMany({
-                take: 10,
+                take: 100,
                 where: {
                     ...(input.active ?
                         {
