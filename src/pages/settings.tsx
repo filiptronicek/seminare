@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { useUser } from "~/utils/hooks";
 import { getUserName } from "~/utils/user";
 import { ClassForm } from "../@/components/user/ClassForm";
