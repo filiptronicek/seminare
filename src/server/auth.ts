@@ -27,6 +27,18 @@ export const getStudent = async (auth: SupabaseAuthClient, db: PrismaClient) => 
     return student;
 };
 
+export const isAdmin = async (auth: SupabaseAuthClient, db: PrismaClient) => {
+    const user = await auth.getUser();
+    if (!user.data.user) return false;
+
+    const student = await db.student.findUnique({
+        where: { id: user.data.user.id },
+    });
+    if (!student) return false;
+
+    return student.admin;
+}
+
 export const checkStudent = async (auth: SupabaseAuthClient, db: PrismaClient) => {
     const student = await getStudent(auth, db);
     if (!student) throw new Error("Student not found");
