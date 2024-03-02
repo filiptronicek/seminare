@@ -10,10 +10,16 @@ import {
     navigationMenuTriggerStyle,
 } from "./navigation-menu";
 
+import mmpLogo from "../../../media/logo.svg";
+import Image from "next/image";
+
 export const NavigationBar = ({}) => {
     return (
         <NavigationMenu>
             <NavigationMenuList>
+                <NavigationMenuItem>
+                    <Image src={mmpLogo as string} alt="Logo" width={30} height={30} />
+                </NavigationMenuItem>
                 <NavigationMenuItem>
                     <Link href="/" legacyBehavior passHref className="">
                         <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "gap-2")}>
