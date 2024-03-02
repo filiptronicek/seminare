@@ -83,7 +83,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     });
 
     return (
-        <div className="rounded-md border dark:border-gray-600">
+        <div className="rounded-md border dark:border-gray-600 w-full">
             <DebouncedInput
                 value={globalFilter ?? ""}
                 type="text"

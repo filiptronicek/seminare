@@ -4,20 +4,8 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureAdmin, ensureStudent } from "~/server/auth";
 import { generateExcelForEvent } from "~/utils/data";
+import { singleEventSchema, singleEventUpdateSchema } from "~/utils/schemas";
 import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
-
-const singleEventUpdateSchema = z.object({
-    id: z.string(),
-    data: z
-        .object({
-            title: z.string(),
-            description: z.string(),
-            allowMultipleSelections: z.boolean(),
-            signupStartDate: z.date(),
-            signupEndDate: z.date(),
-        })
-        .partial(),
-});
 
 export const singleEventRouter = createTRPCRouter({
     getEvent: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
@@ -172,6 +160,16 @@ export const singleEventRouter = createTRPCRouter({
         return ctx.db.event.update({
             where: { id: input.id },
             data: input.data,
+        });
+    }),
+    createEvent: publicProcedure.input(singleEventSchema).mutation(async ({ input, ctx }) => {
+        await ensureAdmin(ctx.auth, ctx.db);
+
+        return ctx.db.event.create({
+            data: {
+                id: crypto.randomUUID(),
+                ...input,
+            }
         });
     }),
 });

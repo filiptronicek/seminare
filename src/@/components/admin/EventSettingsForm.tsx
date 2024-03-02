@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useCallback } from "react";
@@ -11,12 +11,7 @@ import { Checkbox } from "../ui/checkbox";
 import { type CheckedState } from "@radix-ui/react-checkbox";
 import { api } from "~/utils/api";
 import { Loader2 } from "lucide-react";
-
-const formSchema = z.object({
-    title: z.string().min(2).max(50),
-    description: z.string().max(2500).optional(),
-    allowMultipleSelections: z.boolean(),
-});
+import { singleEventSchema as formSchema } from "~/utils/schemas";
 
 type Props = {
     event: Event;
