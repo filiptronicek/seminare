@@ -1,9 +1,8 @@
 import { EVENT_TYPE } from "@/lib/constants";
-import type { Buffer } from "exceljs";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { ensureAdmin, ensureStudent, getStudent } from "~/server/auth";
+import { ensureAdmin, ensureStudent } from "~/server/auth";
 import { generateExcelForEvent } from "~/utils/data";
 import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
@@ -144,21 +143,21 @@ export const singleEventRouter = createTRPCRouter({
 
         return option;
     }),
-    // todo: add escalated privileges guard
     // todo: add a proper file stream response
-    generateExcel: publicProcedure
-        .input(z.object({ eventId: z.string() }))
-        .mutation(async ({ input, ctx }): Promise<Buffer> => {
-            const student = await getStudent(ctx.auth, ctx.db);
-            if (!student) throw new Error("Student not found");
+    generateExcel: publicProcedure.input(z.object({ eventId: z.string() })).mutation(async ({ input, ctx }) => {
+        await ensureAdmin(ctx.auth, ctx.db);
 
-            const event = await ctx.db.event.findUnique({
-                where: { id: input.eventId },
-            });
-            if (!event) throw new Error("Event not found");
+        const event = await ctx.db.event.findUnique({
+            where: { id: input.eventId },
+        });
+        if (!event) throw new Error("Event not found");
 
-            return generateExcelForEvent({ eventId: input.eventId, db: ctx.db });
-        }),
+        const excelBuffer = Buffer.from(await generateExcelForEvent({ eventId: input.eventId, db: ctx.db }));
+        const base64 = excelBuffer.toString("base64");
+        const dataUrl = `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${base64}`;
+
+        return { dataUrl };
+    }),
     updateEvent: publicProcedure.input(singleEventUpdateSchema).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
 
