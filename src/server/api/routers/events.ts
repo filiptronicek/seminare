@@ -31,12 +31,14 @@ export const eventRouter = createTRPCRouter({
                                 gte: now,
                             },
                         }
-                        : {}),
-                    ...input.class ? {
-                        visibleToClasses: {
-                            has: input.class,
-                        },
-                    } : {},
+                    :   {}),
+                    ...(input.class ?
+                        {
+                            visibleToClasses: {
+                                has: input.class,
+                            },
+                        }
+                    :   {}),
                 },
                 orderBy: {
                     signupStartDate: "asc",

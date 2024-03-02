@@ -37,7 +37,7 @@ export const isAdmin = async (auth: SupabaseAuthClient, db: PrismaClient) => {
     if (!student) return false;
 
     return student.admin;
-}
+};
 
 export const checkStudent = async (auth: SupabaseAuthClient, db: PrismaClient) => {
     const student = await getStudent(auth, db);

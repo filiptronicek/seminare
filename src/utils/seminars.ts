@@ -17,4 +17,3 @@ export const parseSeminarMeta = (data: unknown): z.infer<typeof seminarSchema> =
 export const parseSeminarOptionMeta = (data: unknown): z.infer<typeof seminarOptionSchema> => {
     return seminarOptionSchema.parse(data);
 };
-

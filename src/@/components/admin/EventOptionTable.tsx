@@ -19,7 +19,7 @@ export const columns: ColumnDef<SingleEventOption>[] = [
         header: "Kapacita",
         accessorFn: (row) => {
             return row.maxParticipants ?? "∞";
-        }
+        },
     },
     {
         id: "actions",
