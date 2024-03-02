@@ -27,6 +27,7 @@
         "@supabase/auth-helpers-nextjs": "^0.8.1",
         "@supabase/supabase-js": "^2.38.0",
         "@t3-oss/env-nextjs": "^0.6.0",
+        "@tanstack/match-sorter-utils": "^8.11.8",
         "@tanstack/react-query": "^4.32.6",
         "@tanstack/react-table": "^8.13.2",
         "@trpc/client": "^10.37.1",
