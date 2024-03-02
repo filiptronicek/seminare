@@ -10,6 +10,7 @@ import { type Event } from "@prisma/client";
 import { Checkbox } from "../ui/checkbox";
 import { type CheckedState } from "@radix-ui/react-checkbox";
 import { api } from "~/utils/api";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
     title: z.string().min(2).max(50),
@@ -99,7 +100,7 @@ export const EventSettingsForm = ({ event }: Props) => {
                         );
                     }}
                 />
-                <Button type="submit">Uložit</Button>
+                <Button type="submit">{updateEvent.isLoading ? <Loader2 className="animate-spin" /> : "Uložit"}</Button>
             </form>
         </Form>
     );
