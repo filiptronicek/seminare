@@ -100,7 +100,11 @@ export const EventSettingsForm = ({ event }: Props) => {
                         );
                     }}
                 />
-                <Button type="submit">{updateEvent.isLoading ? <Loader2 className="animate-spin" /> : "Uložit"}</Button>
+                <Button type="submit">
+                    {updateEvent.isLoading ?
+                        <Loader2 className="animate-spin" />
+                    :   "Uložit"}
+                </Button>
             </form>
         </Form>
     );
