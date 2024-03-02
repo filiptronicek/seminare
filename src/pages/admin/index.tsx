@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { api } from "~/utils/api";
-import { EventTable } from "../@/components/admin/EventTable";
+import { EventTable } from "../../@/components/admin/EventTable";
 
 export default function Home() {
     const { isError, data: events, isLoading } = api.events.listEvents.useQuery({});
@@ -14,7 +14,8 @@ export default function Home() {
     }
 
     return (
-        <section className="flex min-h-screen flex-col items-start">
+        <section className="flex min-h-screen flex-col items-start gap-8">
+            <h1 className="text-3xl font-bold">Správa Akcí</h1>
             <EventTable />
         </section>
     );
