@@ -13,12 +13,7 @@ model Student {
   fullName      String
   avatar        String?
   StudentOption StudentOption[]
-}
-
-model Teacher {
-  id            String          @id @default(uuid())
-  fullName      String
-  TeacherOption TeacherOption[]
+  admin         Boolean         @default(false)
 }
 
 model Event {
@@ -45,7 +40,6 @@ model SingleEventOption {
   event           Event           @relation(fields: [eventId], references: [id])
   metadata        Json?
   StudentOption   StudentOption[]
-  TeacherOption   TeacherOption[]
 }
 
 model StudentOption {
@@ -55,13 +49,4 @@ model StudentOption {
   student   Student           @relation(fields: [studentId], references: [id])
 
   @@id([studentId, optionId])
-}
-
-model TeacherOption {
-  teacherId String
-  optionId  String
-  option    SingleEventOption @relation(fields: [optionId], references: [id])
-  teacher   Teacher           @relation(fields: [teacherId], references: [id])
-
-  @@id([teacherId, optionId])
 }
