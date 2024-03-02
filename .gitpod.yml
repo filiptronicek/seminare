@@ -1,9 +1,9 @@
 image: gitpod/workspace-node
 
 tasks:
-    - init: |
+    - command: |
           npm i -g bun
           bun install
           cp .env.example .env
           ./scripts/gitpod.sh
-      command: bun dev
+          bun dev
