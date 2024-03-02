@@ -51,10 +51,6 @@ export const columns: ColumnDef<Event>[] = [
         accessorFn: (row) => row.visibleToClasses.join(", "),
         header: "Třídy",
     },
-    {
-        accessorFn: (row) => row.visibleToClasses.join(", "),
-        header: "Třídy",
-    },
 ];
 
 export function EventsDataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {

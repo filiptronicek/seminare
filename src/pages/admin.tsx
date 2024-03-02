@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { api } from "~/utils/api";
-import { EventTable } from "../@/components/admin/DataTable";
+import { EventTable } from "../@/components/admin/EventTable";
 
 export default function Home() {
     const { isError, data: events, isLoading } = api.events.listEvents.useQuery({});
