@@ -25,14 +25,14 @@ export const SingleEventCard = ({ event }: Props) => {
     }, [event.signupStartDate, event.signupEndDate]);
 
     return (
-        <Card className="max-w-md w-screen">
+        <Card className="max-w-md w-screen justify-between flex flex-col">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl flex items-center gap-2">
                     {event.title} {isSignupOpen && <Badge>Přihlašování otevřeno</Badge>}{" "}
                 </CardTitle>
                 <CardDescription className="truncate-5-lines">{event.description}</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-4">
+            <CardContent className="gap-4 flex flex-col">
                 <>
                     <div className="flex flew-row gap-2">
                         {event.signupStartDate === event.signupEndDate ?
