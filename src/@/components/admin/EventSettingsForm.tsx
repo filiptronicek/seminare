@@ -8,29 +8,39 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { type Event } from "@prisma/client";
 import { Checkbox } from "../ui/checkbox";
+import { type CheckedState } from "@radix-ui/react-checkbox";
+import { api } from "~/utils/api";
 
 const formSchema = z.object({
     title: z.string().min(2).max(50),
     description: z.string().max(2500).optional(),
-    multipleOptionsPerUser: z.boolean(),
+    allowMultipleSelections: z.boolean(),
 });
 
 type Props = {
     event: Event;
 };
 export const EventSettingsForm = ({ event }: Props) => {
+    const updateEvent = api.singleEvent.updateEvent.useMutation();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: event.title,
             description: event.description ?? "",
-            multipleOptionsPerUser: event.allowMultipleSelections,
+            allowMultipleSelections: event.allowMultipleSelections,
         },
     });
 
-    const onSubmit = useCallback((values: z.infer<typeof formSchema>) => {
-        console.log(values);
-    }, []);
+    const onSubmit = useCallback(
+        (values: z.infer<typeof formSchema>) => {
+            console.log(values);
+            updateEvent.mutate({
+                id: event.id,
+                data: values,
+            });
+        },
+        [event.id, updateEvent],
+    );
 
     return (
         <Form {...form}>
@@ -65,17 +75,29 @@ export const EventSettingsForm = ({ event }: Props) => {
                 />
                 <FormField
                     control={form.control}
-                    name="multipleOptionsPerUser"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormControl>
-                                <Checkbox className="mr-2" {...field} />
-                            </FormControl>
-                            <FormLabel>Více možností na uživatele</FormLabel>
-                            <FormDescription>Umožnit uživatelům zvolit více možností této jedné akce.</FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+                    name="allowMultipleSelections"
+                    render={({ field }) => {
+                        const newField = {
+                            onCheckedChange: (state: CheckedState) => {
+                                field.onChange(state === true);
+                            },
+                            checked: field.value,
+                            ref: field.ref,
+                        };
+
+                        return (
+                            <FormItem>
+                                <FormControl>
+                                    <Checkbox className="mr-2" {...newField} />
+                                </FormControl>
+                                <FormLabel>Více možností na uživatele</FormLabel>
+                                <FormDescription>
+                                    Umožnit uživatelům zvolit více možností této jedné akce.
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        );
+                    }}
                 />
                 <Button type="submit">Uložit</Button>
             </form>

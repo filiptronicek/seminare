@@ -28,20 +28,23 @@ export const getStudent = async (auth: SupabaseAuthClient, db: PrismaClient) => 
 };
 
 export const isAdmin = async (auth: SupabaseAuthClient, db: PrismaClient) => {
-    const user = await auth.getUser();
-    if (!user.data.user) return false;
-
-    const student = await db.student.findUnique({
-        where: { id: user.data.user.id },
-    });
+    const student = await getStudent(auth, db);
     if (!student) return false;
 
     return student.admin;
 };
 
-export const checkStudent = async (auth: SupabaseAuthClient, db: PrismaClient) => {
+export const ensureStudent = async (auth: SupabaseAuthClient, db: PrismaClient) => {
     const student = await getStudent(auth, db);
     if (!student) throw new Error("Student not found");
+
+    return student;
+};
+
+export const ensureAdmin = async (auth: SupabaseAuthClient, db: PrismaClient) => {
+    const student = await getStudent(auth, db);
+    if (!student) throw new Error("User not found");
+    if (!student.admin) throw new Error("Lacking admin privileges");
 
     return student;
 };

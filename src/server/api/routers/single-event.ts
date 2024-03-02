@@ -3,25 +3,38 @@ import type { Buffer } from "exceljs";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { checkStudent, getStudent } from "~/server/auth";
+import { ensureAdmin, ensureStudent, getStudent } from "~/server/auth";
 import { generateExcelForEvent } from "~/utils/data";
 import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
+const singleEventUpdateSchema = z.object({
+    id: z.string(),
+    data: z
+        .object({
+            title: z.string(),
+            description: z.string(),
+            allowMultipleSelections: z.boolean(),
+            signupStartDate: z.date(),
+            signupEndDate: z.date(),
+        })
+        .partial(),
+});
+
 export const singleEventRouter = createTRPCRouter({
     getEvent: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
-        await checkStudent(ctx.auth, ctx.db);
+        await ensureStudent(ctx.auth, ctx.db);
 
         return ctx.db.event.findUnique({ where: { id: input.id } });
     }),
     listOptions: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
-        await checkStudent(ctx.auth, ctx.db);
+        await ensureStudent(ctx.auth, ctx.db);
 
         return ctx.db.singleEventOption.findMany({
             where: { eventId: input.id },
         });
     }),
     listStudentOptions: publicProcedure.input(z.object({ eventId: z.string() })).query(async ({ ctx, input }) => {
-        const student = await checkStudent(ctx.auth, ctx.db);
+        const student = await ensureStudent(ctx.auth, ctx.db);
 
         return await ctx.db.singleEventOption.findMany({
             where: {
@@ -30,7 +43,7 @@ export const singleEventRouter = createTRPCRouter({
         });
     }),
     joinOption: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
-        const student = await checkStudent(ctx.auth, ctx.db);
+        const student = await ensureStudent(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
@@ -103,7 +116,7 @@ export const singleEventRouter = createTRPCRouter({
         return option;
     }),
     leaveOption: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
-        const student = await checkStudent(ctx.auth, ctx.db);
+        const student = await ensureStudent(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
@@ -146,4 +159,20 @@ export const singleEventRouter = createTRPCRouter({
 
             return generateExcelForEvent({ eventId: input.eventId, db: ctx.db });
         }),
+    updateEvent: publicProcedure.input(singleEventUpdateSchema).mutation(async ({ input, ctx }) => {
+        await ensureAdmin(ctx.auth, ctx.db);
+
+        const event = await ctx.db.event.findUnique({
+            where: { id: input.id },
+            select: {
+                id: true,
+            },
+        });
+        if (!event) throw new Error("Event not found");
+
+        return ctx.db.event.update({
+            where: { id: input.id },
+            data: input.data,
+        });
+    }),
 });

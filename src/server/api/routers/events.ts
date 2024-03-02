@@ -2,7 +2,7 @@ import { CLASSES } from "@/lib/constants";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { checkStudent, getStudent } from "~/server/auth";
+import { ensureStudent, getStudent } from "~/server/auth";
 
 export const eventRouter = createTRPCRouter({
     getStudent: publicProcedure.query(({ ctx }) => {
@@ -17,7 +17,7 @@ export const eventRouter = createTRPCRouter({
         )
         .query(async ({ ctx, input }) => {
             const now = new Date();
-            const student = await checkStudent(ctx.auth, ctx.db);
+            const student = await ensureStudent(ctx.auth, ctx.db);
             if (!input.class && !student.admin) {
                 throw new Error("You must specify a class");
             }
