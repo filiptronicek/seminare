@@ -43,11 +43,12 @@ function DebouncedInput({
     return <Input {...props} value={value} onChange={(e) => setValue(e.target.value)} />;
 }
 
-export interface DataTableProps<TData, TValue> {
+export interface Props<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
+    className?: string;
 }
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, className }: Props<TData, TValue>) {
     const [globalFilter, setGlobalFilter] = useState("");
 
     const fuzzyFilter: FilterFn<TData> = useCallback((row, columnId, value, addMeta) => {
@@ -83,7 +84,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     });
 
     return (
-        <div className="rounded-md border dark:border-gray-600 w-full">
+        <div className={cn("rounded-md border dark:border-gray-600 w-full", className)}>
             <DebouncedInput
                 value={globalFilter ?? ""}
                 type="text"
@@ -103,9 +104,9 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                                         className={cn({ "cursor-pointer": header.column.getCanSort() })}
                                     >
                                         <span className="flex items-center gap-1">
-                                            {header.isPlaceholder ? null : (
-                                                flexRender(header.column.columnDef.header, header.getContext())
-                                            )}
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(header.column.columnDef.header, header.getContext())}
                                             {
                                                 {
                                                     asc: <ChevronUp size={20} />,
@@ -121,7 +122,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                     ))}
                 </TableHeader>
                 <TableBody>
-                    {table.getRowModel().rows?.length ?
+                    {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
                             <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                 {row.getVisibleCells().map((cell) => (
@@ -131,12 +132,13 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                                 ))}
                             </TableRow>
                         ))
-                    :   <TableRow>
+                    ) : (
+                        <TableRow>
                             <TableCell colSpan={columns.length} className="h-24 text-center">
                                 Žádné výsledky
                             </TableCell>
                         </TableRow>
-                    }
+                    )}
                 </TableBody>
             </Table>
         </div>

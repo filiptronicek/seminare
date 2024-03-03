@@ -67,5 +67,5 @@ export const EventOptionTable = ({ id }: Props) => {
         return "Naskytla se chyba v načítání dat";
     }
 
-    return <DataTable columns={columns} data={data} />;
+    return <DataTable className="max-w-2xl" columns={columns} data={data} />;
 };

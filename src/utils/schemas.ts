@@ -1,6 +1,16 @@
 import { z } from "zod";
 import { CLASSES, EVENT_TYPE } from "./constants";
 
+export const seminarSchema = z.object({
+    requiredHours: z.number(),
+    availableBranches: z.array(z.object({ id: z.string(), label: z.string() })),
+});
+
+export const seminarOptionSchema = z.object({
+    hoursPerWeek: z.number(),
+    branch: z.object({ id: z.string(), label: z.string() }),
+});
+
 export const singleEventSchema = z.object({
     title: z.string().max(255, "Akce nesmí mít delší název než 255 znaků").min(1, "Akce musí mít název"),
     description: z.string().optional(),
@@ -20,4 +30,22 @@ export const singleEventSchema = z.object({
 export const singleEventUpdateSchema = z.object({
     id: z.string(),
     data: singleEventSchema.partial(),
+    metadata: seminarSchema.optional(),
+});
+
+export const singleOptionSchema = z.object({
+    title: z.string().max(255, "Možnost nesmí mít delší název než 255 znaků").min(1, "Možnost musí mít název"),
+    maxParticipants: z.number().int().positive().optional(),
+    description: z.string().optional(),
+    metadata: seminarOptionSchema.optional(),
+});
+
+export const singleOptionUpdateSchema = z.object({
+    id: z.string(),
+    data: singleOptionSchema.partial(),
+});
+
+export const singleOptionCreateSchema = z.object({
+    eventId: z.string(),
+    data: singleOptionSchema,
 });

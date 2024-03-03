@@ -3,16 +3,10 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureAdmin, ensureStudent } from "~/server/auth";
 import { EVENT_TYPE } from "~/utils/constants";
+import { singleOptionCreateSchema } from "~/utils/schemas";
 import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
 export const eventOptionsRouter = createTRPCRouter({
-    list: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
-        await ensureStudent(ctx.auth, ctx.db);
-
-        return ctx.db.singleEventOption.findMany({
-            where: { eventId: input.id },
-        });
-    }),
     listStudentOptions: publicProcedure.input(z.object({ eventId: z.string() })).query(async ({ ctx, input }) => {
         const student = await ensureStudent(ctx.auth, ctx.db);
 
@@ -123,6 +117,25 @@ export const eventOptionsRouter = createTRPCRouter({
         });
 
         return option;
+    }),
+    create: publicProcedure.input(singleOptionCreateSchema).mutation(async ({ input, ctx }) => {
+        await ensureAdmin(ctx.auth, ctx.db);
+
+        return ctx.db.singleEventOption.create({
+            data: {
+                ...input.data,
+                event: {
+                    connect: { id: input.eventId },
+                },
+            },
+        });
+    }),
+    list: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
+        await ensureStudent(ctx.auth, ctx.db);
+
+        return ctx.db.singleEventOption.findMany({
+            where: { eventId: input.id },
+        });
     }),
     delete: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
