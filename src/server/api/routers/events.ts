@@ -27,9 +27,16 @@ export const eventRouter = createTRPCRouter({
                 where: {
                     ...(input.active ?
                         {
-                            endDate: {
+                            signupEndDate: {
                                 gte: now,
                             },
+                            OR: [
+                                {
+                                    endDate: {
+                                        gte: now,
+                                    },
+                                },
+                            ],
                         }
                     :   {}),
                     ...(input.class ?

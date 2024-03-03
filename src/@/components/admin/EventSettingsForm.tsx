@@ -7,10 +7,14 @@ import { Button } from "@/components/ui/button";
 import { type Event } from "@prisma/client";
 import { Checkbox } from "../ui/checkbox";
 import { type CheckedState } from "@radix-ui/react-checkbox";
-import { Loader2 } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { singleEventSchema as formSchema } from "~/utils/schemas";
 import { EVENT_TYPE, type Class } from "@/lib/constants";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { Calendar } from "../ui/calendar";
 
 type Props = {
     event?: Event;
@@ -123,6 +127,101 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                     </FormControl>
                                 </div>
                                 <FormDescription>Na co se budou studenti přihlašovat?</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        );
+                    }}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="signupStartDate"
+                    render={({ field }) => {
+                        return (
+                            <FormItem>
+                                <FormLabel>Začátek přihlašování</FormLabel>
+                                <FormControl>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-[240px] pl-3 text-left font-normal",
+                                                        !field.value && "text-muted-foreground",
+                                                    )}
+                                                >
+                                                    {field.value ?
+                                                        format(field.value, "PPP")
+                                                    :   <span>Vyberte datum</span>}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                defaultMonth={field.value}
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                disabled={(date) => date < new Date()}
+                                                initialFocus
+                                                fixedWeeks
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                </FormControl>
+                                <FormDescription className="max-w-md">
+                                    Datum, kdy se otevře možnost přihlásit se na Akci.
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        );
+                    }}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="signupEndDate"
+                    render={({ field }) => {
+                        return (
+                            <FormItem>
+                                <FormLabel>Konec přihlašování</FormLabel>
+                                <FormControl>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-[240px] pl-3 text-left font-normal",
+                                                        !field.value && "text-muted-foreground",
+                                                    )}
+                                                >
+                                                    {field.value ?
+                                                        format(field.value, "PPP")
+                                                    :   <span>Vyberte datum</span>}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                defaultMonth={field.value}
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                disabled={(date) =>
+                                                    date < new Date() || date < form.getValues("signupStartDate")
+                                                }
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                </FormControl>
+                                <FormDescription className="max-w-md">
+                                    Datum, po kterém se uzavře možnost přihlásit se na Akci.
+                                </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         );
