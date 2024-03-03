@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 import { formatDate } from "~/utils/dates";
 import { type Class, EVENT_TYPE } from "~/utils/constants";
+import { displayEventType } from "~/utils/display";
 
 type Props = {
     event?: Event;
@@ -122,12 +123,11 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                 <SelectValue placeholder="Vyberte..." />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value={EVENT_TYPE.PROJECT_WEEK}>
-                                                    Projektový týden
-                                                </SelectItem>
-                                                <SelectItem value={EVENT_TYPE.SEMINAR}>Semináře</SelectItem>
-                                                <SelectItem value={EVENT_TYPE.WANDERTAG}>Wandertag</SelectItem>
-                                                <SelectItem value={EVENT_TYPE.UNSPECIFIED}>Jiné</SelectItem>
+                                                {Object.values(EVENT_TYPE).map((type) => (
+                                                    <SelectItem key={type} value={type}>
+                                                        {displayEventType(type)}
+                                                    </SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                     </FormControl>

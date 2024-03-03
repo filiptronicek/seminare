@@ -10,6 +10,8 @@ import { api } from "~/utils/api";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { DataTable } from "../ui/DataTable";
+import { displayEventType } from "~/utils/display";
+import { type EVENT_TYPE } from "~/utils/constants";
 
 export interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -37,9 +39,9 @@ export const columns: ColumnDef<Event>[] = [
         sortUndefined: -1,
     },
     {
-        accessorKey: "type",
         header: "Typ",
         enableSorting: false,
+        accessorFn: (row) => displayEventType(row.type as EVENT_TYPE),
     },
     {
         header: "Začátek přihlašování",
