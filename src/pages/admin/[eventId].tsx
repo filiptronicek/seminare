@@ -12,9 +12,9 @@ export default function EventOption() {
     const { query } = useRouter();
     const eventId = query.eventId as string;
 
-    const { data: event } = api.singleEvent.getEvent.useQuery({ id: eventId });
-    const updateEvent = api.singleEvent.updateEvent.useMutation();
-    const generateExcel = api.singleEvent.generateExcel.useMutation();
+    const { data: event } = api.events.get.useQuery({ id: eventId });
+    const updateEvent = api.events.update.useMutation();
+    const generateExcel = api.events.generateExcel.useMutation();
 
     const handleFormSubmit = useCallback(
         (values: z.infer<typeof singleEventSchema>) => {

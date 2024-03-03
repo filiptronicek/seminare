@@ -1,5 +1,5 @@
 import { eventRouter } from "~/server/api/routers/events";
-import { singleEventRouter } from "~/server/api/routers/single-event";
+import { eventOptionsRouter } from "~/server/api/routers/event-options";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { userSettingsRouter } from "./routers/user-settings";
 
@@ -10,7 +10,7 @@ import { userSettingsRouter } from "./routers/user-settings";
  */
 export const appRouter = createTRPCRouter({
     events: eventRouter,
-    singleEvent: singleEventRouter,
+    eventOptions: eventOptionsRouter,
     userSettings: userSettingsRouter,
 });
 

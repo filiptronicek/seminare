@@ -23,8 +23,8 @@ interface Props {
     refetchSelected: () => void;
 }
 export const SingleSeminarOptionListing = ({ option, selected, event, canSelect, refetchSelected }: Props) => {
-    const registerMutation = api.singleEvent.joinOption.useMutation();
-    const leaveMutation = api.singleEvent.leaveOption.useMutation();
+    const registerMutation = api.eventOptions.join.useMutation();
+    const leaveMutation = api.eventOptions.join.useMutation();
 
     const isOptionSelected = useMemo(() => {
         return selected?.some((selectedOption) => selectedOption.id === option.id);

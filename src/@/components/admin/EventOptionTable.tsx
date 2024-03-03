@@ -13,9 +13,9 @@ type Props = {
     id: string;
 };
 export const EventOptionTable = ({ id }: Props) => {
-    const { isError, data, isLoading, refetch } = api.singleEvent.listOptions.useQuery({ id });
+    const { isError, data, isLoading, refetch } = api.eventOptions.list.useQuery({ id });
     const utils = api.useContext();
-    const deleteOption = api.singleEvent.deleteOption.useMutation();
+    const deleteOption = api.eventOptions.delete.useMutation();
 
     const handleDelete = useCallback(
         (id: string) => {
@@ -23,13 +23,13 @@ export const EventOptionTable = ({ id }: Props) => {
                 { optionId: id },
                 {
                     onSuccess: () => {
-                        void utils.singleEvent.listOptions.invalidate({ id });
+                        void utils.eventOptions.list.invalidate({ id });
                         void refetch();
                     },
                 },
             );
         },
-        [deleteOption, refetch, utils.singleEvent.listOptions],
+        [deleteOption, refetch, utils.eventOptions.list],
     );
 
     const columns = useMemo<ColumnDef<SingleEventOption>[]>(

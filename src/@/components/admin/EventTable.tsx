@@ -94,7 +94,7 @@ export const columns: ColumnDef<Event>[] = [
 ];
 
 export const EventTable = () => {
-    const { isError, data: events, isLoading } = api.events.listEvents.useQuery({});
+    const { isError, data: events, isLoading } = api.events.list.useQuery({});
 
     if (isLoading) {
         return <Loader2 className="animate-spin" />;

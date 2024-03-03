@@ -8,12 +8,12 @@ type Props = {
     id: string;
 };
 export const SingleEvent = ({ id }: Props) => {
-    const { data: event, error } = api.singleEvent.getEvent.useQuery({ id });
-    const { data: options, error: optionsError } = api.singleEvent.listOptions.useQuery({
+    const { data: event, error } = api.events.get.useQuery({ id });
+    const { data: options, error: optionsError } = api.eventOptions.list.useQuery({
         id,
     });
 
-    const { data: selectedOptions, refetch: refetchSelected } = api.singleEvent.listStudentOptions.useQuery({
+    const { data: selectedOptions, refetch: refetchSelected } = api.eventOptions.listStudentOptions.useQuery({
         eventId: id,
     });
 

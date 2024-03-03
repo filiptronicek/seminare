@@ -6,7 +6,7 @@ import { useState } from "react";
 import { NewEventDialog } from "@/components/admin/NewEventDialog";
 
 export default function Home() {
-    const { isError, data: events, isLoading } = api.events.listEvents.useQuery({});
+    const { isError, data: events, isLoading } = api.events.list.useQuery({});
     const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
 
     if (isLoading) {

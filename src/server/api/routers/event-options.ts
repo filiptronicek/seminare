@@ -3,17 +3,10 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureAdmin, ensureStudent } from "~/server/auth";
 import { EVENT_TYPE } from "~/utils/constants";
-import { generateExcelForEvent } from "~/utils/data";
-import { singleEventSchema, singleEventUpdateSchema } from "~/utils/schemas";
 import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
-export const singleEventRouter = createTRPCRouter({
-    getEvent: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
-        await ensureStudent(ctx.auth, ctx.db);
-
-        return ctx.db.event.findUnique({ where: { id: input.id } });
-    }),
-    listOptions: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
+export const eventOptionsRouter = createTRPCRouter({
+    list: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
         await ensureStudent(ctx.auth, ctx.db);
 
         return ctx.db.singleEventOption.findMany({
@@ -29,7 +22,7 @@ export const singleEventRouter = createTRPCRouter({
             },
         });
     }),
-    joinOption: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
+    join: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
         const student = await ensureStudent(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
@@ -102,7 +95,7 @@ export const singleEventRouter = createTRPCRouter({
 
         return option;
     }),
-    leaveOption: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
+    leave: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
         const student = await ensureStudent(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
@@ -131,7 +124,7 @@ export const singleEventRouter = createTRPCRouter({
 
         return option;
     }),
-    deleteOption: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
+    delete: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
@@ -146,64 +139,6 @@ export const singleEventRouter = createTRPCRouter({
 
         return ctx.db.singleEventOption.delete({
             where: { id: input.optionId },
-        });
-    }),
-    generateExcel: publicProcedure.input(z.object({ eventId: z.string() })).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
-
-        const event = await ctx.db.event.findUnique({
-            where: { id: input.eventId },
-        });
-        if (!event) throw new Error("Event not found");
-
-        const excelBuffer = Buffer.from(await generateExcelForEvent({ eventId: input.eventId, db: ctx.db }));
-        const base64 = excelBuffer.toString("base64");
-        const dataUrl = `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${base64}`;
-
-        return { dataUrl };
-    }),
-    updateEvent: publicProcedure.input(singleEventUpdateSchema).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
-
-        const event = await ctx.db.event.findUnique({
-            where: { id: input.id },
-            select: {
-                id: true,
-            },
-        });
-        if (!event) throw new Error("Event not found");
-
-        return ctx.db.event.update({
-            where: { id: input.id },
-            data: {
-                title: input.data.title,
-                description: input.data.description,
-                allowMultipleSelections: input.data.allowMultipleSelections,
-                visibleToClasses: input.data.visibleToClasses,
-                type: input.data.type,
-                signupEndDate: input.data.signup?.to,
-                signupStartDate: input.data.signup?.from,
-                endDate: input.data.happening?.to,
-                startDate: input.data.happening?.from,
-            },
-        });
-    }),
-    createEvent: publicProcedure.input(singleEventSchema).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
-
-        return ctx.db.event.create({
-            data: {
-                id: crypto.randomUUID(),
-                title: input.title,
-                description: input.description,
-                allowMultipleSelections: input.allowMultipleSelections,
-                visibleToClasses: input.visibleToClasses,
-                type: input.type,
-                signupEndDate: input.signup.to,
-                signupStartDate: input.signup.from,
-                endDate: input.happening.to,
-                startDate: input.happening.from,
-            },
         });
     }),
 });

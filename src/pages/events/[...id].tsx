@@ -19,7 +19,7 @@ export default function Page() {
         return normalizeId(router.query.id!);
     }, [router.query.id]);
 
-    const { data: event } = api.singleEvent.getEvent.useQuery({ id: eventId });
+    const { data: event } = api.events.get.useQuery({ id: eventId });
 
     if (event?.type === EVENT_TYPE.SEMINAR) {
         return <SingleSeminar id={eventId} />;
