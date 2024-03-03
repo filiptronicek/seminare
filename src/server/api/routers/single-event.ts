@@ -159,7 +159,17 @@ export const singleEventRouter = createTRPCRouter({
 
         return ctx.db.event.update({
             where: { id: input.id },
-            data: input.data,
+            data: {
+                title: input.data.title,
+                description: input.data.description,
+                allowMultipleSelections: input.data.allowMultipleSelections,
+                visibleToClasses: input.data.visibleToClasses,
+                type: input.data.type,
+                signupEndDate: input.data.signup?.to,
+                signupStartDate: input.data.signup?.from,
+                endDate: input.data.happening?.to,
+                startDate: input.data.happening?.from,
+            },
         });
     }),
     createEvent: publicProcedure.input(singleEventSchema).mutation(async ({ input, ctx }) => {

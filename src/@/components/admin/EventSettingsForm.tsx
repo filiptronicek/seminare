@@ -13,8 +13,8 @@ import { EVENT_TYPE, type Class } from "@/lib/constants";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
 import { Calendar } from "../ui/calendar";
+import { formatDate } from "~/utils/dates";
 
 type Props = {
     event?: Event;
@@ -29,8 +29,14 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
             description: event?.description ?? undefined,
             allowMultipleSelections: event?.allowMultipleSelections ?? false,
             visibleToClasses: (event?.visibleToClasses as Class[]) ?? [],
-            signupEndDate: event?.signupEndDate ?? undefined,
-            signupStartDate: event?.signupStartDate ?? undefined,
+            signup: {
+                from: event?.signupStartDate ?? undefined,
+                to: event?.signupEndDate ?? undefined,
+            },
+            happening: {
+                from: event?.startDate ?? undefined,
+                to: event?.endDate ?? undefined,
+            },
             type: (event?.type as EVENT_TYPE) ?? EVENT_TYPE.UNSPECIFIED,
         },
     });
@@ -135,11 +141,11 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
 
                 <FormField
                     control={form.control}
-                    name="signupStartDate"
+                    name="signup"
                     render={({ field }) => {
                         return (
                             <FormItem>
-                                <FormLabel>Začátek přihlašování</FormLabel>
+                                <FormLabel>Přihlášky</FormLabel>
                                 <FormControl>
                                     <Popover>
                                         <PopoverTrigger asChild>
@@ -151,8 +157,13 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                         !field.value && "text-muted-foreground",
                                                     )}
                                                 >
-                                                    {field.value ?
-                                                        format(field.value, "PPP")
+                                                    {field.value.from ?
+                                                        field.value.to ?
+                                                            <>
+                                                                {formatDate(field.value.from)} -{" "}
+                                                                {formatDate(field.value.to)}
+                                                            </>
+                                                        :   formatDate(field.value.from)
                                                     :   <span>Vyberte datum</span>}
                                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                 </Button>
@@ -160,19 +171,17 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                         </PopoverTrigger>
                                         <PopoverContent className="w-auto p-0" align="start">
                                             <Calendar
-                                                mode="single"
-                                                defaultMonth={field.value}
+                                                mode="range"
+                                                defaultMonth={field.value.from}
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={(date) => date < new Date()}
                                                 initialFocus
-                                                fixedWeeks
                                             />
                                         </PopoverContent>
                                     </Popover>
                                 </FormControl>
                                 <FormDescription className="max-w-md">
-                                    Datum, kdy se otevře možnost přihlásit se na Akci.
+                                    Rozmezí dat, mezi kterými se dá na Akci přihlásit.
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
@@ -182,11 +191,11 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
 
                 <FormField
                     control={form.control}
-                    name="signupEndDate"
+                    name="happening"
                     render={({ field }) => {
                         return (
                             <FormItem>
-                                <FormLabel>Konec přihlašování</FormLabel>
+                                <FormLabel>Konání</FormLabel>
                                 <FormControl>
                                     <Popover>
                                         <PopoverTrigger asChild>
@@ -198,8 +207,13 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                         !field.value && "text-muted-foreground",
                                                     )}
                                                 >
-                                                    {field.value ?
-                                                        format(field.value, "PPP")
+                                                    {field.value.from ?
+                                                        field.value.to ?
+                                                            <>
+                                                                {formatDate(field.value.from)} -{" "}
+                                                                {formatDate(field.value.to)}
+                                                            </>
+                                                        :   formatDate(field.value.from)
                                                     :   <span>Vyberte datum</span>}
                                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                 </Button>
@@ -207,21 +221,16 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                         </PopoverTrigger>
                                         <PopoverContent className="w-auto p-0" align="start">
                                             <Calendar
-                                                mode="single"
-                                                defaultMonth={field.value}
+                                                mode="range"
+                                                defaultMonth={field.value.from}
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={(date) =>
-                                                    date < new Date() || date < form.getValues("signupStartDate")
-                                                }
                                                 initialFocus
                                             />
                                         </PopoverContent>
                                     </Popover>
                                 </FormControl>
-                                <FormDescription className="max-w-md">
-                                    Datum, po kterém se uzavře možnost přihlásit se na Akci.
-                                </FormDescription>
+                                <FormDescription className="max-w-md">Rozmezí dat, kdy se Akce koná.</FormDescription>
                                 <FormMessage />
                             </FormItem>
                         );

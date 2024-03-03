@@ -32,7 +32,7 @@ export const NewEventDialog = ({ open, onOpenChange }: Props) => {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent>
+            <DialogContent className="max-h-[90%] overflow-y-scroll max-w-2xl">
                 <DialogHeader>
                     <DialogTitle>Nová Akce</DialogTitle>
                     <EventSettingsForm isLoading={createEvent.isLoading} onSubmit={onSubmit} />

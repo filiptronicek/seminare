@@ -2,11 +2,17 @@ import { CLASSES, EVENT_TYPE } from "@/lib/constants";
 import { z } from "zod";
 
 export const singleEventSchema = z.object({
-    title: z.string().max(255).min(1),
-    description: z.string(),
+    title: z.string().max(255, "Akce nesmí mít delší název než 255 znaků").min(1, "Akce musí mít název"),
+    description: z.string().optional(),
     allowMultipleSelections: z.boolean(),
-    signupStartDate: z.date(),
-    signupEndDate: z.date(),
+    signup: z.object({
+        from: z.date(),
+        to: z.date(),
+    }),
+    happening: z.object({
+        from: z.date(),
+        to: z.date(),
+    }),
     visibleToClasses: z.array(z.enum(CLASSES)),
     type: z.nativeEnum(EVENT_TYPE),
 });
