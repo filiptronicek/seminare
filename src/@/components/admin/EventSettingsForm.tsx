@@ -114,24 +114,22 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                         };
 
                         return (
-                            <FormItem>
-                                <div className="flex items-center space-x-4">
-                                    <FormLabel>Typ Akce</FormLabel>
-                                    <FormControl>
-                                        <Select {...fieldProps}>
-                                            <SelectTrigger className="w-[180px]">
-                                                <SelectValue placeholder="Vyberte..." />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {Object.values(EVENT_TYPE).map((type) => (
-                                                    <SelectItem key={type} value={type}>
-                                                        {displayEventType(type)}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </FormControl>
-                                </div>
+                            <FormItem className="flex flex-col gap-1">
+                                <FormLabel>Typ Akce</FormLabel>
+                                <FormControl>
+                                    <Select {...fieldProps}>
+                                        <SelectTrigger className="w-[180px]">
+                                            <SelectValue placeholder="Vyberte..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {Object.values(EVENT_TYPE).map((type) => (
+                                                <SelectItem key={type} value={type}>
+                                                    {displayEventType(type)}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
                                 <FormDescription>Na co se budou studenti přihlašovat?</FormDescription>
                                 <FormMessage />
                             </FormItem>
@@ -144,7 +142,7 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                     name="signup"
                     render={({ field }) => {
                         return (
-                            <FormItem>
+                            <FormItem className="flex flex-col gap-1">
                                 <FormLabel>Přihlášky</FormLabel>
                                 <FormControl>
                                     <Popover>
@@ -157,14 +155,18 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                         !field.value && "text-muted-foreground",
                                                     )}
                                                 >
-                                                    {field.value.from ?
-                                                        field.value.to ?
+                                                    {field.value.from ? (
+                                                        field.value.to ? (
                                                             <>
                                                                 {formatDate(field.value.from)} -{" "}
                                                                 {formatDate(field.value.to)}
                                                             </>
-                                                        :   formatDate(field.value.from)
-                                                    :   <span>Vyberte datum</span>}
+                                                        ) : (
+                                                            formatDate(field.value.from)
+                                                        )
+                                                    ) : (
+                                                        <span>Vyberte datum</span>
+                                                    )}
                                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                 </Button>
                                             </FormControl>
@@ -194,7 +196,7 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                     name="happening"
                     render={({ field }) => {
                         return (
-                            <FormItem>
+                            <FormItem className="flex flex-col gap-1">
                                 <FormLabel>Konání</FormLabel>
                                 <FormControl>
                                     <Popover>
@@ -207,14 +209,18 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                         !field.value && "text-muted-foreground",
                                                     )}
                                                 >
-                                                    {field.value.from ?
-                                                        field.value.to ?
+                                                    {field.value.from ? (
+                                                        field.value.to ? (
                                                             <>
                                                                 {formatDate(field.value.from)} -{" "}
                                                                 {formatDate(field.value.to)}
                                                             </>
-                                                        :   formatDate(field.value.from)
-                                                    :   <span>Vyberte datum</span>}
+                                                        ) : (
+                                                            formatDate(field.value.from)
+                                                        )
+                                                    ) : (
+                                                        <span>Vyberte datum</span>
+                                                    )}
                                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                 </Button>
                                             </FormControl>
@@ -268,9 +274,7 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                 />
 
                 <Button type="submit" disabled={!form.formState.isDirty}>
-                    {isLoading ?
-                        <Loader2 className="animate-spin" />
-                    :   "Uložit"}
+                    {isLoading ? <Loader2 className="animate-spin" /> : "Uložit"}
                 </Button>
             </form>
         </Form>
