@@ -5,6 +5,7 @@ import { type singleEventSchema } from "~/utils/schemas";
 import { useCallback } from "react";
 import { toast } from "../ui/use-toast";
 import { EventSettingsForm } from "./EventSettingsForm";
+import { useRouter } from "next/router";
 
 type Props = {
     open: boolean;
@@ -12,12 +13,14 @@ type Props = {
 };
 export const NewEventDialog = ({ open, onOpenChange }: Props) => {
     const createEvent = api.singleEvent.createEvent.useMutation();
+    const router = useRouter();
 
     const onSubmit = useCallback(
         (values: z.infer<typeof singleEventSchema>) => {
             createEvent.mutate(values, {
-                onSuccess: () => {
+                onSuccess: (data) => {
                     onOpenChange(false);
+                    void router.push(`/admin/${data.id}`);
                 },
                 onError: (error) => {
                     toast({
@@ -27,7 +30,7 @@ export const NewEventDialog = ({ open, onOpenChange }: Props) => {
                 },
             });
         },
-        [onOpenChange, createEvent],
+        [createEvent, onOpenChange, router],
     );
 
     return (
