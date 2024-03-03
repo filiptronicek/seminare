@@ -39,7 +39,7 @@ export const eventRouter = createTRPCRouter({
                                 },
                             ],
                         }
-                        : {}),
+                    :   {}),
                     ...(input.class ?
                         {
                             OR: [
@@ -56,7 +56,7 @@ export const eventRouter = createTRPCRouter({
                                 },
                             ],
                         }
-                        : {}),
+                    :   {}),
                 },
                 orderBy: {
                     signupStartDate: "asc",

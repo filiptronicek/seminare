@@ -104,9 +104,9 @@ export function DataTable<TData, TValue>({ columns, data, className }: Props<TDa
                                         className={cn({ "cursor-pointer": header.column.getCanSort() })}
                                     >
                                         <span className="flex items-center gap-1">
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(header.column.columnDef.header, header.getContext())}
+                                            {header.isPlaceholder ? null : (
+                                                flexRender(header.column.columnDef.header, header.getContext())
+                                            )}
                                             {
                                                 {
                                                     asc: <ChevronUp size={20} />,
@@ -122,7 +122,7 @@ export function DataTable<TData, TValue>({ columns, data, className }: Props<TDa
                     ))}
                 </TableHeader>
                 <TableBody>
-                    {table.getRowModel().rows?.length ? (
+                    {table.getRowModel().rows?.length ?
                         table.getRowModel().rows.map((row) => (
                             <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                 {row.getVisibleCells().map((cell) => (
@@ -132,13 +132,12 @@ export function DataTable<TData, TValue>({ columns, data, className }: Props<TDa
                                 ))}
                             </TableRow>
                         ))
-                    ) : (
-                        <TableRow>
+                    :   <TableRow>
                             <TableCell colSpan={columns.length} className="h-24 text-center">
                                 Žádné výsledky
                             </TableCell>
                         </TableRow>
-                    )}
+                    }
                 </TableBody>
             </Table>
         </div>

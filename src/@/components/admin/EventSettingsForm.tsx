@@ -155,18 +155,14 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                         !field.value && "text-muted-foreground",
                                                     )}
                                                 >
-                                                    {field.value.from ? (
-                                                        field.value.to ? (
+                                                    {field.value.from ?
+                                                        field.value.to ?
                                                             <>
                                                                 {formatDate(field.value.from)} -{" "}
                                                                 {formatDate(field.value.to)}
                                                             </>
-                                                        ) : (
-                                                            formatDate(field.value.from)
-                                                        )
-                                                    ) : (
-                                                        <span>Vyberte datum</span>
-                                                    )}
+                                                        :   formatDate(field.value.from)
+                                                    :   <span>Vyberte datum</span>}
                                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                 </Button>
                                             </FormControl>
@@ -209,18 +205,14 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                         !field.value && "text-muted-foreground",
                                                     )}
                                                 >
-                                                    {field.value.from ? (
-                                                        field.value.to ? (
+                                                    {field.value.from ?
+                                                        field.value.to ?
                                                             <>
                                                                 {formatDate(field.value.from)} -{" "}
                                                                 {formatDate(field.value.to)}
                                                             </>
-                                                        ) : (
-                                                            formatDate(field.value.from)
-                                                        )
-                                                    ) : (
-                                                        <span>Vyberte datum</span>
-                                                    )}
+                                                        :   formatDate(field.value.from)
+                                                    :   <span>Vyberte datum</span>}
                                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                 </Button>
                                             </FormControl>
@@ -274,7 +266,9 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                 />
 
                 <Button type="submit" disabled={!form.formState.isDirty}>
-                    {isLoading ? <Loader2 className="animate-spin" /> : "Uložit"}
+                    {isLoading ?
+                        <Loader2 className="animate-spin" />
+                    :   "Uložit"}
                 </Button>
             </form>
         </Form>

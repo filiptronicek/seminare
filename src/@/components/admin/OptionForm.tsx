@@ -108,7 +108,9 @@ export const OptionSettingsForm = ({ option, event, isLoading, onSubmit, onDelet
 
                 <div className="flex justify-end space-x-4">
                     <Button type="submit" disabled={!form.formState.isDirty}>
-                        {isLoading ? <Loader2 className="animate-spin" /> : "Uložit"}
+                        {isLoading ?
+                            <Loader2 className="animate-spin" />
+                        :   "Uložit"}
                     </Button>
                     {option && (
                         <Button type="button" variant="destructive" onClick={onDelete}>
