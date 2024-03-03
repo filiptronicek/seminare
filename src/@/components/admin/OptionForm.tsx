@@ -15,8 +15,9 @@ type Props = {
     event: Event;
     isLoading: boolean;
     onSubmit: (values: z.infer<typeof singleOptionSchema>) => void;
+    onDelete?: () => void;
 };
-export const OptionSettingsForm = ({ option, event, isLoading, onSubmit }: Props) => {
+export const OptionSettingsForm = ({ option, event, isLoading, onSubmit, onDelete }: Props) => {
     const form = useForm<z.infer<typeof singleOptionSchema>>({
         resolver: zodResolver(singleOptionSchema),
         defaultValues: {
@@ -39,7 +40,9 @@ export const OptionSettingsForm = ({ option, event, isLoading, onSubmit }: Props
                             <FormControl>
                                 <Input placeholder="" {...field} />
                             </FormControl>
-                            <FormDescription>Název možnosti, který bude zobrazen na stránce přihlašování.</FormDescription>
+                            <FormDescription>
+                                Název možnosti, který bude zobrazen na stránce přihlašování.
+                            </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -94,16 +97,25 @@ export const OptionSettingsForm = ({ option, event, isLoading, onSubmit }: Props
                                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                                     />
                                 </FormControl>
-                                <FormDescription>Kolik hodin týdně zabírá tento předmět v rozvrhu žáka?</FormDescription>
+                                <FormDescription>
+                                    Kolik hodin týdně zabírá tento předmět v rozvrhu žáka?
+                                </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                 )}
 
-                <Button type="submit" disabled={!form.formState.isDirty}>
-                    {isLoading ? <Loader2 className="animate-spin" /> : "Uložit"}
-                </Button>
+                <div className="flex justify-end space-x-4">
+                    <Button type="submit" disabled={!form.formState.isDirty}>
+                        {isLoading ? <Loader2 className="animate-spin" /> : "Uložit"}
+                    </Button>
+                    {option && (
+                        <Button type="button" variant="destructive" onClick={onDelete}>
+                            Odstranit
+                        </Button>
+                    )}
+                </div>
             </form>
         </Form>
     );

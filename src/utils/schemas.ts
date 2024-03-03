@@ -28,24 +28,24 @@ export const singleEventSchema = z.object({
 });
 
 export const singleEventUpdateSchema = z.object({
-    id: z.string(),
+    id: z.string().uuid(),
     data: singleEventSchema.partial(),
     metadata: seminarSchema.optional(),
 });
 
 export const singleOptionSchema = z.object({
     title: z.string().max(255, "Možnost nesmí mít delší název než 255 znaků").min(1, "Možnost musí mít název"),
-    maxParticipants: z.number().int().positive().optional(),
+    maxParticipants: z.number().int().nonnegative().optional(),
     description: z.string().optional(),
     metadata: seminarOptionSchema.optional(),
 });
 
 export const singleOptionUpdateSchema = z.object({
-    id: z.string(),
+    id: z.string().uuid(),
     data: singleOptionSchema.partial(),
 });
 
 export const singleOptionCreateSchema = z.object({
-    eventId: z.string(),
+    eventId: z.string().uuid(),
     data: singleOptionSchema,
 });

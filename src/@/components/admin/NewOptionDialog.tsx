@@ -9,10 +9,11 @@ import { type Event } from "@prisma/client";
 
 type Props = {
     open: boolean;
-    onOpenChange: (value: boolean) => void;
     event: Event;
+    onOpenChange: (value: boolean) => void;
+    refetch: () => void;
 };
-export const NewOptionDialog = ({ open, event, onOpenChange }: Props) => {
+export const NewOptionDialog = ({ open, event, onOpenChange, refetch }: Props) => {
     const createEvent = api.eventOptions.create.useMutation();
 
     const onSubmit = useCallback(
@@ -24,6 +25,7 @@ export const NewOptionDialog = ({ open, event, onOpenChange }: Props) => {
                 },
                 {
                     onSuccess: () => {
+                        void refetch();
                         onOpenChange(false);
                     },
                     onError: (error) => {
@@ -35,7 +37,7 @@ export const NewOptionDialog = ({ open, event, onOpenChange }: Props) => {
                 },
             );
         },
-        [createEvent, event.id, onOpenChange],
+        [createEvent, event.id, onOpenChange, refetch],
     );
 
     return (

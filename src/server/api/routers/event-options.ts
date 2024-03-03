@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureAdmin, ensureStudent } from "~/server/auth";
 import { EVENT_TYPE } from "~/utils/constants";
-import { singleOptionCreateSchema } from "~/utils/schemas";
+import { singleOptionCreateSchema, singleOptionUpdateSchema } from "~/utils/schemas";
 import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
 export const eventOptionsRouter = createTRPCRouter({
@@ -135,6 +135,14 @@ export const eventOptionsRouter = createTRPCRouter({
 
         return ctx.db.singleEventOption.findMany({
             where: { eventId: input.id },
+        });
+    }),
+    update: publicProcedure.input(singleOptionUpdateSchema).mutation(async ({ input, ctx }) => {
+        await ensureAdmin(ctx.auth, ctx.db);
+
+        return ctx.db.singleEventOption.update({
+            where: { id: input.id },
+            data: input.data,
         });
     }),
     delete: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
