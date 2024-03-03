@@ -1,15 +1,12 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { ensureAdmin, ensureStudent, getStudent } from "~/server/auth";
+import { ensureAdmin, ensureStudent } from "~/server/auth";
 import { CLASSES } from "~/utils/constants";
 import { generateExcelForEvent } from "~/utils/data";
 import { singleEventSchema, singleEventUpdateSchema } from "~/utils/schemas";
 
 export const eventRouter = createTRPCRouter({
-    getStudent: publicProcedure.query(({ ctx }) => {
-        return getStudent(ctx.auth, ctx.db);
-    }),
     list: publicProcedure
         .input(
             z.object({

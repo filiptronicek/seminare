@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { api } from "~/utils/api";
 
 export default function Home() {
-    const { data: user, isLoading, isError } = api.events.getStudent.useQuery();
+    const { data: user, isLoading, isError } = api.user.getStudent.useQuery();
 
     if (!user?.class) {
         if (isLoading) {

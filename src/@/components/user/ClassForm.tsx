@@ -11,13 +11,13 @@ import { FormSchema } from "../../../pages/settings";
 import { CLASSES } from "~/utils/constants";
 
 export const ClassForm = () => {
-    const updateMutation = api.userSettings.changeStudentClass.useMutation();
+    const updateMutation = api.user.changeStudentClass.useMutation();
     const {
         data: student,
         isLoading: isStudentLoading,
         isError: isStudentError,
         refetch,
-    } = api.events.getStudent.useQuery();
+    } = api.user.getStudent.useQuery();
     const utils = api.useContext();
 
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -29,7 +29,7 @@ export const ClassForm = () => {
             { class: data.currentClass },
             {
                 onSuccess: () => {
-                    void utils.events.getStudent.invalidate();
+                    void utils.user.getStudent.invalidate();
 
                     toast({
                         title: "Třída byla úspěšně změněna",
