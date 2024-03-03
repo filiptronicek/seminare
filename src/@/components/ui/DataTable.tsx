@@ -52,7 +52,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
     const fuzzyFilter: FilterFn<TData> = useCallback((row, columnId, value, addMeta) => {
         // Rank the item
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument
         const itemRank = rankItem(row.getValue(columnId), value);
 
         // Store the itemRank info

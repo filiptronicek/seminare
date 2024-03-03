@@ -1,9 +1,9 @@
 import { SingleEvent } from "@/components/events/SingleEvent";
 import { SingleSeminar } from "@/components/events/SingleSeminar";
-import { EVENT_TYPE } from "@/lib/constants";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { api } from "~/utils/api";
+import { EVENT_TYPE } from "~/utils/constants";
 
 const normalizeId = (id: string | string[]) => {
     if (Array.isArray(id)) {

@@ -1,5 +1,5 @@
-import { CLASSES, EVENT_TYPE } from "@/lib/constants";
 import { z } from "zod";
+import { CLASSES, EVENT_TYPE } from "./constants";
 
 export const singleEventSchema = z.object({
     title: z.string().max(255, "Akce nesmí mít delší název než 255 znaků").min(1, "Akce musí mít název"),

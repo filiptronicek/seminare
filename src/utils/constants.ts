@@ -1,4 +1,4 @@
-export const ACCESSIBLE_CLASSES = new Set([
+export const CLASSES = [
     "1G",
     "2G",
     "3G",
@@ -12,4 +12,12 @@ export const ACCESSIBLE_CLASSES = new Set([
     // todo: uncomment when available
     // "3N",
     // "4N",
-]);
+] as const;
+export type Class = (typeof CLASSES)[number];
+
+export enum EVENT_TYPE {
+    WANDERTAG = "WANDERTAG",
+    SEMINAR = "SEMINAR",
+    PROJECT_WEEK = "PROJECT_WEEK",
+    UNSPECIFIED = "UNSPECIFIED",
+}

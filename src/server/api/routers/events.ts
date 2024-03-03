@@ -1,8 +1,8 @@
-import { CLASSES } from "@/lib/constants";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureStudent, getStudent } from "~/server/auth";
+import { CLASSES } from "~/utils/constants";
 
 export const eventRouter = createTRPCRouter({
     getStudent: publicProcedure.query(({ ctx }) => {

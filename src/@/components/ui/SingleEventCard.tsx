@@ -34,28 +34,26 @@ export const SingleEventCard = ({ event }: Props) => {
                 <>
                     {isSignupOpen && <Badge className="max-w-[10rem]">Přihlašování otevřeno</Badge>}
                     <div className="flex flew-row gap-2">
-                        {event.signupStartDate === event.signupEndDate ? (
+                        {event.signupStartDate === event.signupEndDate ?
                             <>
                                 <Mail /> {formatDate(dayjs(event.signupStartDate))}
                             </>
-                        ) : (
-                            <>
+                        :   <>
                                 <Mail /> {formatDate(dayjs(event.signupStartDate))}&nbsp;-&nbsp;
                                 {formatDate(dayjs(event.signupEndDate))}
                             </>
-                        )}
+                        }
                     </div>
                     <div className="flex flew-row gap-2">
-                        {event.startDate === event.endDate ? (
+                        {event.startDate === event.endDate ?
                             <>
                                 <Calendar /> {formatDate(dayjs(event.startDate))}
                             </>
-                        ) : (
-                            <>
+                        :   <>
                                 <Calendar /> {formatDate(dayjs(event.startDate))}&nbsp;-&nbsp;
                                 {formatDate(dayjs(event.endDate))}
                             </>
-                        )}
+                        }
                     </div>
                 </>
                 <Link className={cn(buttonVariants({ variant: "default" }), "w-full")} href={`/events/${event.id}`}>

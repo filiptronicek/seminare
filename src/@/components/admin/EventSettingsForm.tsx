@@ -9,12 +9,12 @@ import { Checkbox } from "../ui/checkbox";
 import { type CheckedState } from "@radix-ui/react-checkbox";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { singleEventSchema as formSchema } from "~/utils/schemas";
-import { EVENT_TYPE, type Class } from "@/lib/constants";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 import { formatDate } from "~/utils/dates";
+import { type Class, EVENT_TYPE } from "~/utils/constants";
 
 type Props = {
     event?: Event;

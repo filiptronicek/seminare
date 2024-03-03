@@ -7,8 +7,8 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type * as z from "zod";
 import { api } from "~/utils/api";
-import { ACCESSIBLE_CLASSES } from "~/utils/constants";
 import { FormSchema } from "../../../pages/settings";
+import { CLASSES } from "~/utils/constants";
 
 export const ClassForm = () => {
     const updateMutation = api.userSettings.changeStudentClass.useMutation();
@@ -69,7 +69,7 @@ export const ClassForm = () => {
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    {[...ACCESSIBLE_CLASSES].map((item) => (
+                                    {[...CLASSES].map((item) => (
                                         <SelectItem key={item} value={item}>
                                             {item}
                                         </SelectItem>

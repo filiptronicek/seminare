@@ -1,7 +1,7 @@
-import type { Class } from "@/lib/constants";
 import { Loader2 } from "lucide-react";
 import { api } from "~/utils/api";
 import { SingleEventCard } from "../ui/SingleEventCard";
+import { type Class } from "~/utils/constants";
 
 type Props = {
     user: {

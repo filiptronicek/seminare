@@ -1,8 +1,8 @@
-import { EVENT_TYPE } from "@/lib/constants";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureAdmin, ensureStudent } from "~/server/auth";
+import { EVENT_TYPE } from "~/utils/constants";
 import { generateExcelForEvent } from "~/utils/data";
 import { singleEventSchema, singleEventUpdateSchema } from "~/utils/schemas";
 import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
@@ -194,7 +194,15 @@ export const singleEventRouter = createTRPCRouter({
         return ctx.db.event.create({
             data: {
                 id: crypto.randomUUID(),
-                ...input,
+                title: input.title,
+                description: input.description,
+                allowMultipleSelections: input.allowMultipleSelections,
+                visibleToClasses: input.visibleToClasses,
+                type: input.type,
+                signupEndDate: input.signup.to,
+                signupStartDate: input.signup.from,
+                endDate: input.happening.to,
+                startDate: input.happening.from,
             },
         });
     }),
