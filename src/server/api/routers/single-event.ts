@@ -169,7 +169,7 @@ export const singleEventRouter = createTRPCRouter({
             data: {
                 id: crypto.randomUUID(),
                 ...input,
-            }
+            },
         });
     }),
 });
