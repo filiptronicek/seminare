@@ -21,7 +21,7 @@ export const NavigationBar = () => {
         <NavigationMenu>
             <NavigationMenuList>
                 <NavigationMenuItem>
-                    <Image src={mmpLogo as string} alt="Logo" width={30} height={30} />
+                    <Image src={mmpLogo as string} alt="" width={30} height={30} />
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                     <Link href="/" legacyBehavior passHref>
