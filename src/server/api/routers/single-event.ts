@@ -131,7 +131,23 @@ export const singleEventRouter = createTRPCRouter({
 
         return option;
     }),
-    // todo: add a proper file stream response
+    deleteOption: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
+        await ensureAdmin(ctx.auth, ctx.db);
+
+        const option = await ctx.db.singleEventOption.findUnique({
+            where: { id: input.optionId },
+        });
+        if (!option) throw new Error("Event option not found");
+
+        // Clean up if students have selected this option
+        await ctx.db.studentOption.deleteMany({
+            where: { optionId: input.optionId },
+        });
+
+        return ctx.db.singleEventOption.delete({
+            where: { id: input.optionId },
+        });
+    }),
     generateExcel: publicProcedure.input(z.object({ eventId: z.string() })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
 
