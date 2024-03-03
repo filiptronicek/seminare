@@ -27,34 +27,35 @@ export const SingleEventCard = ({ event }: Props) => {
     return (
         <Card className="max-w-md w-screen justify-between flex flex-col">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl flex items-center gap-2">
-                    {event.title} {isSignupOpen && <Badge>Přihlašování otevřeno</Badge>}{" "}
-                </CardTitle>
+                <CardTitle className="text-2xl flex items-center gap-2">{event.title}</CardTitle>
                 <CardDescription className="truncate-5-lines">{event.description}</CardDescription>
             </CardHeader>
             <CardContent className="gap-4 flex flex-col">
                 <>
+                    {isSignupOpen && <Badge className="max-w-[10rem]">Přihlašování otevřeno</Badge>}
                     <div className="flex flew-row gap-2">
-                        {event.signupStartDate === event.signupEndDate ?
+                        {event.signupStartDate === event.signupEndDate ? (
                             <>
                                 <Mail /> {formatDate(dayjs(event.signupStartDate))}
                             </>
-                        :   <>
+                        ) : (
+                            <>
                                 <Mail /> {formatDate(dayjs(event.signupStartDate))}&nbsp;-&nbsp;
                                 {formatDate(dayjs(event.signupEndDate))}
                             </>
-                        }
+                        )}
                     </div>
                     <div className="flex flew-row gap-2">
-                        {event.startDate === event.endDate ?
+                        {event.startDate === event.endDate ? (
                             <>
                                 <Calendar /> {formatDate(dayjs(event.startDate))}
                             </>
-                        :   <>
+                        ) : (
+                            <>
                                 <Calendar /> {formatDate(dayjs(event.startDate))}&nbsp;-&nbsp;
                                 {formatDate(dayjs(event.endDate))}
                             </>
-                        }
+                        )}
                     </div>
                 </>
                 <Link className={cn(buttonVariants({ variant: "default" }), "w-full")} href={`/events/${event.id}`}>
