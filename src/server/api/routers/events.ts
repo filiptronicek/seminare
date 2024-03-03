@@ -27,10 +27,12 @@ export const eventRouter = createTRPCRouter({
                 where: {
                     ...(input.active ?
                         {
-                            signupEndDate: {
-                                gte: now,
-                            },
                             OR: [
+                                {
+                                    signupEndDate: {
+                                        gte: now,
+                                    },
+                                },
                                 {
                                     endDate: {
                                         gte: now,
@@ -38,14 +40,24 @@ export const eventRouter = createTRPCRouter({
                                 },
                             ],
                         }
-                    :   {}),
+                        : {}),
                     ...(input.class ?
                         {
-                            visibleToClasses: {
-                                has: input.class,
-                            },
+                            OR: [
+                                {
+                                    visibleToClasses: {
+                                        has: input.class,
+                                    },
+                                },
+                                {
+                                    // if the event does not specify a class, it is visible to all
+                                    visibleToClasses: {
+                                        isEmpty: true,
+                                    },
+                                },
+                            ],
                         }
-                    :   {}),
+                        : {}),
                 },
                 orderBy: {
                     signupStartDate: "asc",
