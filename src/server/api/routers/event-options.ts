@@ -80,6 +80,17 @@ export const eventOptionsRouter = createTRPCRouter({
             }
         }
 
+        if (option.maxParticipants !== null) {
+            const participants = await ctx.db.studentOption.count({
+                where: {
+                    optionId: option.id,
+                },
+            });
+            if (participants >= option.maxParticipants) {
+                throw new Error("Možnost je již plná");
+            }
+        }
+
         await ctx.db.studentOption.create({
             data: {
                 studentId: student.id,
