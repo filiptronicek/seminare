@@ -267,7 +267,7 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                     }}
                 />
 
-                <Button type="submit">
+                <Button type="submit" disabled={!form.formState.isDirty}>
                     {isLoading ?
                         <Loader2 className="animate-spin" />
                     :   "Uložit"}
