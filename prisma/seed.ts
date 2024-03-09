@@ -1,6 +1,6 @@
 import type { Event, SingleEventOption } from "@prisma/client";
 import { db } from "../src/server/db";
-import { CLASSES, EVENT_TYPE } from "../src/@/lib/constants";
+import { CLASSES, EVENT_TYPE } from "../src/utils/constants";
 import { LoremIpsum } from "lorem-ipsum";
 import { random, sampleSize, sample } from "lodash";
 
