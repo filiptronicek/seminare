@@ -6,6 +6,8 @@ import { CLASSES } from "~/utils/constants";
 import { generateExcelForEvent } from "~/utils/data";
 import { singleEventSchema, singleEventUpdateSchema } from "~/utils/schemas";
 
+const idType = z.string().uuid();
+
 export const eventRouter = createTRPCRouter({
     list: publicProcedure
         .input(
@@ -67,7 +69,7 @@ export const eventRouter = createTRPCRouter({
                 },
             });
         }),
-    generateExcel: publicProcedure.input(z.object({ eventId: z.string() })).mutation(async ({ input, ctx }) => {
+    generateExcel: publicProcedure.input(z.object({ eventId: idType })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
 
         const event = await ctx.db.event.findUnique({
@@ -99,7 +101,7 @@ export const eventRouter = createTRPCRouter({
             },
         });
     }),
-    get: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
+    get: publicProcedure.input(z.object({ id: idType })).query(async ({ input, ctx }) => {
         await ensureStudent(ctx.auth, ctx.db);
 
         return ctx.db.event.findUnique({ where: { id: input.id } });
@@ -130,7 +132,7 @@ export const eventRouter = createTRPCRouter({
             },
         });
     }),
-    delete: publicProcedure.input(z.object({ id: z.string() })).mutation(async ({ input, ctx }) => {
+    delete: publicProcedure.input(z.object({ id: idType })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
 
         // Clean up any options and student options
