@@ -47,7 +47,5 @@ export const generateExcelForEvent = async ({
         });
     });
 
-    // await workbook.xlsx.writeFile('EventAttendees.xlsx');
-
-    return await workbook.xlsx.writeBuffer();
+    return workbook.xlsx.writeBuffer();
 };
