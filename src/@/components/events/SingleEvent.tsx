@@ -67,7 +67,7 @@ export const SingleEvent = ({ id }: Props) => {
                         :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
                     </span>
 
-                    <p className="mt-6">{event.description}</p>
+                    <span className="mt-6 whitespace-pre-line text-balance max-w-3xl">{event.description}</span>
 
                     {options && (
                         <div className="mt-8">

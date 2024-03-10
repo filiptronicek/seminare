@@ -90,7 +90,7 @@ export const SingleSeminar = ({ id }: Props) => {
                         :   <>Vybráno všech {seminarMetadata?.requiredHours} hodin ✔︎</>}
                     </span>
 
-                    <span className="mt-6">{event.description}</span>
+                    <span className="mt-6 whitespace-pre-line text-balance max-w-3xl">{event.description}</span>
 
                     {options && (
                         <div className="mt-8">
