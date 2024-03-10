@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import czechLocale from "dayjs/locale/cs";
 import calendar from "dayjs/plugin/calendar";
-import { ClipboardSignature, Loader2 } from "lucide-react";
+import { Loader2, TicketMinus, TicketPlus } from "lucide-react";
 import { useMemo } from "react";
 import { api } from "~/utils/api";
 import { Button } from "../ui/button";
@@ -38,7 +38,10 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
             return false;
         }
 
-        return currentDate.isAfter(dayjs(event.signupStartDate)) && currentDate.isBefore(dayjs(endOfDay(event.signupEndDate)));
+        return (
+            currentDate.isAfter(dayjs(event.signupStartDate)) &&
+            currentDate.isBefore(dayjs(endOfDay(event.signupEndDate)))
+        );
     }, [event.signupStartDate, event.signupEndDate]);
 
     const buttonShown = useMemo(() => {
@@ -93,7 +96,7 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
     };
 
     return (
-        <Card key={option.id} className="w-96 min-h-[14rem]">
+        <Card key={option.id} className="w-96 min-h-[14rem] flex flex-col justify-between">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
                 <CardDescription className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>
@@ -102,10 +105,12 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
             </CardHeader>
             <CardContent className="grid gap-4">
                 {buttonShown && (
-                    <Button disabled={isLoading} onClick={handleUpdate}>
+                    <Button disabled={isLoading} onClick={handleUpdate} className="flex gap-2">
                         {isLoading ?
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        :   <ClipboardSignature className="mr-2 h-4 w-4" />}
+                            <Loader2 className="size-4 animate-spin" />
+                        : isOptionSelected ?
+                            <TicketMinus className="size-4" />
+                        :   <TicketPlus className="size-4" />}
                         {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                     </Button>
                 )}

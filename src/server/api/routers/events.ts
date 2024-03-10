@@ -100,7 +100,7 @@ export const eventRouter = createTRPCRouter({
                 startDate: input.happening.from,
                 metadata: {
                     requiredHours: input.metadata?.requiredHours,
-                    availableBranches: input.metadata?.availableBranches ?? AVAILABLE_BRANCHES
+                    availableBranches: input.metadata?.availableBranches ?? AVAILABLE_BRANCHES,
                 },
             },
         });

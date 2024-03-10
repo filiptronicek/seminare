@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import czechLocale from "dayjs/locale/cs";
 import calendar from "dayjs/plugin/calendar";
-import { ClipboardSignature, Loader2 } from "lucide-react";
+import { Loader2, TicketMinus, TicketPlus } from "lucide-react";
 import { useMemo } from "react";
 import { api } from "~/utils/api";
 import { Button } from "../ui/button";
@@ -104,7 +104,7 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
     };
 
     return (
-        <Card key={option.id} className="w-96 min-h-[14rem]">
+        <Card key={option.id} className="w-96 min-h-[14rem] flex flex-col justify-between">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
                 <CardDescription>
@@ -116,12 +116,16 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
             </CardHeader>
             <CardContent className="grid gap-4">
                 {(buttonShown || !canSelect) && (
-                    <Button disabled={isLoading || (!isOptionSelected && !canSelect)} onClick={handleUpdate}>
-                        {isLoading ? (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                            <ClipboardSignature className="mr-2 h-4 w-4" />
-                        )}
+                    <Button
+                        disabled={isLoading || (!isOptionSelected && !canSelect)}
+                        onClick={handleUpdate}
+                        className="flex gap-2"
+                    >
+                        {isLoading ?
+                            <Loader2 className="size-4 animate-spin" />
+                        : isOptionSelected ?
+                            <TicketMinus className="size-4" />
+                        :   <TicketPlus className="size-4" />}
                         {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                     </Button>
                 )}

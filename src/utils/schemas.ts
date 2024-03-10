@@ -8,7 +8,7 @@ export const seminarSchema = z.object({
 
 export const seminarOptionSchema = z.object({
     hoursPerWeek: z.number().int().nonnegative("Počet hodin týdně nesmí být záporný"),
-    branch: z.string().default("universal")
+    branch: z.string().default("universal"),
 });
 
 export const singleEventSchema = z.object({
