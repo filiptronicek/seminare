@@ -91,7 +91,6 @@ export const EventOptionTable = ({ event }: Props) => {
 
     return (
         <>
-            <DataTable className="max-w-2xl" columns={columns} data={data} />
             <div className="flex justify-between my-4">
                 <h2 className="text-2xl font-bold">Možnosti</h2>
                 <Button variant="secondary" onClick={() => setShowNewDialog(true)}>
@@ -99,6 +98,7 @@ export const EventOptionTable = ({ event }: Props) => {
                 </Button>
                 <NewOptionDialog refetch={refetch} event={event} open={showNewDialog} onOpenChange={setShowNewDialog} />
             </div>
+            <DataTable className="max-w-2xl" columns={columns} data={data} />
         </>
     );
 };
