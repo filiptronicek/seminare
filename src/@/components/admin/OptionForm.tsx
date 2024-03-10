@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { type Event, type SingleEventOption } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import { singleOptionSchema } from "~/utils/schemas";
-import { parseSeminarOptionMetaSafe } from "~/utils/seminars";
+import { parseSeminarMetaSafe, parseSeminarOptionMetaSafe } from "~/utils/seminars";
 import { EVENT_TYPE } from "~/utils/constants";
 import { Textarea } from "../ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { useMemo } from "react";
 
 type Props = {
     option?: SingleEventOption;
@@ -19,6 +21,8 @@ type Props = {
     onDelete?: () => void;
 };
 export const OptionSettingsForm = ({ option, event, isLoading, onSubmit, onDelete }: Props) => {
+    const seminarMetadata = useMemo(() => parseSeminarMetaSafe(event.metadata), [event.metadata]);
+
     const form = useForm<z.infer<typeof singleOptionSchema>>({
         resolver: zodResolver(singleOptionSchema),
         defaultValues: {
@@ -84,27 +88,66 @@ export const OptionSettingsForm = ({ option, event, isLoading, onSubmit, onDelet
                 />
 
                 {event.type === EVENT_TYPE.SEMINAR.toString() && (
-                    <FormField
-                        control={form.control}
-                        name="metadata.hoursPerWeek"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Hodin týdně</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="number"
-                                        placeholder=""
-                                        {...field}
-                                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                                    />
-                                </FormControl>
-                                <FormDescription>
-                                    Kolik hodin týdně zabírá tento předmět v rozvrhu žáka?
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <>
+                        <FormField
+                            control={form.control}
+                            name="metadata.hoursPerWeek"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Hodin týdně</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            placeholder=""
+                                            {...field}
+                                            onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Kolik hodin týdně zabírá tento předmět v rozvrhu žáka?
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="metadata.branch"
+                            render={({ field }) => {
+                                const fieldProps = {
+                                    onValueChange: (value: string) => {
+                                        field.onChange(value);
+                                    },
+                                    value: field.value,
+                                    ref: field.ref,
+                                };
+
+                                return (
+                                    <FormItem>
+                                        <FormLabel>Větev</FormLabel>
+                                        <FormControl>
+                                            <Select {...fieldProps}>
+                                                <SelectTrigger className="w-[180px]">
+                                                    <SelectValue placeholder="Vyberte..." />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {seminarMetadata?.availableBranches.map((branch) => (
+                                                        <SelectItem key={branch.id} value={branch.id}>
+                                                            {branch.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormDescription>
+                                            Pod jakou větev by měl být tento předmět zařazen?
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                );
+                            }}
+                        />
+                    </>
                 )}
 
                 <div className="flex justify-end space-x-4">
