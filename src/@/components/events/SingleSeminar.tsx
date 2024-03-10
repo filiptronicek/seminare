@@ -59,26 +59,22 @@ export const SingleSeminar = ({ id }: Props) => {
                     <h1 className="text-4xl font-bold my-4">{event.title}</h1>
 
                     <span className="font-bold">
-                        {isSignupOpen ? (
+                        {isSignupOpen ?
                             <>
                                 {/* todo: convert to `<time>` */}
                                 Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
                             </>
-                        ) : signupInThePast ? (
+                        : signupInThePast ?
                             <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
-                        ) : (
-                            <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>
-                        )}
+                        :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
                     </span>
 
                     <span className="font-bold">
-                        {remainingToSelect > 0 ? (
+                        {remainingToSelect > 0 ?
                             <>
                                 Zbývající hodiny k vybrání: {remainingToSelect} z {seminarMetadata?.requiredHours}
                             </>
-                        ) : (
-                            <>Vybráno všech {seminarMetadata?.requiredHours} hodin ✔︎</>
-                        )}
+                        :   <>Vybráno všech {seminarMetadata?.requiredHours} hodin ✔︎</>}
                     </span>
 
                     <span className="mt-6">{event.description}</span>
