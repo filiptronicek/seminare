@@ -27,9 +27,12 @@ export const SingleEvent = ({ id }: Props) => {
         return currentDate.isAfter(dayjs(event?.signupEndDate));
     }, [event?.signupEndDate]);
 
+    if (error || optionsError) {
+        return <div>Chyba v načítání</div>;
+    }
+
     return (
         <>
-            {(error ?? optionsError) && <div>failed to load</div>}
             {event && (
                 <section>
                     <h1 className="text-4xl font-bold my-4">{event.title}</h1>
