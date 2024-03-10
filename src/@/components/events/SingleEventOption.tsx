@@ -10,6 +10,7 @@ import { useMemo } from "react";
 import { api } from "~/utils/api";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
+import { endOfDay } from "date-fns";
 
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
@@ -32,7 +33,12 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
 
     const isSignupOpen = useMemo(() => {
         const currentDate = dayjs();
-        return currentDate.isAfter(dayjs(event.signupStartDate)) && currentDate.isBefore(dayjs(event.signupEndDate));
+
+        if (!event.signupStartDate || !event.signupEndDate) {
+            return false;
+        }
+
+        return currentDate.isAfter(dayjs(event.signupStartDate)) && currentDate.isBefore(dayjs(endOfDay(event.signupEndDate)));
     }, [event.signupStartDate, event.signupEndDate]);
 
     const buttonShown = useMemo(() => {

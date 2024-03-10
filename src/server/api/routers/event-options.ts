@@ -1,3 +1,4 @@
+import { endOfDay } from "date-fns";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
@@ -30,8 +31,12 @@ export const eventOptionsRouter = createTRPCRouter({
         if (option.event.signupStartDate && option.event.signupStartDate > new Date()) {
             throw new Error("Signup period has not started yet");
         }
-        if (option.event.signupEndDate && option.event.signupEndDate < new Date()) {
-            throw new Error("Signup period has ended");
+
+        if (option.event.signupEndDate) {
+            const signupEndDate = endOfDay(option.event.signupEndDate);
+            if (signupEndDate < new Date()) {
+                throw new Error("Signup period has ended");
+            }
         }
 
         if (!option.event.allowMultipleSelections) {
