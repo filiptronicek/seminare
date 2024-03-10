@@ -1,7 +1,6 @@
 import { SingleEvent } from "@/components/events/SingleEvent";
 import { SingleSeminar } from "@/components/events/SingleSeminar";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
 import { api } from "~/utils/api";
 import { EVENT_TYPE } from "~/utils/constants";
 
@@ -14,10 +13,7 @@ const normalizeId = (id: string | string[]) => {
 
 export default function Page() {
     const router = useRouter();
-
-    const eventId = useMemo(() => {
-        return normalizeId(router.query.id!);
-    }, [router.query.id]);
+    const eventId = normalizeId(router.query.id!);
 
     const { data: event } = api.events.get.useQuery({ id: eventId });
 

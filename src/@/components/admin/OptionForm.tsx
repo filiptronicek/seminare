@@ -157,7 +157,9 @@ export const OptionSettingsForm = ({ option, event, isLoading, onSubmit, onDelet
                         </Button>
                     )}
                     <Button type="submit" disabled={!form.formState.isDirty}>
-                        {isLoading ? <Loader2 className="animate-spin" /> : "Uložit"}
+                        {isLoading ?
+                            <Loader2 className="animate-spin" />
+                        :   "Uložit"}
                     </Button>
                 </div>
             </form>

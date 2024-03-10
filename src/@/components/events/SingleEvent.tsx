@@ -3,6 +3,9 @@ import { useMemo } from "react";
 import { api } from "~/utils/api";
 import { formatDate } from "~/utils/dates";
 import { SingleOption } from "./SingleEventOption";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { Pen } from "lucide-react";
 
 type Props = {
     id: string;
@@ -12,6 +15,7 @@ export const SingleEvent = ({ id }: Props) => {
     const { data: options, error: optionsError } = api.eventOptions.list.useQuery({
         id,
     });
+    const { data: student } = api.user.getStudent.useQuery();
 
     const { data: selectedOptions, refetch: refetchSelected } = api.eventOptions.listStudentOptions.useQuery({
         eventId: id,
@@ -35,7 +39,16 @@ export const SingleEvent = ({ id }: Props) => {
         <>
             {event && (
                 <section>
-                    <h1 className="text-4xl font-bold my-4">{event.title}</h1>
+                    <header className="flex justify-between">
+                        <h1 className="text-4xl font-bold my-4">{event.title}</h1>
+                        {student?.admin && (
+                            <Button variant={"secondary"} asChild className="flex items-center gap-2 w-28">
+                                <Link href={`/admin/${event.id}`}>
+                                    <Pen size={16} /> Upravit
+                                </Link>
+                            </Button>
+                        )}
+                    </header>
 
                     {event.allowMultipleSelections && (
                         <p className="my-1">
