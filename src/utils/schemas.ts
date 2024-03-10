@@ -2,12 +2,12 @@ import { z } from "zod";
 import { CLASSES, EVENT_TYPE } from "./constants";
 
 export const seminarSchema = z.object({
-    requiredHours: z.number(),
+    requiredHours: z.number().int().positive("Počet hodin musí být vyšší než 0"),
     availableBranches: z.array(z.object({ id: z.string(), label: z.string() })),
 });
 
 export const seminarOptionSchema = z.object({
-    hoursPerWeek: z.number(),
+    hoursPerWeek: z.number().int().nonnegative("Počet hodin týdně nesmí být záporný"),
     branch: z.string().default("universal")
 });
 

@@ -15,6 +15,16 @@ import { parseSeminarOptionMeta } from "~/utils/seminars";
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
 
+const formatHourCount = (hours: number) => {
+    if (hours === 1) {
+        return "1 hodina";
+    }
+    if (hours < 5) {
+        return `${hours} hodiny`;
+    }
+    return `${hours} hodin`;
+};
+
 interface Props {
     option: SingleEventOption;
     selected: SingleEventOption[] | undefined;
@@ -101,15 +111,17 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
                     <span className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>
                         {option.description}
                     </span>
-                    <span>{optionMeta?.hoursPerWeek ?? "Není k dispozici"} hodin týdně</span>
+                    {optionMeta?.hoursPerWeek && <span>{formatHourCount(optionMeta.hoursPerWeek)} týdně</span>}
                 </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
                 {(buttonShown || !canSelect) && (
                     <Button disabled={isLoading || (!isOptionSelected && !canSelect)} onClick={handleUpdate}>
-                        {isLoading ?
+                        {isLoading ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        :   <ClipboardSignature className="mr-2 h-4 w-4" />}
+                        ) : (
+                            <ClipboardSignature className="mr-2 h-4 w-4" />
+                        )}
                         {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                     </Button>
                 )}
