@@ -84,9 +84,8 @@ export const columns: ColumnDef<Event>[] = [
     },
     {
         id: "actions",
-        header: "Akce",
         cell: (cell) => (
-            <Button type="button" variant={"secondary"}>
+            <Button type="button" variant={"secondary"} asChild>
                 <Link href={`/admin/${cell.row.original.id}`}>Zobrazit</Link>
             </Button>
         ),

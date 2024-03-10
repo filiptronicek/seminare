@@ -72,7 +72,6 @@ export const EventOptionTable = ({ event }: Props) => {
             },
             {
                 id: "actions",
-                header: "Akce",
                 cell: (cell) => {
                     return <ActionCell refetch={refetch} row={cell.row} event={event} />;
                 },
