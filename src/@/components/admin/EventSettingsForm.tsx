@@ -17,6 +17,7 @@ import { formatDate } from "~/utils/dates";
 import { type Class, EVENT_TYPE } from "~/utils/constants";
 import { displayEventType } from "~/utils/display";
 import { parseSeminarMetaSafe } from "~/utils/seminars";
+import { Textarea } from "../ui/textarea";
 
 type FormValues = z.infer<typeof formSchema>;
 type Props = {
@@ -71,7 +72,7 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                         <FormItem>
                             <FormLabel>Popis</FormLabel>
                             <FormControl>
-                                <Input placeholder="" {...field} />
+                                <Textarea {...field} />
                             </FormControl>
                             <FormDescription>Popis akce, který bude zobrazen na detailu akce.</FormDescription>
                             <FormMessage />

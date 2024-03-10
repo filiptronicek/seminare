@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import { singleOptionSchema } from "~/utils/schemas";
 import { parseSeminarOptionMetaSafe } from "~/utils/seminars";
 import { EVENT_TYPE } from "~/utils/constants";
+import { Textarea } from "../ui/textarea";
 
 type Props = {
     option?: SingleEventOption;
@@ -54,7 +55,7 @@ export const OptionSettingsForm = ({ option, event, isLoading, onSubmit, onDelet
                         <FormItem>
                             <FormLabel>Popis</FormLabel>
                             <FormControl>
-                                <Input placeholder="" {...field} />
+                                <Textarea {...field} />
                             </FormControl>
                             <FormDescription>Popis akce, který bude zobrazen na detailu akce.</FormDescription>
                             <FormMessage />
