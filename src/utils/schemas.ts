@@ -23,6 +23,7 @@ export const singleEventSchema = z.object({
         from: z.date(),
         to: z.date(),
     }),
+    metadata: seminarSchema.optional(),
     visibleToClasses: z.array(z.enum(CLASSES)),
     type: z.nativeEnum(EVENT_TYPE),
 });
@@ -30,7 +31,6 @@ export const singleEventSchema = z.object({
 export const singleEventUpdateSchema = z.object({
     id: z.string().uuid(),
     data: singleEventSchema.partial(),
-    metadata: seminarSchema.optional(),
 });
 
 export const singleOptionSchema = z.object({

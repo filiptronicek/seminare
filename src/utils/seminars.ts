@@ -5,6 +5,14 @@ export const parseSeminarMeta = (data: unknown): z.infer<typeof seminarSchema> =
     return seminarSchema.parse(data);
 };
 
+export const parseSeminarMetaSafe = (data: unknown): z.infer<typeof seminarSchema> | undefined => {
+    try {
+        return seminarSchema.parse(data);
+    } catch {
+        return undefined;
+    }
+};
+
 export const parseSeminarOptionMeta = (data: unknown): z.infer<typeof seminarOptionSchema> => {
     return seminarOptionSchema.parse(data);
 };

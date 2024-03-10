@@ -16,14 +16,16 @@ import { Calendar } from "../ui/calendar";
 import { formatDate } from "~/utils/dates";
 import { type Class, EVENT_TYPE } from "~/utils/constants";
 import { displayEventType } from "~/utils/display";
+import { parseSeminarMetaSafe } from "~/utils/seminars";
 
+type FormValues = z.infer<typeof formSchema>;
 type Props = {
     event?: Event;
     isLoading: boolean;
-    onSubmit: (values: z.infer<typeof formSchema>) => void;
+    onSubmit: (values: FormValues) => void;
 };
 export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: event?.title,
@@ -39,8 +41,11 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                 to: event?.endDate ?? undefined,
             },
             type: (event?.type as EVENT_TYPE) ?? EVENT_TYPE.UNSPECIFIED,
+            metadata: parseSeminarMetaSafe(event?.metadata),
         },
     });
+
+    const eventIsSeminar = form.getValues("type") === EVENT_TYPE.SEMINAR;
 
     return (
         <Form {...form}>
@@ -234,6 +239,30 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                         );
                     }}
                 />
+
+                {eventIsSeminar && (
+                    <FormField
+                        control={form.control}
+                        name="metadata.requiredHours"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Hodin týdně</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="number"
+                                        min={1}
+                                        {...field}
+                                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                                    />
+                                </FormControl>
+                                <FormDescription>
+                                    Kolik hodin seminářů na týden si musí studenti vybrat?
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                )}
 
                 <FormField
                     control={form.control}
