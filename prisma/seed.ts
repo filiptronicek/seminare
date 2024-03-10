@@ -99,7 +99,7 @@ const randomSeminarOption = (event: Event, i: number): SingleEventOption => {
         maxParticipants: null,
         metadata: {
             hoursPerWeek: random(1, 2)!,
-            branch: sample(AVAILABLE_BRANCHES)!,
+            branch: sample(AVAILABLE_BRANCHES)?.id,
         },
     };
 };

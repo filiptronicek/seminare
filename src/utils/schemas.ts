@@ -8,7 +8,7 @@ export const seminarSchema = z.object({
 
 export const seminarOptionSchema = z.object({
     hoursPerWeek: z.number(),
-    branch: z.object({ id: z.string(), label: z.string() }),
+    branch: z.string().default("universal")
 });
 
 export const singleEventSchema = z.object({
@@ -23,7 +23,7 @@ export const singleEventSchema = z.object({
         from: z.date(),
         to: z.date(),
     }),
-    metadata: seminarSchema.optional(),
+    metadata: seminarSchema.partial().optional(),
     visibleToClasses: z.array(z.enum(CLASSES)),
     type: z.nativeEnum(EVENT_TYPE),
 });
@@ -37,7 +37,7 @@ export const singleOptionSchema = z.object({
     title: z.string().max(255, "Možnost nesmí mít delší název než 255 znaků").min(1, "Možnost musí mít název"),
     maxParticipants: z.number().int().nonnegative().optional(),
     description: z.string().optional(),
-    metadata: seminarOptionSchema.optional(),
+    metadata: seminarOptionSchema.partial().optional(),
 });
 
 export const singleOptionUpdateSchema = z.object({
