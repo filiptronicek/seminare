@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { FileDown, Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { EventOptionTable } from "@/components/admin/EventOptionTable";
 import { api } from "~/utils/api";
@@ -75,7 +75,10 @@ export default function EventOption() {
                 <EventOptionTable event={event} />
             </div>
             <div className="flex gap-3">
-                <Button onClick={handleDownload}>Stáhnout jako excelovou tabulku</Button>
+                <Button onClick={handleDownload} className="flex gap-2">
+                    <FileDown />
+                    Stáhnout jako .xlsx
+                </Button>
                 <Button onClick={() => setIsDeleteDialogOpen(true)} variant={"destructive"}>
                     Smazat Akci
                 </Button>
