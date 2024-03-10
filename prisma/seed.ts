@@ -1,6 +1,6 @@
 import type { Event, SingleEventOption } from "@prisma/client";
 import { db } from "../src/server/db";
-import { CLASSES, EVENT_TYPE } from "../src/utils/constants";
+import { AVAILABLE_BRANCHES, CLASSES, EVENT_TYPE } from "../src/utils/constants";
 import { LoremIpsum } from "lorem-ipsum";
 import { random, sampleSize, sample } from "lodash";
 
@@ -22,12 +22,6 @@ const lorem = new LoremIpsum({
         min: 4,
     },
 });
-
-const availableBranches = [
-    { id: "humanitarian", label: "Humanitní" },
-    { id: "science", label: "Přírodovědná" },
-    { id: "universal", label: "Univerzální" },
-];
 
 export const randomEvent = (): Event => {
     const events = [
@@ -91,7 +85,7 @@ const randomSeminar = (className: string): Event => {
         visibleToClasses: [className],
         metadata: {
             requiredHours,
-            availableBranches,
+            availableBranches: AVAILABLE_BRANCHES,
         },
     };
 };
@@ -105,7 +99,7 @@ const randomSeminarOption = (event: Event, i: number): SingleEventOption => {
         maxParticipants: null,
         metadata: {
             hoursPerWeek: random(1, 2)!,
-            branch: sample(availableBranches)!,
+            branch: sample(AVAILABLE_BRANCHES)!,
         },
     };
 };

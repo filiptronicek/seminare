@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureAdmin, ensureStudent } from "~/server/auth";
-import { CLASSES } from "~/utils/constants";
+import { AVAILABLE_BRANCHES, CLASSES } from "~/utils/constants";
 import { generateExcelForEvent } from "~/utils/data";
 import { singleEventSchema, singleEventUpdateSchema } from "~/utils/schemas";
 
@@ -98,6 +98,10 @@ export const eventRouter = createTRPCRouter({
                 signupStartDate: input.signup.from,
                 endDate: input.happening.to,
                 startDate: input.happening.from,
+                metadata: {
+                    requiredHours: input.metadata?.requiredHours,
+                    availableBranches: input.metadata?.availableBranches ?? AVAILABLE_BRANCHES
+                },
             },
         });
     }),

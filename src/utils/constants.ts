@@ -15,6 +15,12 @@ export const CLASSES = [
 ] as const;
 export type Class = (typeof CLASSES)[number];
 
+export const AVAILABLE_BRANCHES = [
+    { id: "humanitarian", label: "Humanitní" },
+    { id: "science", label: "Přírodovědná" },
+    { id: "universal", label: "Univerzální" },
+] as const;
+
 export enum EVENT_TYPE {
     WANDERTAG = "WANDERTAG",
     SEMINAR = "SEMINAR",
