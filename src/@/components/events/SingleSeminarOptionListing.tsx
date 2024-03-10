@@ -104,7 +104,7 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
     };
 
     return (
-        <Card key={option.id} className="max-w-md min-h-[14rem]">
+        <Card key={option.id} className="w-96 min-h-[14rem]">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
                 <CardDescription>

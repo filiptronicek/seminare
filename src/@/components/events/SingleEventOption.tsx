@@ -93,7 +93,7 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
     };
 
     return (
-        <Card key={option.id} className="max-w-md min-h-[14rem]">
+        <Card key={option.id} className="w-96 min-h-[14rem]">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
                 <CardDescription className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>
