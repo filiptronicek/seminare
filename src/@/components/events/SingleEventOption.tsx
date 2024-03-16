@@ -111,13 +111,11 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
             <CardContent className="grid gap-4">
                 {buttonShown && (
                     <Button disabled={isLoading} onClick={handleUpdate} className="flex gap-2">
-                        {isLoading ? (
+                        {isLoading ?
                             <Loader2 className="size-4 animate-spin" />
-                        ) : isOptionSelected ? (
+                        : isOptionSelected ?
                             <TicketMinus className="size-4" />
-                        ) : (
-                            <TicketPlus className="size-4" />
-                        )}
+                        :   <TicketPlus className="size-4" />}
                         {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                     </Button>
                 )}

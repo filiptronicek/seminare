@@ -7,6 +7,13 @@ import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 import { Pen } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { seminarOptionSchema, singleOptionSchema } from "~/utils/schemas";
+import { z } from "zod";
+import { SingleEventOption } from "@prisma/client";
+
+type SeminarOptionEnrichedWithMeta = SingleEventOption & {
+    metadata: z.infer<typeof seminarOptionSchema>;
+};
 
 type Props = {
     id: string;
@@ -48,9 +55,40 @@ export const SingleSeminar = ({ id }: Props) => {
         return currentDate.isAfter(dayjs(event?.signupEndDate));
     }, [event?.signupEndDate]);
 
-    const remainingToSelect = useMemo(() => {
-        return (seminarMetadata?.requiredHours ?? 0) - hoursSelected;
-    }, [seminarMetadata, hoursSelected]);
+    const optionMeta = useMemo<Map<string, z.infer<typeof seminarOptionSchema>>>(() => {
+        if (!options) return new Map();
+
+        return new Map(
+            options.map((option) => {
+                return [option.id, parseSeminarOptionMeta(option.metadata)];
+            }),
+        );
+    }, [options]);
+
+    const remainingToSelect = (seminarMetadata?.requiredHours ?? 0) - hoursSelected;
+    const branchedOptions = useMemo<Record<string, SeminarOptionEnrichedWithMeta[]>>(() => {
+        if (!options) return {};
+
+        const branched: Record<string, SeminarOptionEnrichedWithMeta[]> = {};
+
+        for (const option of options) {
+            if (!option.metadata) continue;
+
+            const meta = parseSeminarOptionMeta(option.metadata);
+            option.metadata = meta;
+
+            if (!branched[meta.branch]) {
+                branched[meta.branch] = [];
+            }
+
+            // typescript doesn't like that we're replacing the json metadata with the parsed one, so we need to cast it
+            branched[meta.branch]?.push(option as SeminarOptionEnrichedWithMeta);
+        }
+
+        return branched;
+    }, [options]);
+
+    console.log(branchedOptions);
 
     if (error || optionsError) {
         return <div>Chyba v načítání</div>;
@@ -72,36 +110,41 @@ export const SingleSeminar = ({ id }: Props) => {
                     </header>
 
                     <span className="font-bold">
-                        {isSignupOpen ?
+                        {isSignupOpen ? (
                             <>
                                 {/* todo: convert to `<time>` */}
                                 Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
                             </>
-                        : signupInThePast ?
+                        ) : signupInThePast ? (
                             <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
-                        :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
+                        ) : (
+                            <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>
+                        )}
                     </span>
 
                     <span className="font-bold">
-                        {remainingToSelect > 0 ?
+                        {remainingToSelect > 0 ? (
                             <>
                                 Zbývající hodiny k vybrání: {remainingToSelect} z {seminarMetadata?.requiredHours}
                             </>
-                        :   <>Vybráno všech {seminarMetadata?.requiredHours} hodin ✔︎</>}
+                        ) : (
+                            <>Vybráno všech {seminarMetadata?.requiredHours} hodin ✔︎</>
+                        )}
                     </span>
 
                     <br className="mb-4" />
 
                     <span className="mt-6 whitespace-pre-line text-balance max-w-3xl">{event.description}</span>
 
-                    {options && (
+                    {/* If there is only one branch, we don't need to do anything fancy and can just render the options */}
+                    {Object.keys(branchedOptions).length === 1 && options && (
                         <div className="mt-8">
                             <ul className="flex flex-wrap gap-4 justify-start">
                                 {options.map((option) => {
-                                    const optionMeta = parseSeminarOptionMeta(option.metadata);
-                                    const canSelect =
-                                        optionMeta.hoursPerWeek <=
-                                        (seminarMetadata?.requiredHours ?? 0) - hoursSelected;
+                                    const metadata = optionMeta.get(option.id);
+                                    const canSelect = metadata
+                                        ? metadata.hoursPerWeek <= (seminarMetadata?.requiredHours ?? 0) - hoursSelected
+                                        : false;
 
                                     return (
                                         <SingleSeminarOptionListing
@@ -115,6 +158,42 @@ export const SingleSeminar = ({ id }: Props) => {
                                     );
                                 })}
                             </ul>
+                        </div>
+                    )}
+
+                    {/* If there are multiple branches, we need to render them separately and group the options by branch */}
+                    {Object.keys(branchedOptions).length > 1 && (
+                        <div className="mt-8">
+                            {Object.entries(branchedOptions).map(([branch, options]) => {
+                                const branchName =
+                                    seminarMetadata?.availableBranches?.find((b) => b.id === branch)?.label ?? branch;
+
+                                return (
+                                    <div key={branch} className="mt-8 flex gap-2 flex-col">
+                                        <h2 className="text-2xl font-bold">{branchName} větev</h2>
+                                        <ul className="flex flex-wrap gap-4 justify-start">
+                                            {options.map((option) => {
+                                                const metadata = optionMeta.get(option.id);
+                                                const canSelect = metadata
+                                                    ? metadata.hoursPerWeek <=
+                                                      (seminarMetadata?.requiredHours ?? 0) - hoursSelected
+                                                    : false;
+
+                                                return (
+                                                    <SingleSeminarOptionListing
+                                                        key={option.id}
+                                                        refetchSelected={refetchSelected}
+                                                        event={event}
+                                                        option={option}
+                                                        selected={selectedOptions}
+                                                        canSelect={canSelect}
+                                                    />
+                                                );
+                                            })}
+                                        </ul>
+                                    </div>
+                                );
+                            })}
                         </div>
                     )}
                 </section>
