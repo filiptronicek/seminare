@@ -8,6 +8,8 @@ import { Select, SelectTrigger, SelectValue, SelectItem, SelectContent } from "@
 import { CLASSES, type Class } from "~/utils/constants";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type Props = {
     user: Student;
@@ -16,6 +18,8 @@ type Props = {
     onDelete: () => void;
 };
 export const UserForm = ({ user, isLoading, onSubmit, onDelete }: Props) => {
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
     const form = useForm<z.infer<typeof singleUserSchema>>({
         resolver: zodResolver(singleUserSchema),
         defaultValues: {
@@ -97,7 +101,25 @@ export const UserForm = ({ user, isLoading, onSubmit, onDelete }: Props) => {
                 />
 
                 <div className="flex justify-between space-x-4">
-                    <Button type="button" variant="destructive" onClick={onDelete}>
+                    <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                        <DialogContent className="max-h-[90%] overflow-y-scroll max-w-2xl">
+                            <DialogHeader>
+                                <DialogTitle>Smazat uživatele</DialogTitle>
+                            </DialogHeader>
+                            <p>
+                                Opravdu chcete smazat uživatele <code>{user.fullName}</code>? Tato akce je nevratná a
+                                vymaže všechna data o přihlášeních na minulé i budoucí Akce. Uživatel se bude moci znovu
+                                přihlásit pod stejným e-mailem a vytvořit si tím nový účet.
+                            </p>
+                            <div className="flex gap-3">
+                                <Button onClick={() => setIsDeleteDialogOpen(false)}>Zrušit</Button>
+                                <Button variant="destructive" disabled={isLoading} onClick={onDelete}>
+                                    Smazat
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                    <Button type="button" variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
                         Odstranit
                     </Button>
                     <Button type="submit" disabled={!form.formState.isDirty}>
