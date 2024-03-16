@@ -33,6 +33,8 @@ interface Props {
     refetchSelected: () => void;
 }
 export const SingleSeminarOptionListing = ({ option, selected, event, canSelect, refetchSelected }: Props) => {
+    const { data: user } = api.user.getStudent.useQuery();
+
     const registerMutation = api.eventOptions.join.useMutation();
     const leaveMutation = api.eventOptions.leave.useMutation();
 
@@ -46,9 +48,12 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
         return currentDate.isAfter(dayjs(event.signupStartDate)) && currentDate.isBefore(dayjs(event.signupEndDate));
     }, [event.signupStartDate, event.signupEndDate]);
 
-    const buttonShown = useMemo(() => {
+    const buttonShown = useMemo<boolean>(() => {
+        if (!user?.class) return false;
+        if (event.visibleToClasses && !event.visibleToClasses.includes(user.class)) return false;
+
         return isSignupOpen && (noOptionSelected || isOptionSelected || event.allowMultipleSelections);
-    }, [event.allowMultipleSelections, isOptionSelected, isSignupOpen, noOptionSelected]);
+    }, [event.allowMultipleSelections, event.visibleToClasses, isOptionSelected, isSignupOpen, noOptionSelected, user]);
 
     const isLoading = useMemo(() => {
         return registerMutation.isLoading || leaveMutation.isLoading;
@@ -121,11 +126,13 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
                         onClick={handleUpdate}
                         className="flex gap-2"
                     >
-                        {isLoading ?
+                        {isLoading ? (
                             <Loader2 className="size-4 animate-spin" />
-                        : isOptionSelected ?
+                        ) : isOptionSelected ? (
                             <TicketMinus className="size-4" />
-                        :   <TicketPlus className="size-4" />}
+                        ) : (
+                            <TicketPlus className="size-4" />
+                        )}
                         {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                     </Button>
                 )}

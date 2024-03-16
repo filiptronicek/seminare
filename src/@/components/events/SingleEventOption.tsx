@@ -23,6 +23,8 @@ interface OptionProps {
 }
 
 export const SingleOption = ({ option, selected, event, refetchSelected }: OptionProps) => {
+    const { data: user } = api.user.getStudent.useQuery();
+
     const registerMutation = api.eventOptions.join.useMutation();
     const leaveMutation = api.eventOptions.leave.useMutation();
 
@@ -44,9 +46,12 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
         );
     }, [event.signupStartDate, event.signupEndDate]);
 
-    const buttonShown = useMemo(() => {
+    const buttonShown = useMemo<boolean>(() => {
+        if (!user?.class) return false;
+        if (event.visibleToClasses && !event.visibleToClasses.includes(user.class)) return false;
+
         return isSignupOpen && (noOptionSelected || isOptionSelected || event.allowMultipleSelections);
-    }, [event.allowMultipleSelections, isOptionSelected, isSignupOpen, noOptionSelected]);
+    }, [event.allowMultipleSelections, event.visibleToClasses, isOptionSelected, isSignupOpen, noOptionSelected, user]);
 
     const isLoading = useMemo(() => {
         return registerMutation.isLoading || leaveMutation.isLoading;
@@ -106,11 +111,13 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
             <CardContent className="grid gap-4">
                 {buttonShown && (
                     <Button disabled={isLoading} onClick={handleUpdate} className="flex gap-2">
-                        {isLoading ?
+                        {isLoading ? (
                             <Loader2 className="size-4 animate-spin" />
-                        : isOptionSelected ?
+                        ) : isOptionSelected ? (
                             <TicketMinus className="size-4" />
-                        :   <TicketPlus className="size-4" />}
+                        ) : (
+                            <TicketPlus className="size-4" />
+                        )}
                         {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                     </Button>
                 )}
