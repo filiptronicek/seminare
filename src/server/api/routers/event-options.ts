@@ -39,6 +39,10 @@ export const eventOptionsRouter = createTRPCRouter({
             }
         }
 
+        if (!student.class) {
+            throw new Error("You need to set your class before you can join events");
+        }
+
         if (!option.event.allowMultipleSelections) {
             const existingOption = await ctx.db.studentOption.findFirst({
                 where: {
@@ -51,6 +55,10 @@ export const eventOptionsRouter = createTRPCRouter({
             if (existingOption) {
                 throw new Error("Multiple selections not allowed for this event");
             }
+        }
+
+        if (option.event.visibleToClasses && !option.event.visibleToClasses.includes(student.class)) {
+            throw new Error("This event is not available to your class");
         }
 
         if (option.event.type === EVENT_TYPE.SEMINAR.toString()) {
