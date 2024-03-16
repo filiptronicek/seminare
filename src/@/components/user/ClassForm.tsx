@@ -11,13 +11,13 @@ import { FormSchema } from "../../../pages/settings";
 import { CLASSES } from "~/utils/constants";
 
 export const ClassForm = () => {
-    const updateMutation = api.user.changeStudentClass.useMutation();
+    const updateMutation = api.user.changeClass.useMutation();
     const {
         data: student,
         isLoading: isStudentLoading,
         isError: isStudentError,
         refetch,
-    } = api.user.getStudent.useQuery();
+    } = api.user.get.useQuery();
     const utils = api.useContext();
 
     const form = useForm<z.infer<typeof FormSchema>>({

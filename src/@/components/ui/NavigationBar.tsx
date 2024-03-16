@@ -15,7 +15,7 @@ import Image from "next/image";
 import { api } from "~/utils/api";
 
 export const NavigationBar = () => {
-    const { data: student } = api.user.getStudent.useQuery();
+    const { data: student } = api.user.get.useQuery();
 
     return (
         <NavigationMenu>

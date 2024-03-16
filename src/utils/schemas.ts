@@ -62,3 +62,13 @@ export const singleOptionCreateSchema = z.object({
     eventId: z.string().uuid(),
     data: singleOptionSchema,
 });
+
+export const singleUserSchema = z.object({
+    class: z.enum(CLASSES),
+    role: z.enum(["user", "admin"]),
+});
+
+export const singleUserUpdateSchema = z.object({
+    id: z.string().uuid(),
+    data: singleUserSchema.partial(),
+});

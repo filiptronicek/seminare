@@ -24,7 +24,7 @@ export const SingleSeminar = ({ id }: Props) => {
     const { data: options, error: optionsError } = api.eventOptions.list.useQuery({
         id,
     });
-    const { data: student } = api.user.getStudent.useQuery();
+    const { data: student } = api.user.get.useQuery();
 
     const seminarMetadata = useMemo(() => {
         if (!event?.metadata) return null;

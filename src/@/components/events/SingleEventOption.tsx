@@ -23,7 +23,7 @@ interface OptionProps {
 }
 
 export const SingleOption = ({ option, selected, event, refetchSelected }: OptionProps) => {
-    const { data: user } = api.user.getStudent.useQuery();
+    const { data: user } = api.user.get.useQuery();
 
     const registerMutation = api.eventOptions.join.useMutation();
     const leaveMutation = api.eventOptions.leave.useMutation();

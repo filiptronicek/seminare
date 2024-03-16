@@ -1,6 +1,6 @@
 import { Loader2, PlusCircle } from "lucide-react";
 import { api } from "~/utils/api";
-import { EventTable } from "../../@/components/admin/EventTable";
+import { EventTable } from "../../../@/components/admin/EventTable";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { NewEventDialog } from "@/components/admin/NewEventDialog";

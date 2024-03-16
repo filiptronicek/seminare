@@ -33,7 +33,7 @@ interface Props {
     refetchSelected: () => void;
 }
 export const SingleSeminarOptionListing = ({ option, selected, event, canSelect, refetchSelected }: Props) => {
-    const { data: user } = api.user.getStudent.useQuery();
+    const { data: user } = api.user.get.useQuery();
 
     const registerMutation = api.eventOptions.join.useMutation();
     const leaveMutation = api.eventOptions.leave.useMutation();

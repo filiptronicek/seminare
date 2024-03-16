@@ -15,7 +15,7 @@ export const SingleEvent = ({ id }: Props) => {
     const { data: options, error: optionsError } = api.eventOptions.list.useQuery({
         id,
     });
-    const { data: student } = api.user.getStudent.useQuery();
+    const { data: student } = api.user.get.useQuery();
 
     const { data: selectedOptions, refetch: refetchSelected } = api.eventOptions.listStudentOptions.useQuery({
         eventId: id,
