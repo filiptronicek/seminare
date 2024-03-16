@@ -91,6 +91,19 @@ export const eventOptionsRouter = createTRPCRouter({
             if (hoursSelected + hoursPerWeek > parsedData.requiredHours) {
                 throw new Error("You cannot select more hours than required");
             }
+
+            // Ensure oneof branches are not selected together
+            const selectedBranches = selectedOptions.map((selectedOption) =>
+                parseSeminarOptionMeta(selectedOption.option.metadata).branch,
+            );
+            const selectedOneofBranches = selectedBranches.filter((branch) => {
+                return parsedData.availableBranches.find((b) => b.id === branch)?.type === "oneof";
+            });
+            const { branch: newBranch } = parseSeminarOptionMeta(option.metadata);
+            const isNewBranchOneof = parsedData.availableBranches.find((b) => b.id === newBranch)?.type === "oneof";
+            if (isNewBranchOneof && selectedOneofBranches.length > 0 && !selectedOneofBranches.includes(newBranch)) {
+                throw new Error("You cannot select multiple oneof branches");
+            }
         }
 
         if (option.maxParticipants !== null) {
