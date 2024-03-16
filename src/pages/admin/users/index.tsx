@@ -1,6 +1,5 @@
-import { Loader2, PlusCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { api } from "~/utils/api";
-import { EventTable } from "../../../@/components/admin/EventTable";
 import { useState } from "react";
 import { NewEventDialog } from "@/components/admin/NewEventDialog";
 import { UserTable } from "@/components/admin/users/UserTable";
@@ -23,6 +22,7 @@ export default function Home() {
                 <h1 className="text-3xl font-bold">Správa Uživatelů</h1>
                 <NewEventDialog open={isNewDialogOpen} onOpenChange={setIsNewDialogOpen} />
             </div>
+            <p>Správa uživatelů, kteří se v minulosti do aplikace přihlásili.</p>
             <UserTable />
         </section>
     );

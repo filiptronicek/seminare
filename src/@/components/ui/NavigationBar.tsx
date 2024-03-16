@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Brush, GraduationCap, Home } from "lucide-react";
+import { Brush, GraduationCap, Home, Users } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import {
@@ -44,14 +44,24 @@ export const NavigationBar = () => {
                     </Link>
                 </NavigationMenuItem>
                 {student?.admin && (
-                    <NavigationMenuItem>
-                        <Link href="/admin" legacyBehavior passHref>
-                            <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "gap-2")}>
-                                <Brush className="size-6" />
-                                <span className="hidden sm:block">Správa Akcí</span>
-                            </NavigationMenuLink>
-                        </Link>
-                    </NavigationMenuItem>
+                    <>
+                        <NavigationMenuItem>
+                            <Link href="/admin/events" legacyBehavior passHref>
+                                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "gap-2")}>
+                                    <Brush className="size-6" />
+                                    <span className="hidden sm:block">Správa Akcí</span>
+                                </NavigationMenuLink>
+                            </Link>
+                        </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            <Link href="/admin/users" legacyBehavior passHref>
+                                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "gap-2")}>
+                                    <Users className="size-6" />
+                                    <span className="hidden sm:block">Správa Uživatelů</span>
+                                </NavigationMenuLink>
+                            </Link>
+                        </NavigationMenuItem>
+                    </>
                 )}
             </NavigationMenuList>
         </NavigationMenu>

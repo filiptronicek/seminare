@@ -50,6 +50,12 @@ export const UserTable = () => {
                 accessorKey: "class",
             },
             {
+                header: "Role",
+                accessorFn(row) {
+                    return row.admin ? "Admin" : "Uživatel";
+                },
+            },
+            {
                 id: "actions",
                 cell: (cell) => {
                     return <ActionCell refetch={refetch} row={cell.row} />;
