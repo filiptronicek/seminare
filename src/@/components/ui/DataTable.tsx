@@ -7,6 +7,8 @@ import {
     useReactTable,
     type FilterFn,
     getFilteredRowModel,
+    type SortingState,
+    type ColumnSort,
 } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -47,9 +49,11 @@ export interface Props<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     className?: string;
+    defaultSort?: ColumnSort;
 }
-export function DataTable<TData, TValue>({ columns, data, className }: Props<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, className, defaultSort }: Props<TData, TValue>) {
     const [globalFilter, setGlobalFilter] = useState("");
+    const [sorting, setSorting] = useState<SortingState>(defaultSort ? [defaultSort] : []);
 
     const fuzzyFilter: FilterFn<TData> = useCallback((row, columnId, value, addMeta) => {
         // Rank the item
@@ -73,11 +77,13 @@ export function DataTable<TData, TValue>({ columns, data, className }: Props<TDa
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        onSortingChange: setSorting,
         filterFns: {
             fuzzyFilter,
         },
         state: {
             globalFilter,
+            sorting,
         },
         onGlobalFilterChange: setGlobalFilter,
         globalFilterFn: fuzzyFilter,

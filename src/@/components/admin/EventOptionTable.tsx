@@ -97,7 +97,7 @@ export const EventOptionTable = ({ event }: Props) => {
                 </Button>
                 <NewOptionDialog refetch={refetch} event={event} open={showNewDialog} onOpenChange={setShowNewDialog} />
             </div>
-            <DataTable className="max-w-2xl" columns={columns} data={data} />
+            <DataTable defaultSort={{ id: "title", desc: false }} className="max-w-2xl" columns={columns} data={data} />
         </>
     );
 };
