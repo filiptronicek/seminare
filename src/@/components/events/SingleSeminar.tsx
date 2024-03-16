@@ -109,26 +109,22 @@ export const SingleSeminar = ({ id }: Props) => {
                     </header>
 
                     <span className="font-bold">
-                        {isSignupOpen ? (
+                        {isSignupOpen ?
                             <>
                                 {/* todo: convert to `<time>` */}
                                 Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
                             </>
-                        ) : signupInThePast ? (
+                        : signupInThePast ?
                             <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
-                        ) : (
-                            <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>
-                        )}
+                        :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
                     </span>
 
                     <span className="font-bold">
-                        {remainingToSelect > 0 ? (
+                        {remainingToSelect > 0 ?
                             <>
                                 Zbývající hodiny k vybrání: {remainingToSelect} z {seminarMetadata?.requiredHours}
                             </>
-                        ) : (
-                            <>Vybráno všech {seminarMetadata?.requiredHours} hodin ✔︎</>
-                        )}
+                        :   <>Vybráno všech {seminarMetadata?.requiredHours} hodin ✔︎</>}
                     </span>
 
                     <br className="mb-4" />
@@ -141,9 +137,11 @@ export const SingleSeminar = ({ id }: Props) => {
                             <ul className="flex flex-wrap gap-4 justify-start">
                                 {options.map((option) => {
                                     const metadata = optionMeta.get(option.id);
-                                    const canSelect = metadata
-                                        ? metadata.hoursPerWeek <= (seminarMetadata?.requiredHours ?? 0) - hoursSelected
-                                        : false;
+                                    const canSelect =
+                                        metadata ?
+                                            metadata.hoursPerWeek <=
+                                            (seminarMetadata?.requiredHours ?? 0) - hoursSelected
+                                        :   false;
 
                                     return (
                                         <SingleSeminarOptionListing
@@ -165,8 +163,6 @@ export const SingleSeminar = ({ id }: Props) => {
                         <div className="mt-8">
                             <Tabs defaultValue="universal" className="w-full">
                                 <TabsList>
-                                    {/* <TabsTrigger value="account">Account</TabsTrigger>
-    <TabsTrigger value="password">Password</TabsTrigger> */}
                                     {Object.keys(branchedOptions).map((branch) => {
                                         const branchName =
                                             seminarMetadata?.availableBranches?.find((b) => b.id === branch)?.label ??
@@ -179,32 +175,31 @@ export const SingleSeminar = ({ id }: Props) => {
                                         );
                                     })}
                                 </TabsList>
-                                {Object.entries(branchedOptions).map(([branch, options]) => {
-                                    return (
-                                        <TabsContent key={branch} value={branch}>
-                                            <ul className="flex flex-wrap gap-4 justify-start">
-                                                {options.map((option) => {
-                                                    const metadata = optionMeta.get(option.id);
-                                                    const canSelect = metadata
-                                                        ? metadata.hoursPerWeek <=
-                                                          (seminarMetadata?.requiredHours ?? 0) - hoursSelected
-                                                        : false;
+                                {Object.entries(branchedOptions).map(([branch, options]) => (
+                                    <TabsContent key={branch} value={branch}>
+                                        <ul className="flex flex-wrap gap-4 justify-start">
+                                            {options.map((option) => {
+                                                const metadata = optionMeta.get(option.id);
+                                                const canSelect =
+                                                    metadata ?
+                                                        metadata.hoursPerWeek <=
+                                                        (seminarMetadata?.requiredHours ?? 0) - hoursSelected
+                                                    :   false;
 
-                                                    return (
-                                                        <SingleSeminarOptionListing
-                                                            key={option.id}
-                                                            refetchSelected={refetchSelected}
-                                                            event={event}
-                                                            option={option}
-                                                            selected={selectedOptions}
-                                                            canSelect={canSelect}
-                                                        />
-                                                    );
-                                                })}
-                                            </ul>
-                                        </TabsContent>
-                                    );
-                                })}
+                                                return (
+                                                    <SingleSeminarOptionListing
+                                                        key={option.id}
+                                                        refetchSelected={refetchSelected}
+                                                        event={event}
+                                                        option={option}
+                                                        selected={selectedOptions}
+                                                        canSelect={canSelect}
+                                                    />
+                                                );
+                                            })}
+                                        </ul>
+                                    </TabsContent>
+                                ))}
                             </Tabs>
                         </div>
                     )}
