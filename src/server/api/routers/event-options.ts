@@ -2,14 +2,14 @@ import { endOfDay } from "date-fns";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { ensureAdmin, ensureStudent } from "~/server/auth";
+import { ensureAdmin, ensureUser } from "~/server/auth";
 import { EVENT_TYPE } from "~/utils/constants";
 import { singleOptionCreateSchema, singleOptionUpdateSchema } from "~/utils/schemas";
 import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
 export const eventOptionsRouter = createTRPCRouter({
     listStudentOptions: publicProcedure.input(z.object({ eventId: z.string() })).query(async ({ ctx, input }) => {
-        const student = await ensureStudent(ctx.auth, ctx.db);
+        const student = await ensureUser(ctx.auth, ctx.db);
 
         return await ctx.db.singleEventOption.findMany({
             where: {
@@ -18,7 +18,7 @@ export const eventOptionsRouter = createTRPCRouter({
         });
     }),
     join: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
-        const student = await ensureStudent(ctx.auth, ctx.db);
+        const student = await ensureUser(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
@@ -127,7 +127,7 @@ export const eventOptionsRouter = createTRPCRouter({
         return option;
     }),
     leave: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
-        const student = await ensureStudent(ctx.auth, ctx.db);
+        const student = await ensureUser(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
@@ -168,7 +168,7 @@ export const eventOptionsRouter = createTRPCRouter({
         });
     }),
     list: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
-        await ensureStudent(ctx.auth, ctx.db);
+        await ensureUser(ctx.auth, ctx.db);
 
         return ctx.db.singleEventOption.findMany({
             where: { eventId: input.id },

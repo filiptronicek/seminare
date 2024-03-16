@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { ensureAdmin, getStudent } from "~/server/auth";
+import { ensureAdmin, getUser } from "~/server/auth";
 import { singleUserUpdateSchema } from "~/utils/schemas";
 
 export const userRouter = createTRPCRouter({
     changeClass: publicProcedure.input(z.object({ class: z.string() })).mutation(async ({ input, ctx }) => {
-        const student = await getStudent(ctx.auth, ctx.db);
+        const student = await getUser(ctx.auth, ctx.db);
         if (!student) throw new Error("Student not found");
 
         return ctx.db.student.update({
@@ -19,7 +19,7 @@ export const userRouter = createTRPCRouter({
         });
     }),
     get: publicProcedure.query(async ({ ctx }) => {
-        return getStudent(ctx.auth, ctx.db);
+        return getUser(ctx.auth, ctx.db);
     }),
     list: publicProcedure.query(async ({ ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);

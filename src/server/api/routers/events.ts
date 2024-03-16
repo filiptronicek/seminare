@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { ensureAdmin, ensureStudent } from "~/server/auth";
+import { ensureAdmin, ensureUser } from "~/server/auth";
 import { AVAILABLE_BRANCHES, CLASSES } from "~/utils/constants";
 import { generateExcelForEvent } from "~/utils/data";
 import { singleEventSchema, singleEventUpdateSchema } from "~/utils/schemas";
@@ -18,7 +18,7 @@ export const eventRouter = createTRPCRouter({
         )
         .query(async ({ ctx, input }) => {
             const now = new Date();
-            const student = await ensureStudent(ctx.auth, ctx.db);
+            const student = await ensureUser(ctx.auth, ctx.db);
             if (!input.class && !student.admin) {
                 throw new Error("You must specify a class");
             }
@@ -106,7 +106,7 @@ export const eventRouter = createTRPCRouter({
         });
     }),
     get: publicProcedure.input(z.object({ id: idType })).query(async ({ input, ctx }) => {
-        await ensureStudent(ctx.auth, ctx.db);
+        await ensureUser(ctx.auth, ctx.db);
 
         return ctx.db.event.findUnique({ where: { id: input.id } });
     }),
