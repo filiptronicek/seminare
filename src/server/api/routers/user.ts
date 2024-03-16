@@ -52,7 +52,10 @@ export const userRouter = createTRPCRouter({
         });
     }),
     delete: publicProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
+        const user = await ensureAdmin(ctx.auth, ctx.db);
+        if (input.id === user.id) {
+            throw new Error("You are not allowed to delete yourself");
+        }
 
         // clean up if the student has selected any options on any events
         await ctx.db.studentOption.deleteMany({
