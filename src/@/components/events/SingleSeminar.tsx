@@ -89,8 +89,6 @@ export const SingleSeminar = ({ id }: Props) => {
         return branched;
     }, [options]);
 
-    console.log(branchedOptions);
-
     if (error || optionsError) {
         return <div>Chyba v načítání</div>;
     }
@@ -165,7 +163,7 @@ export const SingleSeminar = ({ id }: Props) => {
                     {/* If there are multiple branches, we need to render them separately and group the options by branch */}
                     {Object.keys(branchedOptions).length > 1 && (
                         <div className="mt-8">
-                            <Tabs className="w-full">
+                            <Tabs defaultValue="universal" className="w-full">
                                 <TabsList>
                                     {/* <TabsTrigger value="account">Account</TabsTrigger>
     <TabsTrigger value="password">Password</TabsTrigger> */}
