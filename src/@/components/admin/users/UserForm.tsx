@@ -123,7 +123,9 @@ export const UserForm = ({ user, isLoading, onSubmit, onDelete }: Props) => {
                         Odstranit
                     </Button>
                     <Button type="submit" disabled={!form.formState.isDirty}>
-                        {isLoading ? <Loader2 className="animate-spin" /> : "Uložit"}
+                        {isLoading ?
+                            <Loader2 className="animate-spin" />
+                        :   "Uložit"}
                     </Button>
                 </div>
             </form>

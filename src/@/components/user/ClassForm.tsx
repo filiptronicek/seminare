@@ -12,12 +12,7 @@ import { singleUserSchema } from "~/utils/schemas";
 
 export const ClassForm = () => {
     const updateMutation = api.user.update.useMutation();
-    const {
-        data: student,
-        isLoading: isStudentLoading,
-        isError: isStudentError,
-        refetch,
-    } = api.user.get.useQuery();
+    const { data: student, isLoading: isStudentLoading, isError: isStudentError, refetch } = api.user.get.useQuery();
     const utils = api.useContext();
 
     const form = useForm<z.infer<typeof singleUserSchema>>({
@@ -26,7 +21,7 @@ export const ClassForm = () => {
 
     const onSubmit = (values: z.infer<typeof singleUserSchema>) => {
         updateMutation.mutate(
-            { data: { class: values.class }},
+            { data: { class: values.class } },
             {
                 onSuccess: () => {
                     void utils.user.get.invalidate();

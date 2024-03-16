@@ -18,7 +18,7 @@ export const userRouter = createTRPCRouter({
                 class: true,
                 avatar: true,
                 admin: true,
-            }
+            },
         });
     }),
     update: publicProcedure.input(singleUserUpdateSchema).mutation(async ({ input, ctx }) => {
@@ -35,7 +35,7 @@ export const userRouter = createTRPCRouter({
                 data: {
                     class: input.data.class,
                     admin: input.data.role === "admin",
-                }
+                },
             });
         }
 
@@ -48,7 +48,7 @@ export const userRouter = createTRPCRouter({
             where: { id: user.id },
             data: {
                 class: input.data.class,
-            }
+            },
         });
     }),
     delete: publicProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ input, ctx }) => {
