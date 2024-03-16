@@ -4,14 +4,6 @@ import { useUser } from "~/utils/hooks";
 import { getUserName } from "~/utils/user";
 import { ClassForm } from "../@/components/user/ClassForm";
 
-import * as z from "zod";
-
-export const FormSchema = z.object({
-    currentClass: z.string({
-        required_error: "Třída musí být zvolena.",
-    }),
-});
-
 export default function Settings() {
     const { data: user } = useUser();
     if (!user) {

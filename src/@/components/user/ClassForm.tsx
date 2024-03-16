@@ -8,10 +8,11 @@ import { useForm } from "react-hook-form";
 import type * as z from "zod";
 import { api } from "~/utils/api";
 import { FormSchema } from "../../../pages/settings";
-import { CLASSES } from "~/utils/constants";
+import { CLASSES, Class } from "~/utils/constants";
+import { singleUserSchema } from "~/utils/schemas";
 
 export const ClassForm = () => {
-    const updateMutation = api.user.changeClass.useMutation();
+    const updateMutation = api.user.update.useMutation();
     const {
         data: student,
         isLoading: isStudentLoading,
@@ -20,16 +21,16 @@ export const ClassForm = () => {
     } = api.user.get.useQuery();
     const utils = api.useContext();
 
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
+    const form = useForm<z.infer<typeof singleUserSchema>>({
+        resolver: zodResolver(singleUserSchema),
     });
 
-    const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    const onSubmit = (values: z.infer<typeof singleUserSchema>) => {
         updateMutation.mutate(
-            { class: data.currentClass },
+            { data: { class: values.class }},
             {
                 onSuccess: () => {
-                    void utils.user.getStudent.invalidate();
+                    void utils.user.get.invalidate();
 
                     toast({
                         title: "Třída byla úspěšně změněna",
@@ -57,8 +58,8 @@ export const ClassForm = () => {
             >
                 <FormField
                     control={form.control}
-                    name="currentClass"
-                    defaultValue={student?.class ?? undefined}
+                    name="class"
+                    defaultValue={student?.class as Class}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Třída</FormLabel>

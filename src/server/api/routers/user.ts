@@ -1,23 +1,10 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { ensureAdmin, getUser } from "~/server/auth";
+import { ensureAdmin, ensureUser, getUser } from "~/server/auth";
 import { singleUserUpdateSchema } from "~/utils/schemas";
 
 export const userRouter = createTRPCRouter({
-    changeClass: publicProcedure.input(z.object({ class: z.string() })).mutation(async ({ input, ctx }) => {
-        const student = await getUser(ctx.auth, ctx.db);
-        if (!student) throw new Error("Student not found");
-
-        return ctx.db.student.update({
-            where: {
-                id: student.id,
-            },
-            data: {
-                class: input.class,
-            },
-        });
-    }),
     get: publicProcedure.query(async ({ ctx }) => {
         return getUser(ctx.auth, ctx.db);
     }),
@@ -35,15 +22,32 @@ export const userRouter = createTRPCRouter({
         });
     }),
     update: publicProcedure.input(singleUserUpdateSchema).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
+        const user = await ensureUser(ctx.auth, ctx.db);
 
-        // todo: ensure users are not able to update their own admin status
+        // only admins can update other users
+        if (input.id && input.id !== user.id) {
+            if (!user.admin) {
+                throw new Error("You are not allowed to update other users");
+            }
 
+            return ctx.db.student.update({
+                where: { id: input.id },
+                data: {
+                    class: input.data.class,
+                    admin: input.data.role === "admin",
+                }
+            });
+        }
+
+        if (input.data.role === "user" && user.admin) {
+            throw new Error("You are not allowed to demote yourself to a user");
+        }
+
+        // users can only update their own class
         return ctx.db.student.update({
-            where: { id: input.id },
+            where: { id: user.id },
             data: {
                 class: input.data.class,
-                admin: input.data.role === "admin",
             }
         });
     }),
