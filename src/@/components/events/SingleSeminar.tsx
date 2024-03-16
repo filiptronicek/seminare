@@ -36,16 +36,6 @@ export const SingleSeminar = ({ id }: Props) => {
         eventId: id,
     });
 
-    const hoursSelected = useMemo(() => {
-        if (!selectedOptions) return 0;
-
-        return selectedOptions.reduce((acc, option) => {
-            const { hoursPerWeek } = parseSeminarOptionMeta(option.metadata);
-
-            return acc + hoursPerWeek;
-        }, 0);
-    }, [selectedOptions]);
-
     const isSignupOpen = useMemo(() => {
         const currentDate = dayjs();
         return currentDate.isAfter(dayjs(event?.signupStartDate)) && currentDate.isBefore(dayjs(event?.signupEndDate));
@@ -65,6 +55,33 @@ export const SingleSeminar = ({ id }: Props) => {
             }),
         );
     }, [options]);
+
+    const selectedOneofBranch = useMemo<null | string>(() => {
+        if (!selectedOptions) return null;
+        if (!options) return null;
+
+        for (const option of selectedOptions) {
+            const meta = optionMeta.get(option.id);
+            const branchData = seminarMetadata?.availableBranches.find((branch) => branch.id === meta?.branch);
+
+            if (branchData && branchData.type === "oneof") {
+                return branchData.id;
+            }
+        }
+
+        return null;
+    }, [optionMeta, options, selectedOptions, seminarMetadata?.availableBranches]);
+
+    const hoursSelected = useMemo(() => {
+        if (!selectedOptions) return 0;
+        if (optionMeta.size === 0) return 0;
+
+        return selectedOptions.reduce((acc, option) => {
+            const { hoursPerWeek } = optionMeta.get(option.id)!;
+
+            return acc + hoursPerWeek;
+        }, 0);
+    }, [optionMeta, selectedOptions]);
 
     const remainingToSelect = (seminarMetadata?.requiredHours ?? 0) - hoursSelected;
     const branchedOptions = useMemo<Record<string, SeminarOptionEnrichedWithMeta[]>>(() => {
@@ -166,9 +183,13 @@ export const SingleSeminar = ({ id }: Props) => {
                                     {seminarMetadata?.availableBranches.sort(sortBranch).map((branch) => {
                                         // If the branch has no content, we don't want to render it
                                         if (!branchedOptions[branch.id]) return null;
+                                        const disabled =
+                                            branch.type === "oneof" &&
+                                            selectedOneofBranch !== null &&
+                                            selectedOneofBranch !== branch.id;
 
                                         return (
-                                            <TabsTrigger key={branch.id} value={branch.id}>
+                                            <TabsTrigger key={branch.id} value={branch.id} disabled={disabled}>
                                                 {branch.label} větev
                                             </TabsTrigger>
                                         );
