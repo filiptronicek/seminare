@@ -93,8 +93,8 @@ export const eventOptionsRouter = createTRPCRouter({
             }
 
             // Ensure oneof branches are not selected together
-            const selectedBranches = selectedOptions.map((selectedOption) =>
-                parseSeminarOptionMeta(selectedOption.option.metadata).branch,
+            const selectedBranches = selectedOptions.map(
+                (selectedOption) => parseSeminarOptionMeta(selectedOption.option.metadata).branch,
             );
             const selectedOneofBranches = selectedBranches.filter((branch) => {
                 return parsedData.availableBranches.find((b) => b.id === branch)?.type === "oneof";
