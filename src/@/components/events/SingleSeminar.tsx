@@ -7,9 +7,10 @@ import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 import { Pen } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { seminarOptionSchema, singleOptionSchema } from "~/utils/schemas";
-import { z } from "zod";
-import { SingleEventOption } from "@prisma/client";
+import { type seminarOptionSchema } from "~/utils/schemas";
+import { type z } from "zod";
+import { type SingleEventOption } from "@prisma/client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 type SeminarOptionEnrichedWithMeta = SingleEventOption & {
     metadata: z.infer<typeof seminarOptionSchema>;
@@ -164,36 +165,49 @@ export const SingleSeminar = ({ id }: Props) => {
                     {/* If there are multiple branches, we need to render them separately and group the options by branch */}
                     {Object.keys(branchedOptions).length > 1 && (
                         <div className="mt-8">
-                            {Object.entries(branchedOptions).map(([branch, options]) => {
-                                const branchName =
-                                    seminarMetadata?.availableBranches?.find((b) => b.id === branch)?.label ?? branch;
+                            <Tabs className="w-full">
+                                <TabsList>
+                                    {/* <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="password">Password</TabsTrigger> */}
+                                    {Object.keys(branchedOptions).map((branch) => {
+                                        const branchName =
+                                            seminarMetadata?.availableBranches?.find((b) => b.id === branch)?.label ??
+                                            branch;
 
-                                return (
-                                    <div key={branch} className="mt-8 flex gap-2 flex-col">
-                                        <h2 className="text-2xl font-bold">{branchName} větev</h2>
-                                        <ul className="flex flex-wrap gap-4 justify-start">
-                                            {options.map((option) => {
-                                                const metadata = optionMeta.get(option.id);
-                                                const canSelect = metadata
-                                                    ? metadata.hoursPerWeek <=
-                                                      (seminarMetadata?.requiredHours ?? 0) - hoursSelected
-                                                    : false;
+                                        return (
+                                            <TabsTrigger key={branch} value={branch}>
+                                                {branchName} větev
+                                            </TabsTrigger>
+                                        );
+                                    })}
+                                </TabsList>
+                                {Object.entries(branchedOptions).map(([branch, options]) => {
+                                    return (
+                                        <TabsContent key={branch} value={branch}>
+                                            <ul className="flex flex-wrap gap-4 justify-start">
+                                                {options.map((option) => {
+                                                    const metadata = optionMeta.get(option.id);
+                                                    const canSelect = metadata
+                                                        ? metadata.hoursPerWeek <=
+                                                          (seminarMetadata?.requiredHours ?? 0) - hoursSelected
+                                                        : false;
 
-                                                return (
-                                                    <SingleSeminarOptionListing
-                                                        key={option.id}
-                                                        refetchSelected={refetchSelected}
-                                                        event={event}
-                                                        option={option}
-                                                        selected={selectedOptions}
-                                                        canSelect={canSelect}
-                                                    />
-                                                );
-                                            })}
-                                        </ul>
-                                    </div>
-                                );
-                            })}
+                                                    return (
+                                                        <SingleSeminarOptionListing
+                                                            key={option.id}
+                                                            refetchSelected={refetchSelected}
+                                                            event={event}
+                                                            option={option}
+                                                            selected={selectedOptions}
+                                                            canSelect={canSelect}
+                                                        />
+                                                    );
+                                                })}
+                                            </ul>
+                                        </TabsContent>
+                                    );
+                                })}
+                            </Tabs>
                         </div>
                     )}
                 </section>
