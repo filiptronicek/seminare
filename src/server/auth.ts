@@ -11,6 +11,7 @@ export const createStudent = async (auth: SupabaseAuthClient, db: PrismaClient) 
             id: user.data.user.id,
             fullName: getUserName(user.data.user),
             class: undefined,
+            avatar: user.data.user.user_metadata.picture as string,
         },
     });
 };
