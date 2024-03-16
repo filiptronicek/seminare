@@ -1,25 +1,25 @@
 import { type z } from "zod";
-import { seminarOptionSchema, seminarSchema } from "./schemas";
+import { seminarOptionMetadataSchema, seminarMetadataSchema } from "./schemas";
 
-export const parseSeminarMeta = (data: unknown): z.infer<typeof seminarSchema> => {
-    return seminarSchema.parse(data);
+export const parseSeminarMeta = (data: unknown): z.infer<typeof seminarMetadataSchema> => {
+    return seminarMetadataSchema.parse(data);
 };
 
-export const parseSeminarMetaSafe = (data: unknown): z.infer<typeof seminarSchema> | undefined => {
+export const parseSeminarMetaSafe = (data: unknown): z.infer<typeof seminarMetadataSchema> | undefined => {
     try {
-        return seminarSchema.parse(data);
+        return seminarMetadataSchema.parse(data);
     } catch {
         return undefined;
     }
 };
 
-export const parseSeminarOptionMeta = (data: unknown): z.infer<typeof seminarOptionSchema> => {
-    return seminarOptionSchema.parse(data);
+export const parseSeminarOptionMeta = (data: unknown): z.infer<typeof seminarOptionMetadataSchema> => {
+    return seminarOptionMetadataSchema.parse(data);
 };
 
-export const parseSeminarOptionMetaSafe = (data: unknown): z.infer<typeof seminarOptionSchema> | undefined => {
+export const parseSeminarOptionMetaSafe = (data: unknown): z.infer<typeof seminarOptionMetadataSchema> | undefined => {
     try {
-        return seminarOptionSchema.parse(data);
+        return seminarOptionMetadataSchema.parse(data);
     } catch {
         return undefined;
     }

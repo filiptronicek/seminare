@@ -1,12 +1,25 @@
 import { z } from "zod";
 import { CLASSES, EVENT_TYPE } from "./constants";
 
-export const seminarSchema = z.object({
+export const seminarBranchSchema = z.object({
+    id: z.string(),
+    label: z.string(),
+    /**
+     * An unbound branch is an independent branch whose options can be selected without any restrictions.
+     * A oneof branch is a branch that is mutually exclusive with other oneof branches.
+     */
+    type: z.enum(["unbound", "oneof"]).default("unbound"),
+});
+export type Branch = z.infer<typeof seminarBranchSchema>;
+
+export const seminarMetadataSchema = z.object({
     requiredHours: z.number().int().positive("Počet hodin musí být vyšší než 0"),
-    availableBranches: z.array(z.object({ id: z.string(), label: z.string() })),
+    availableBranches: z
+        .array(seminarBranchSchema)
+        .default([{ id: "universal", label: "Univerzální", type: "unbound" }]),
 });
 
-export const seminarOptionSchema = z.object({
+export const seminarOptionMetadataSchema = z.object({
     hoursPerWeek: z.number().int().nonnegative("Počet hodin týdně nesmí být záporný"),
     branch: z.string().default("universal"),
 });
@@ -23,7 +36,7 @@ export const singleEventSchema = z.object({
         from: z.date(),
         to: z.date(),
     }),
-    metadata: seminarSchema.partial().optional(),
+    metadata: seminarMetadataSchema.partial().optional(),
     visibleToClasses: z.array(z.enum(CLASSES)),
     type: z.nativeEnum(EVENT_TYPE),
 });
@@ -37,7 +50,7 @@ export const singleOptionSchema = z.object({
     title: z.string().max(255, "Možnost nesmí mít delší název než 255 znaků").min(1, "Možnost musí mít název"),
     maxParticipants: z.number().int().nonnegative().optional(),
     description: z.string().optional(),
-    metadata: seminarOptionSchema.partial().optional(),
+    metadata: seminarOptionMetadataSchema.partial().optional(),
 });
 
 export const singleOptionUpdateSchema = z.object({

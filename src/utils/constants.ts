@@ -1,3 +1,5 @@
+import { type Branch } from "./schemas";
+
 export const CLASSES = [
     "1G",
     "2G",
@@ -16,10 +18,10 @@ export const CLASSES = [
 export type Class = (typeof CLASSES)[number];
 
 export const AVAILABLE_BRANCHES = [
-    { id: "humanitarian", label: "Humanitní" },
-    { id: "science", label: "Přírodovědná" },
-    { id: "universal", label: "Univerzální" },
-] as const;
+    { id: "universal", label: "Univerzální", type: "unbound" },
+    { id: "humanitarian", label: "Humanitní", type: "oneof" },
+    { id: "science", label: "Přírodovědná", type: "oneof" },
+] as const satisfies Branch[];
 
 export enum EVENT_TYPE {
     WANDERTAG = "WANDERTAG",

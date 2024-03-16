@@ -7,13 +7,13 @@ import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 import { Pen } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { type seminarOptionSchema } from "~/utils/schemas";
+import { type Branch, type seminarOptionMetadataSchema } from "~/utils/schemas";
 import { type z } from "zod";
 import { type SingleEventOption } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 type SeminarOptionEnrichedWithMeta = SingleEventOption & {
-    metadata: z.infer<typeof seminarOptionSchema>;
+    metadata: z.infer<typeof seminarOptionMetadataSchema>;
 };
 
 type Props = {
@@ -56,7 +56,7 @@ export const SingleSeminar = ({ id }: Props) => {
         return currentDate.isAfter(dayjs(event?.signupEndDate));
     }, [event?.signupEndDate]);
 
-    const optionMeta = useMemo<Map<string, z.infer<typeof seminarOptionSchema>>>(() => {
+    const optionMeta = useMemo<Map<string, z.infer<typeof seminarOptionMetadataSchema>>>(() => {
         if (!options) return new Map();
 
         return new Map(
@@ -127,9 +127,9 @@ export const SingleSeminar = ({ id }: Props) => {
                         :   <>Vybráno všech {seminarMetadata?.requiredHours} hodin ✔︎</>}
                     </span>
 
-                    <br className="mb-4" />
+                    <br className="my-2" />
 
-                    <span className="mt-6 whitespace-pre-line text-balance max-w-3xl">{event.description}</span>
+                    <span className="whitespace-pre-line text-balance max-w-3xl">{event.description}</span>
 
                     {/* If there is only one branch, we don't need to do anything fancy and can just render the options */}
                     {Object.keys(branchedOptions).length === 1 && options && (
@@ -163,14 +163,13 @@ export const SingleSeminar = ({ id }: Props) => {
                         <div className="mt-8">
                             <Tabs defaultValue="universal" className="w-full">
                                 <TabsList>
-                                    {Object.keys(branchedOptions).map((branch) => {
-                                        const branchName =
-                                            seminarMetadata?.availableBranches?.find((b) => b.id === branch)?.label ??
-                                            branch;
+                                    {seminarMetadata?.availableBranches.sort(sortBranch).map((branch) => {
+                                        // If the branch has no content, we don't want to render it
+                                        if (!branchedOptions[branch.id]) return null;
 
                                         return (
-                                            <TabsTrigger key={branch} value={branch}>
-                                                {branchName} větev
+                                            <TabsTrigger key={branch.id} value={branch.id}>
+                                                {branch.label} větev
                                             </TabsTrigger>
                                         );
                                     })}
@@ -207,4 +206,13 @@ export const SingleSeminar = ({ id }: Props) => {
             )}
         </>
     );
+};
+
+const sortBranch = (a: Branch, b: Branch) => {
+    // prefer unbounds
+    if (a.type === "unbound") return -1;
+    if (b.type === "unbound") return 1;
+
+    // then sort by label
+    return a.label.localeCompare(b.label);
 };
