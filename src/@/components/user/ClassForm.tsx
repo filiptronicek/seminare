@@ -7,8 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type * as z from "zod";
 import { api } from "~/utils/api";
-import { FormSchema } from "../../../pages/settings";
-import { CLASSES, Class } from "~/utils/constants";
+import { CLASSES, type Class } from "~/utils/constants";
 import { singleUserSchema } from "~/utils/schemas";
 
 export const ClassForm = () => {
