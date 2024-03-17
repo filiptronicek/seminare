@@ -26,9 +26,9 @@ export const eventOptionsRouter = createTRPCRouter({
         });
 
         if (!studentWithOptions) return [];
-    
+
         return studentWithOptions.options;
-    }),    
+    }),
     join: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
         const user = await ensureUser(ctx.auth, ctx.db);
 
@@ -152,8 +152,8 @@ export const eventOptionsRouter = createTRPCRouter({
                     id: option.id,
                     students: {
                         some: {},
-                    }
-                }
+                    },
+                },
             });
             if (participants >= option.maxParticipants) {
                 throw new TRPCError({
@@ -206,9 +206,9 @@ export const eventOptionsRouter = createTRPCRouter({
             where: { id: student.id },
             data: {
                 options: {
-                    disconnect: [{ id: input.optionId }]
-                }
-            }
+                    disconnect: [{ id: input.optionId }],
+                },
+            },
         });
 
         return option;
@@ -242,7 +242,7 @@ export const eventOptionsRouter = createTRPCRouter({
     }),
     delete: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
-    
+
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
         });
@@ -252,7 +252,7 @@ export const eventOptionsRouter = createTRPCRouter({
                 message: "Event option not found",
             });
         }
-    
+
         // Disassociate all students from this option
         await ctx.db.singleEventOption.update({
             where: { id: input.optionId },
@@ -262,7 +262,7 @@ export const eventOptionsRouter = createTRPCRouter({
                 },
             },
         });
-    
+
         // Delete the option
         return ctx.db.singleEventOption.delete({
             where: { id: input.optionId },
