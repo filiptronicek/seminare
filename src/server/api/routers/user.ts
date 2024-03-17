@@ -58,8 +58,13 @@ export const userRouter = createTRPCRouter({
         }
 
         // clean up if the student has selected any options on any events
-        await ctx.db.studentOption.deleteMany({
-            where: { studentId: input.id },
+        await ctx.db.student.update({
+            where: { id: input.id },
+            data: {
+                options: {
+                    set: [],
+                },
+            },
         });
 
         return ctx.db.student.delete({
