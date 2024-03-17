@@ -38,20 +38,22 @@ export const isAdmin = async (auth: SupabaseAuthClient, db: PrismaClient) => {
 
 export const ensureUser = async (auth: SupabaseAuthClient, db: PrismaClient) => {
     const user = await getUser(auth, db);
-    if (!user) throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "User not found"
-    });
+    if (!user)
+        throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "User not found",
+        });
 
     return user;
 };
 
 export const ensureAdmin = async (auth: SupabaseAuthClient, db: PrismaClient) => {
     const user = await getUser(auth, db);
-    if (!user || !user.admin) throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "Lacking admin privileges"
-    });
+    if (!user || !user.admin)
+        throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Lacking admin privileges",
+        });
 
     return user;
 };

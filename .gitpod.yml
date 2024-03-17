@@ -9,7 +9,7 @@ tasks:
           bun dev
 
 vscode:
-  extensions:
-    - "oven.bun-vscode"
-    - "bradlc.vscode-tailwindcss"
-    - "rvest.vs-code-prettier-eslint"
+    extensions:
+        - "oven.bun-vscode"
+        - "bradlc.vscode-tailwindcss"
+        - "rvest.vs-code-prettier-eslint"

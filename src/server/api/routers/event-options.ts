@@ -32,7 +32,7 @@ export const eventOptionsRouter = createTRPCRouter({
         if (option.event.signupStartDate && option.event.signupStartDate > new Date()) {
             throw new TRPCError({
                 code: "PRECONDITION_FAILED",
-                message: "Signup period has not started yet"
+                message: "Signup period has not started yet",
             });
         }
 
@@ -41,7 +41,7 @@ export const eventOptionsRouter = createTRPCRouter({
             if (signupEndDate < new Date()) {
                 throw new TRPCError({
                     code: "PRECONDITION_FAILED",
-                    message: "Signup period has ended"
+                    message: "Signup period has ended",
                 });
             }
         }
@@ -49,7 +49,7 @@ export const eventOptionsRouter = createTRPCRouter({
         if (!student.class) {
             throw new TRPCError({
                 code: "PRECONDITION_FAILED",
-                message: "You need to set your class before you can join events"
+                message: "You need to set your class before you can join events",
             });
         }
 
@@ -72,10 +72,11 @@ export const eventOptionsRouter = createTRPCRouter({
         }
 
         if (option.event.type === EVENT_TYPE.SEMINAR.toString()) {
-            if (!option.event.metadata) throw new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: "Seminar not setup correctly: Seminar events require metadata"
-            });
+            if (!option.event.metadata)
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Seminar not setup correctly: Seminar events require metadata",
+                });
 
             const parsedData = parseSeminarMeta(option.event.metadata);
             const selectedOptions = await ctx.db.studentOption.findMany({
@@ -103,7 +104,7 @@ export const eventOptionsRouter = createTRPCRouter({
             if (hoursSelected + hoursPerWeek > parsedData.requiredHours) {
                 throw new TRPCError({
                     code: "PRECONDITION_FAILED",
-                    message: "You cannot select more hours than required"
+                    message: "You cannot select more hours than required",
                 });
             }
 
@@ -119,7 +120,7 @@ export const eventOptionsRouter = createTRPCRouter({
             if (isNewBranchOneof && selectedOneofBranches.length > 0 && !selectedOneofBranches.includes(newBranch)) {
                 throw new TRPCError({
                     code: "PRECONDITION_FAILED",
-                    message: "You cannot select multiple oneof branches"
+                    message: "You cannot select multiple oneof branches",
                 });
             }
         }
@@ -133,7 +134,7 @@ export const eventOptionsRouter = createTRPCRouter({
             if (participants >= option.maxParticipants) {
                 throw new TRPCError({
                     code: "PRECONDITION_FAILED",
-                    message: "Možnost je již plná"
+                    message: "Možnost je již plná",
                 });
             }
         }
@@ -154,23 +155,24 @@ export const eventOptionsRouter = createTRPCRouter({
             where: { id: input.optionId },
             include: { event: true },
         });
-        if (!option) throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Event option not found"
-        });
+        if (!option)
+            throw new TRPCError({
+                code: "NOT_FOUND",
+                message: "Event option not found",
+            });
 
         // Guards against leaving options before signup period starts or after it ends
         // todo: optionally, allow admins to remove students from options anyway
         if (option.event.signupStartDate && option.event.signupStartDate > new Date()) {
             throw new TRPCError({
                 code: "PRECONDITION_FAILED",
-                message: "Signup period has not started yet"
+                message: "Signup period has not started yet",
             });
         }
         if (option.event.signupEndDate && option.event.signupEndDate < new Date()) {
             throw new TRPCError({
                 code: "PRECONDITION_FAILED",
-                message: "Signup period has ended"
+                message: "Signup period has ended",
             });
         }
 
@@ -218,10 +220,11 @@ export const eventOptionsRouter = createTRPCRouter({
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
         });
-        if (!option) throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Event option not found"
-        });
+        if (!option)
+            throw new TRPCError({
+                code: "NOT_FOUND",
+                message: "Event option not found",
+            });
 
         // Clean up if students have selected this option
         await ctx.db.studentOption.deleteMany({
