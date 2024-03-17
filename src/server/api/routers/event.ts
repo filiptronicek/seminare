@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureAdmin, ensureUser } from "~/server/auth";
-import { AVAILABLE_BRANCHES, CLASSES } from "~/utils/constants";
+import { AVAILABLE_BRANCHES, CLASSES, EVENT_TYPE } from "~/utils/constants";
 import { generateExcelForEvent } from "~/utils/data";
 import { singleEventSchema, singleEventUpdateSchema } from "~/utils/schemas";
 
@@ -94,7 +94,7 @@ export const eventRouter = createTRPCRouter({
                 description: input.description,
                 allowMultipleSelections: input.allowMultipleSelections,
                 visibleToClasses: input.visibleToClasses,
-                type: input.type,
+                type: input.type ?? EVENT_TYPE.UNSPECIFIED,
                 signupEndDate: input.signup.to,
                 signupStartDate: input.signup.from,
                 endDate: input.happening.to,

@@ -8,6 +8,7 @@ export const displayEventType = (eventType: EVENT_TYPE): string => {
             return "Semináře";
         case EVENT_TYPE.PROJECT_WEEK:
             return "Projektový týden";
+        case EVENT_TYPE.UNSPECIFIED:
         default:
             return "Jiné";
     }
