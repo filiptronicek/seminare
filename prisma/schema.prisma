@@ -3,18 +3,18 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model Student {
-  id            String              @id @default(uuid())
-  class         String?
-  fullName      String
-  avatar        String?
-  options       SingleEventOption[] @relation("StudentOptions")
-  admin         Boolean             @default(false)
+  id       String              @id @default(uuid())
+  class    String?
+  fullName String
+  avatar   String?
+  options  SingleEventOption[] @relation("StudentOptions")
+  admin    Boolean             @default(false)
 }
 
 model SingleEventOption {
@@ -42,4 +42,3 @@ model Event {
   visibleToClasses        String[]
   metadata                Json?
 }
-
