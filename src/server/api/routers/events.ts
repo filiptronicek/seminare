@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
@@ -20,7 +21,7 @@ export const eventRouter = createTRPCRouter({
             const now = new Date();
             const student = await ensureUser(ctx.auth, ctx.db);
             if (!input.class && !student.admin) {
-                throw new Error("You must specify a class");
+                throw new TRPCError({ code: "FORBIDDEN", message: "You must specify a class" });
             }
 
             return ctx.db.event.findMany({
@@ -75,7 +76,7 @@ export const eventRouter = createTRPCRouter({
         const event = await ctx.db.event.findUnique({
             where: { id: input.eventId },
         });
-        if (!event) throw new Error("Event not found");
+        if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
 
         const excelBuffer = Buffer.from(await generateExcelForEvent({ eventId: input.eventId, db: ctx.db }));
         const base64 = excelBuffer.toString("base64");
@@ -119,7 +120,7 @@ export const eventRouter = createTRPCRouter({
                 id: true,
             },
         });
-        if (!event) throw new Error("Event not found");
+        if (!event) throw new TRPCError({ code: "NOT_FOUND", message: "Event not found" });
 
         return ctx.db.event.update({
             where: { id: input.id },
