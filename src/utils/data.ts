@@ -22,11 +22,7 @@ export const generateExcelForEvent = async ({
     const options = await db.singleEventOption.findMany({
         where: { eventId: eventId },
         include: {
-            StudentOption: {
-                include: {
-                    student: true,
-                },
-            },
+            students: true,
         },
     });
 
@@ -39,10 +35,10 @@ export const generateExcelForEvent = async ({
             { header: "Třída", key: "class" },
         ];
 
-        option.StudentOption.forEach((so) => {
+        option.students.forEach((student) => {
             sheet.addRow({
-                fullName: so.student.fullName,
-                class: so.student.class,
+                fullName: student.fullName,
+                class: student.class,
             });
         });
     });
