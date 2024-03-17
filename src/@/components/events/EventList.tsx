@@ -17,7 +17,9 @@ export const EventList = ({ user }: Props) => {
         data: events,
         isLoading,
     } = api.event.list.useQuery({
-        active: true,
+        filter: {
+            active: true,
+        },
         class: user.class! as Class,
     });
 
@@ -42,3 +44,9 @@ export const EventList = ({ user }: Props) => {
         </>
     );
 };
+
+// const sortEvents = (events: Event[]): Event[] => {
+//     return events.sort((a, b) => {
+//         return a.startDate.getTime() - b.startDate.getTime();
+//     });
+// }

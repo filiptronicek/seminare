@@ -1,21 +1,11 @@
-import { Loader2, PlusCircle } from "lucide-react";
-import { api } from "~/utils/api";
+import { PlusCircle } from "lucide-react";
 import { EventTable } from "../../../@/components/admin/EventTable";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { NewEventDialog } from "@/components/admin/NewEventDialog";
 
 export default function Home() {
-    const { error, data: events, isLoading } = api.event.list.useQuery({});
     const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
-
-    if (isLoading) {
-        return <Loader2 className="animate-spin" />;
-    }
-
-    if (error || !events) {
-        return `Naskytla se chyba v načítání dat: ${error?.message}`;
-    }
 
     return (
         <section className="flex min-h-screen flex-col items-start gap-8">

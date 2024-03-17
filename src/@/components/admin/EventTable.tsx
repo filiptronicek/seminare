@@ -12,6 +12,7 @@ import Link from "next/link";
 import { DataTable } from "../ui/DataTable";
 import { displayEventType } from "~/utils/display";
 import { type EVENT_TYPE } from "~/utils/constants";
+import { useState } from "react";
 
 export interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -93,15 +94,27 @@ export const columns: ColumnDef<Event>[] = [
 ];
 
 export const EventTable = () => {
-    const { isError, data: events, isLoading } = api.event.list.useQuery({});
+    const [globalFilter, setGlobalFilter] = useState("");
+    const {
+        isError,
+        data: events,
+        isLoading,
+    } = api.event.list.useQuery({
+        filter: {
+            search: globalFilter,
+        },
+    });
 
-    if (isLoading) {
-        return <Loader2 className="animate-spin" />;
-    }
-
-    if (isError || !events) {
-        return "Naskytla se chyba v načítání dat";
-    }
-
-    return <DataTable columns={columns} data={events} />;
+    return (
+        <>
+            {isError && "Naskytla se chyba v načítání dat"}
+            <DataTable
+                columns={columns}
+                data={events ?? []}
+                isLoading={isLoading}
+                manualGlobalFilter={globalFilter}
+                setManualGlobalFilter={setGlobalFilter}
+            />
+        </>
+    );
 };

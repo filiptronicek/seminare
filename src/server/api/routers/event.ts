@@ -13,8 +13,14 @@ export const eventRouter = createTRPCRouter({
     list: publicProcedure
         .input(
             z.object({
-                active: z.boolean().optional(),
                 class: z.enum(CLASSES).optional(),
+                filter: z
+                    .object({
+                        search: z.string(),
+                        active: z.boolean(),
+                    })
+                    .partial()
+                    .optional(),
             }),
         )
         .query(async ({ ctx, input }) => {
@@ -24,10 +30,12 @@ export const eventRouter = createTRPCRouter({
                 throw new TRPCError({ code: "FORBIDDEN", message: "You must specify a class" });
             }
 
+            const search = input.filter?.search;
+
             return ctx.db.event.findMany({
                 take: 100,
                 where: {
-                    ...(input.active ?
+                    ...(input.filter?.active ?
                         {
                             AND: [
                                 {
@@ -59,6 +67,25 @@ export const eventRouter = createTRPCRouter({
                                     // if the event does not specify a class, it is visible to all
                                     visibleToClasses: {
                                         isEmpty: true,
+                                    },
+                                },
+                            ],
+                        }
+                    :   {}),
+
+                    ...(search ?
+                        {
+                            OR: [
+                                {
+                                    title: {
+                                        contains: search,
+                                        mode: "insensitive",
+                                    },
+                                },
+                                {
+                                    description: {
+                                        contains: search,
+                                        mode: "insensitive",
                                     },
                                 },
                             ],

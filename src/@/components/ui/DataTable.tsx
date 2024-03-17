@@ -11,7 +11,7 @@ import {
     type ColumnSort,
 } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
@@ -50,10 +50,24 @@ export interface Props<TData, TValue> {
     data: TData[];
     className?: string;
     defaultSort?: ColumnSort;
+    isLoading?: boolean;
+    manualGlobalFilter?: string;
+    setManualGlobalFilter?: (value: string) => void;
 }
-export function DataTable<TData, TValue>({ columns, data, className, defaultSort }: Props<TData, TValue>) {
-    const [globalFilter, setGlobalFilter] = useState("");
+export function DataTable<TData, TValue>({
+    columns,
+    data,
+    className,
+    defaultSort,
+    isLoading,
+    manualGlobalFilter,
+    setManualGlobalFilter,
+}: Props<TData, TValue>) {
+    const [globalFilterLocal, setGlobalFilterLocal] = useState("");
     const [sorting, setSorting] = useState<SortingState>(defaultSort ? [defaultSort] : []);
+
+    const actualGlobalFilter = manualGlobalFilter ?? globalFilterLocal;
+    const setActualGlobalFilter = setManualGlobalFilter ?? setGlobalFilterLocal;
 
     const fuzzyFilter: FilterFn<TData> = useCallback((row, columnId, value, addMeta) => {
         // Rank the item
@@ -75,26 +89,27 @@ export function DataTable<TData, TValue>({ columns, data, className, defaultSort
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: manualGlobalFilter === undefined ? getFilteredRowModel() : undefined,
         getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
         onSortingChange: setSorting,
         filterFns: {
             fuzzyFilter,
         },
         state: {
-            globalFilter,
+            globalFilter: actualGlobalFilter,
             sorting,
         },
-        onGlobalFilterChange: setGlobalFilter,
+        manualFiltering: manualGlobalFilter !== undefined,
+        onGlobalFilterChange: setActualGlobalFilter,
         globalFilterFn: fuzzyFilter,
     });
 
     return (
         <div className={cn("rounded-md border dark:border-gray-600 w-full", className)}>
             <DebouncedInput
-                value={globalFilter ?? ""}
+                value={actualGlobalFilter ?? ""}
                 type="text"
-                onChange={(value) => setGlobalFilter(value)}
+                onChange={setActualGlobalFilter}
                 className="p-2 font-lg"
                 placeholder="Vyhledat"
             />
@@ -128,6 +143,7 @@ export function DataTable<TData, TValue>({ columns, data, className, defaultSort
                     ))}
                 </TableHeader>
                 <TableBody>
+                    {isLoading && <Loader2 className="mt-2 ml-2 animate-spin" />}
                     {table.getRowModel().rows?.length ?
                         table.getRowModel().rows.map((row) => (
                             <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
