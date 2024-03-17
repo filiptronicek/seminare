@@ -1,16 +1,16 @@
 import type { Event, SingleEventOption } from "@prisma/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
-import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import czechLocale from "dayjs/locale/cs";
 import calendar from "dayjs/plugin/calendar";
-import { Loader2, TicketMinus, TicketPlus } from "lucide-react";
-import { useMemo } from "react";
+import { Loader2, Maximize2, TicketMinus, TicketPlus } from "lucide-react";
+import { useMemo, useState } from "react";
 import { api } from "~/utils/api";
-import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
 import { parseSeminarOptionMeta } from "~/utils/seminars";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { toast } from "../ui/use-toast";
 
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
@@ -38,10 +38,12 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
     const registerMutation = api.eventOptions.join.useMutation();
     const leaveMutation = api.eventOptions.leave.useMutation();
 
+    const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
+
     const isOptionSelected = useMemo(() => {
         return selected?.some((selectedOption) => selectedOption.id === option.id);
     }, [selected, option.id]);
-    const noOptionSelected = useMemo(() => selected?.length === 0, [selected]);
+    const noOptionSelected = selected?.length === 0;
 
     const isSignupOpen = useMemo(() => {
         const currentDate = dayjs();
@@ -109,33 +111,51 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
     };
 
     return (
-        <Card key={option.id} className="w-96 min-h-[14rem] flex flex-col justify-between">
+        <Card key={option.id} className="w-96 min-h-[10rem] flex flex-col justify-between">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl">{option.title}</CardTitle>
-                <CardDescription>
-                    <span className={cn(buttonShown ? "truncate-3-lines" : "truncate-5-lines")}>
-                        {option.description}
-                    </span>
-                    {optionMeta?.hoursPerWeek && <span>{formatHourCount(optionMeta.hoursPerWeek)} týdně</span>}
-                </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-4">
-                {(buttonShown || !canSelect) && (
-                    <Button
-                        disabled={isLoading || (!isOptionSelected && !canSelect)}
-                        onClick={handleUpdate}
-                        className="flex gap-2"
-                    >
-                        {isLoading ?
-                            <Loader2 className="size-4 animate-spin" />
-                        : isOptionSelected ?
-                            <TicketMinus className="size-4" />
-                        :   <TicketPlus className="size-4" />}
-                        {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
-                    </Button>
-                )}
+            <CardContent className="grid gap-4 px-5">
+                {optionMeta?.hoursPerWeek && <span>{formatHourCount(optionMeta.hoursPerWeek)} týdně</span>}
+                <div className="flex gap-2 items-center w-full *:w-full">
+                    {option.description && (
+                        <Button
+                            onClick={() => setIsDetailsDialogOpen(true)}
+                            className="flex gap-2 my-2 max-w-sm"
+                            variant={"secondary"}
+                        >
+                            Zobrazit anotaci
+                            <Maximize2 size={16} />
+                        </Button>
+                    )}
+                    {(buttonShown || !canSelect) && (
+                        <Button
+                            disabled={isLoading || (!isOptionSelected && !canSelect)}
+                            onClick={handleUpdate}
+                            className="flex gap-2"
+                            variant={isOptionSelected ? "destructiveSecondary" : "default"}
+                        >
+                            {isLoading ? (
+                                <Loader2 className="size-4 animate-spin" />
+                            ) : isOptionSelected ? (
+                                <TicketMinus className="size-4" />
+                            ) : (
+                                <TicketPlus className="size-4" />
+                            )}
+                            {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
+                        </Button>
+                    )}
+                </div>
                 {isOptionSelected && !buttonShown && <span className="text-green-500 font-bold">Tebou zvoleno</span>}
             </CardContent>
+            <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
+                <DialogContent className="max-h-[90%] overflow-y-scroll max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Možnost: {option.title}</DialogTitle>
+                    </DialogHeader>
+                    <p className="whitespace-pre-line text-balance max-w-3xl">{option.description}</p>
+                </DialogContent>
+            </Dialog>
         </Card>
     );
 };
