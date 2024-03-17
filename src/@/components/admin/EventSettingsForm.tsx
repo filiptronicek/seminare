@@ -18,6 +18,7 @@ import { type Class, EVENT_TYPE } from "~/utils/constants";
 import { displayEventType } from "~/utils/display";
 import { parseSeminarMetaSafe } from "~/utils/seminars";
 import { Textarea } from "../ui/textarea";
+import { useEffect } from "react";
 
 type FormValues = z.infer<typeof formSchema>;
 type Props = {
@@ -45,8 +46,14 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
             metadata: parseSeminarMetaSafe(event?.metadata),
         },
     });
-
     const eventIsSeminar = form.getValues("type") === EVENT_TYPE.SEMINAR;
+
+    // We want to always default to allowMultipleSelections true for seminars, because it's expected.
+    useEffect(() => {
+        if (eventIsSeminar) {
+            form.setValue("allowMultipleSelections", true);
+        }
+    }, [eventIsSeminar, form]);
 
     return (
         <Form {...form}>
