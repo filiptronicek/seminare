@@ -118,7 +118,7 @@ export const SingleSeminar = ({ id }: Props) => {
                         <h1 className="text-4xl font-bold my-4">{event.title}</h1>
                         {student?.admin && (
                             <Button variant={"secondary"} asChild className="flex items-center gap-2 w-28">
-                                <Link href={`/admin/${event.id}`}>
+                                <Link href={`/admin/events/${event.id}`}>
                                     <Pen size={16} /> Upravit
                                 </Link>
                             </Button>

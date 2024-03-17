@@ -20,7 +20,7 @@ export const NewEventDialog = ({ open, onOpenChange }: Props) => {
             createEvent.mutate(values, {
                 onSuccess: (data) => {
                     onOpenChange(false);
-                    void router.push(`/admin/${data.id}`);
+                    void router.push(`/admin/events/${data.id}`);
                 },
                 onError: (error) => {
                     toast({
