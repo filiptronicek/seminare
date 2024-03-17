@@ -9,8 +9,8 @@ export const ClassDialog = () => {
                     <DialogTitle>Dokonči nastavení</DialogTitle>
                     <DialogDescription className="flex flex-col gap-4">
                         <span>Nastav si prosím svoji třídu, abychom ti mohli ukázat akce, které se tě týkají.</span>
-                        <ClassForm />
                     </DialogDescription>
+                    <ClassForm />
                 </DialogHeader>
             </DialogContent>
         </Dialog>
