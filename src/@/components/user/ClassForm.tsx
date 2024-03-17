@@ -17,6 +17,9 @@ export const ClassForm = () => {
 
     const form = useForm<z.infer<typeof singleUserSchema>>({
         resolver: zodResolver(singleUserSchema),
+        defaultValues: {
+            class: student?.class as Class,
+        },
     });
 
     const onSubmit = (values: z.infer<typeof singleUserSchema>) => {
@@ -53,7 +56,6 @@ export const ClassForm = () => {
                 <FormField
                     control={form.control}
                     name="class"
-                    defaultValue={student?.class as Class}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Třída</FormLabel>
