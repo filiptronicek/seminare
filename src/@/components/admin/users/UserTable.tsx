@@ -35,7 +35,7 @@ const ActionCell = ({ row, refetch }: { row: { original: Student }; refetch: () 
 };
 
 export const UserTable = () => {
-    const { isError, data: users, isLoading, refetch } = api.user.list.useQuery();
+    const { error, data: users, isLoading, refetch } = api.user.list.useQuery();
 
     const columns = useMemo<ColumnDef<Student>[]>(
         () => [
@@ -69,8 +69,8 @@ export const UserTable = () => {
         return <Loader2 className="animate-spin" />;
     }
 
-    if (isError || !users) {
-        return "Naskytla se chyba v načítání dat";
+    if (error || !users) {
+        return `Naskytla se chyba v načítání dat: ${error.message}`;
     }
 
     return <DataTable columns={columns} data={users} />;

@@ -6,15 +6,15 @@ import { useState } from "react";
 import { NewEventDialog } from "@/components/admin/NewEventDialog";
 
 export default function Home() {
-    const { isError, data: events, isLoading } = api.events.list.useQuery({});
+    const { error, data: events, isLoading } = api.events.list.useQuery({});
     const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
 
     if (isLoading) {
         return <Loader2 className="animate-spin" />;
     }
 
-    if (isError || !events) {
-        return "Naskytla se chyba v načítání dat";
+    if (error || !events) {
+        return `Naskytla se chyba v načítání dat: ${error?.message}`;
     }
 
     return (
