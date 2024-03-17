@@ -14,10 +14,10 @@ export default function EventOption() {
     const { query, push } = useRouter();
     const eventId = query.eventId as string;
 
-    const { data: event } = api.events.get.useQuery({ id: eventId });
-    const updateEvent = api.events.update.useMutation();
-    const generateExcel = api.events.generateExcel.useMutation();
-    const deleteEvent = api.events.delete.useMutation();
+    const { data: event } = api.event.get.useQuery({ id: eventId });
+    const updateEvent = api.event.update.useMutation();
+    const generateExcel = api.event.generateExcel.useMutation();
+    const deleteEvent = api.event.delete.useMutation();
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 

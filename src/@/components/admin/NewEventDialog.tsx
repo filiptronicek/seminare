@@ -12,7 +12,7 @@ type Props = {
     onOpenChange: (value: boolean) => void;
 };
 export const NewEventDialog = ({ open, onOpenChange }: Props) => {
-    const createEvent = api.events.create.useMutation();
+    const createEvent = api.event.create.useMutation();
     const router = useRouter();
 
     const onSubmit = useCallback(

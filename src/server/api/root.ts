@@ -1,4 +1,4 @@
-import { eventRouter } from "~/server/api/routers/events";
+import { eventRouter } from "~/server/api/routers/event";
 import { eventOptionsRouter } from "~/server/api/routers/event-options";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { userRouter } from "./routers/user";
@@ -9,7 +9,7 @@ import { userRouter } from "./routers/user";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-    events: eventRouter,
+    event: eventRouter,
     eventOptions: eventOptionsRouter,
     user: userRouter,
 });

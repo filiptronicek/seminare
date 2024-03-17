@@ -20,7 +20,7 @@ type Props = {
     id: string;
 };
 export const SingleSeminar = ({ id }: Props) => {
-    const { data: event, error } = api.events.get.useQuery({ id });
+    const { data: event, error } = api.event.get.useQuery({ id });
     const { data: options, error: optionsError } = api.eventOptions.list.useQuery({
         id,
     });

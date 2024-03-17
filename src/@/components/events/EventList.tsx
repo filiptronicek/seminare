@@ -16,7 +16,7 @@ export const EventList = ({ user }: Props) => {
         isError,
         data: events,
         isLoading,
-    } = api.events.list.useQuery({
+    } = api.event.list.useQuery({
         active: true,
         class: user.class! as Class,
     });
