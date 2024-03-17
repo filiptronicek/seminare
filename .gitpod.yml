@@ -7,3 +7,9 @@ tasks:
           cp .env.example .env
           ./scripts/gitpod.sh
           bun dev
+
+vscode:
+  extensions:
+    - "oven.bun-vscode"
+    - "bradlc.vscode-tailwindcss"
+    - "rvest.vs-code-prettier-eslint"
