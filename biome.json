@@ -11,5 +11,14 @@
     },
     "vcs": {
         "useIgnoreFile": true
+    },
+    "formatter": {
+        "enabled": true,
+        "formatWithErrors": false,
+        "lineEnding": "lf",
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 120,
+        "ignore": ["**/node_modules/**", "**/dist/**", "**/build/**", "**/.next/**"]
     }
 }
