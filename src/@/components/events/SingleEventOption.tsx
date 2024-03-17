@@ -120,14 +120,17 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
                         </Button>
                     )}
                     {buttonShown && (
-                        <Button disabled={isLoading} onClick={handleUpdate} variant={isOptionSelected ? "destructiveSecondary" : "default"} className="flex gap-2">
-                            {isLoading ? (
+                        <Button
+                            disabled={isLoading}
+                            onClick={handleUpdate}
+                            variant={isOptionSelected ? "destructiveSecondary" : "default"}
+                            className="flex gap-2"
+                        >
+                            {isLoading ?
                                 <Loader2 className="size-4 animate-spin" />
-                            ) : isOptionSelected ? (
+                            : isOptionSelected ?
                                 <TicketMinus className="size-4" />
-                            ) : (
-                                <TicketPlus className="size-4" />
-                            )}
+                            :   <TicketPlus className="size-4" />}
                             {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                         </Button>
                     )}

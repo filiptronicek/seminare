@@ -2,7 +2,7 @@ import type { Event } from "@prisma/client";
 
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
-dayjs.extend(isBetween)
+dayjs.extend(isBetween);
 
 export const isEventSignupOpen = (event: Event): boolean => {
     const now = dayjs();
@@ -12,7 +12,7 @@ export const isEventSignupOpen = (event: Event): boolean => {
     }
 
     return now.isBetween(dayjs(event.signupStartDate), dayjs(event.signupEndDate));
-}
+};
 
 export const compareEvents = (a: Event, b: Event) => {
     // prefer currently active events
@@ -40,4 +40,4 @@ export const compareEvents = (a: Event, b: Event) => {
     }
 
     return 0;
-}
+};

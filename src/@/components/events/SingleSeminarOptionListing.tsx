@@ -135,13 +135,11 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
                             className="flex gap-2"
                             variant={isOptionSelected ? "destructiveSecondary" : "default"}
                         >
-                            {isLoading ? (
+                            {isLoading ?
                                 <Loader2 className="size-4 animate-spin" />
-                            ) : isOptionSelected ? (
+                            : isOptionSelected ?
                                 <TicketMinus className="size-4" />
-                            ) : (
-                                <TicketPlus className="size-4" />
-                            )}
+                            :   <TicketPlus className="size-4" />}
                             {isOptionSelected ? "Odhlásit se" : "Přihlásit se"}
                         </Button>
                     )}
