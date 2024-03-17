@@ -36,7 +36,7 @@ export default function EventOption() {
             { id: eventId },
             {
                 onSuccess: () => {
-                    void push("/admin");
+                    void push("/admin/events");
                 },
                 onError: (error) => {
                     toast({
