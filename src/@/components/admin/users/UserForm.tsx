@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 type Props = {
     user: Student;
@@ -31,6 +32,14 @@ export const UserForm = ({ user, isLoading, onSubmit, onDelete }: Props) => {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <FormItem>
+                    <FormLabel>Jméno a příjmení</FormLabel>
+                    <FormControl>
+                        <Input value={user.fullName} readOnly />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+
                 <FormField
                     control={form.control}
                     name="class"
