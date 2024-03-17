@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { type ColumnDef } from "@tanstack/react-table";
 
 import { type Event, type SingleEventOption } from "@prisma/client";
-import { api } from "~/utils/api";
 import { Loader2 } from "lucide-react";
-import { DataTable } from "../ui/DataTable";
 import { useMemo, useState } from "react";
+import { api } from "~/utils/api";
+import { EVENT_TYPE } from "~/utils/constants";
+import { parseSeminarMetaSafe, parseSeminarOptionMetaSafe } from "~/utils/seminars";
+import { DataTable } from "../ui/DataTable";
 import { EditOptionDialog } from "./EditOptionDialog";
 import { NewOptionDialog } from "./NewOptionDialog";
 
@@ -51,8 +53,8 @@ export const EventOptionTable = ({ event }: Props) => {
     const { isError, data, isLoading, refetch } = api.eventOptions.list.useQuery({ id: event.id });
     const [showNewDialog, setShowNewDialog] = useState(false);
 
-    const columns = useMemo<ColumnDef<SingleEventOption>[]>(
-        () => [
+    const columns = useMemo<ColumnDef<SingleEventOption>[]>(() => {
+        const cols: ColumnDef<SingleEventOption>[] = [
             {
                 accessorKey: "title",
                 header: "Název",
@@ -70,15 +72,43 @@ export const EventOptionTable = ({ event }: Props) => {
                     return value;
                 },
             },
-            {
-                id: "actions",
-                cell: (cell) => {
-                    return <ActionCell refetch={refetch} row={cell.row} event={event} />;
+        ];
+
+        if (event.type === EVENT_TYPE.SEMINAR.toString()) {
+            cols.push({
+                header: "Hodin týdně",
+                accessorFn: (row) => {
+                    const metadata = parseSeminarOptionMetaSafe(row.metadata);
+
+                    return metadata?.hoursPerWeek;
                 },
+            });
+            cols.push({
+                header: "Větev",
+                accessorFn: (row) => {
+                    const metadata = parseSeminarOptionMetaSafe(row.metadata);
+
+                    if (metadata) {
+                        const eventMetadata = parseSeminarMetaSafe(event.metadata);
+                        const displayName =
+                            eventMetadata?.availableBranches.find((branch) => branch.id === metadata.branch)?.label ??
+                            "Neznámá větev";
+
+                        return displayName;
+                    }
+                },
+            });
+        }
+
+        cols.push({
+            id: "actions",
+            cell: (cell) => {
+                return <ActionCell refetch={refetch} row={cell.row} event={event} />;
             },
-        ],
-        [event, refetch],
-    );
+        });
+
+        return cols;
+    }, [event, refetch]);
 
     if (isLoading) {
         return <Loader2 className="animate-spin" />;
@@ -97,7 +127,7 @@ export const EventOptionTable = ({ event }: Props) => {
                 </Button>
                 <NewOptionDialog refetch={refetch} event={event} open={showNewDialog} onOpenChange={setShowNewDialog} />
             </div>
-            <DataTable defaultSort={{ id: "title", desc: false }} className="max-w-2xl" columns={columns} data={data} />
+            <DataTable defaultSort={{ id: "title", desc: false }} className="max-w-3xl" columns={columns} data={data} />
         </>
     );
 };
