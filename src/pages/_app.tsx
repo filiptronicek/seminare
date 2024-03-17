@@ -1,5 +1,13 @@
+import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type AppType } from "next/app";
+
+import { api } from "~/utils/api";
+
+import { TRPCClientError } from "@trpc/client";
+import { z } from "zod";
+import "~/styles/globals.css";
+import Layout from "./layout";
 
 const errorWithHttpStatusSchema = z.object({
     code: z.number(),
@@ -8,7 +16,7 @@ const errorWithHttpStatusSchema = z.object({
         message: z.string(),
         code: z.string(),
         stack: z.string().optional(),
-    })
+    }),
 });
 
 const queryClient = new QueryClient({
@@ -34,14 +42,6 @@ const queryClient = new QueryClient({
         },
     },
 });
-import { Toaster } from "@/components/ui/toaster";
-
-import { api } from "~/utils/api";
-
-import "~/styles/globals.css";
-import Layout from "./layout";
-import { TRPCClientError } from "@trpc/client";
-import { z } from "zod";
 
 const App: AppType = ({ Component, pageProps }) => {
     return (
