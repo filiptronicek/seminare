@@ -117,7 +117,6 @@ export const randomOption = ({ id }: { id: string }, i: number): SingleEventOpti
 
 async function main() {
     // Clear database
-    await db.studentOption.deleteMany();
     await db.singleEventOption.deleteMany({});
     await db.event.deleteMany({});
     await db.student.deleteMany({});

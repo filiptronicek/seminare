@@ -140,20 +140,6 @@ export const eventRouter = createTRPCRouter({
     delete: publicProcedure.input(z.object({ id: idType })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
 
-        // Clean up any options and student options
-        await ctx.db.singleEventOption.deleteMany({
-            where: { eventId: input.id },
-        });
-        await ctx.db.studentOption.deleteMany({
-            where: {
-                option: {
-                    event: {
-                        id: input.id,
-                    },
-                },
-            },
-        });
-
         return ctx.db.event.delete({
             where: { id: input.id },
         });

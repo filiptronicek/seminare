@@ -12,14 +12,25 @@ export const eventOptionsRouter = createTRPCRouter({
     listStudentOptions: publicProcedure.input(z.object({ eventId: z.string() })).query(async ({ ctx, input }) => {
         const student = await ensureUser(ctx.auth, ctx.db);
 
-        return await ctx.db.singleEventOption.findMany({
+        const studentWithOptions = await ctx.db.student.findUnique({
             where: {
-                AND: [{ eventId: input.eventId }, { StudentOption: { some: { studentId: student.id } } }],
+                id: student.id,
+            },
+            include: {
+                options: {
+                    where: {
+                        eventId: input.eventId,
+                    },
+                },
             },
         });
-    }),
+
+        if (!studentWithOptions) return [];
+    
+        return studentWithOptions.options;
+    }),    
     join: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
-        const student = await ensureUser(ctx.auth, ctx.db);
+        const user = await ensureUser(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
@@ -46,7 +57,7 @@ export const eventOptionsRouter = createTRPCRouter({
             }
         }
 
-        if (!student.class) {
+        if (!user.class) {
             throw new TRPCError({
                 code: "PRECONDITION_FAILED",
                 message: "You need to set your class before you can join events",
@@ -54,20 +65,22 @@ export const eventOptionsRouter = createTRPCRouter({
         }
 
         if (!option.event.allowMultipleSelections) {
-            const existingOption = await ctx.db.studentOption.findFirst({
+            const existingSelection = await ctx.db.student.findFirst({
                 where: {
-                    studentId: student.id,
-                    option: {
-                        eventId: option.eventId,
+                    id: user.id,
+                    options: {
+                        some: {
+                            eventId: option.eventId,
+                        },
                     },
                 },
             });
-            if (existingOption) {
+            if (existingSelection) {
                 throw new Error("Multiple selections not allowed for this event");
             }
         }
 
-        if (option.event.visibleToClasses && !option.event.visibleToClasses.includes(student.class)) {
+        if (option.event.visibleToClasses && !option.event.visibleToClasses.includes(user.class)) {
             throw new Error("This event is not available to your class");
         }
 
@@ -79,15 +92,15 @@ export const eventOptionsRouter = createTRPCRouter({
                 });
 
             const parsedData = parseSeminarMeta(option.event.metadata);
-            const selectedOptions = await ctx.db.studentOption.findMany({
+            const student = await ctx.db.student.findUnique({
                 where: {
-                    studentId: student.id,
-                    option: {
-                        eventId: option.eventId,
-                    },
+                    id: user.id,
                 },
                 include: {
-                    option: {
+                    options: {
+                        where: {
+                            eventId: option.eventId,
+                        },
                         select: {
                             metadata: true,
                         },
@@ -95,8 +108,16 @@ export const eventOptionsRouter = createTRPCRouter({
                 },
             });
 
+            if (!student)
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Student not found",
+                });
+
+            const { options: selectedOptions } = student;
+
             const hoursSelected = selectedOptions.reduce((acc, selectedOption) => {
-                const { hoursPerWeek } = parseSeminarOptionMeta(selectedOption.option.metadata);
+                const { hoursPerWeek } = parseSeminarOptionMeta(selectedOption.metadata);
                 return acc + hoursPerWeek;
             }, 0);
 
@@ -110,7 +131,7 @@ export const eventOptionsRouter = createTRPCRouter({
 
             // Ensure oneof branches are not selected together
             const selectedBranches = selectedOptions.map(
-                (selectedOption) => parseSeminarOptionMeta(selectedOption.option.metadata).branch,
+                (selectedOption) => parseSeminarOptionMeta(selectedOption.metadata).branch,
             );
             const selectedOneofBranches = selectedBranches.filter((branch) => {
                 return parsedData.availableBranches.find((b) => b.id === branch)?.type === "oneof";
@@ -126,10 +147,13 @@ export const eventOptionsRouter = createTRPCRouter({
         }
 
         if (option.maxParticipants !== null) {
-            const participants = await ctx.db.studentOption.count({
+            const participants = await ctx.db.singleEventOption.count({
                 where: {
-                    optionId: option.id,
-                },
+                    id: option.id,
+                    students: {
+                        some: {},
+                    }
+                }
             });
             if (participants >= option.maxParticipants) {
                 throw new TRPCError({
@@ -139,10 +163,12 @@ export const eventOptionsRouter = createTRPCRouter({
             }
         }
 
-        await ctx.db.studentOption.create({
+        await ctx.db.student.update({
+            where: { id: user.id },
             data: {
-                studentId: student.id,
-                optionId: input.optionId,
+                options: {
+                    connect: { id: input.optionId },
+                },
             },
         });
 
@@ -176,13 +202,13 @@ export const eventOptionsRouter = createTRPCRouter({
             });
         }
 
-        await ctx.db.studentOption.delete({
-            where: {
-                studentId_optionId: {
-                    studentId: student.id,
-                    optionId: input.optionId,
-                },
-            },
+        await ctx.db.student.update({
+            where: { id: student.id },
+            data: {
+                options: {
+                    disconnect: [{ id: input.optionId }]
+                }
+            }
         });
 
         return option;
@@ -216,21 +242,28 @@ export const eventOptionsRouter = createTRPCRouter({
     }),
     delete: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
-
+    
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
         });
-        if (!option)
+        if (!option) {
             throw new TRPCError({
                 code: "NOT_FOUND",
                 message: "Event option not found",
             });
-
-        // Clean up if students have selected this option
-        await ctx.db.studentOption.deleteMany({
-            where: { optionId: input.optionId },
+        }
+    
+        // Disassociate all students from this option
+        await ctx.db.singleEventOption.update({
+            where: { id: input.optionId },
+            data: {
+                students: {
+                    set: [],
+                },
+            },
         });
-
+    
+        // Delete the option
         return ctx.db.singleEventOption.delete({
             where: { id: input.optionId },
         });

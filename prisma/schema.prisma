@@ -8,12 +8,23 @@ datasource db {
 }
 
 model Student {
-  id            String          @id @default(uuid())
+  id            String              @id @default(uuid())
   class         String?
   fullName      String
   avatar        String?
-  StudentOption StudentOption[]
-  admin         Boolean         @default(false)
+  options       SingleEventOption[] @relation("StudentOptions")
+  admin         Boolean             @default(false)
+}
+
+model SingleEventOption {
+  id              String    @id @default(uuid())
+  maxParticipants Int?      @default(2147483647)
+  title           String
+  description     String?
+  eventId         String
+  event           Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  students        Student[] @relation("StudentOptions")
+  metadata        Json?
 }
 
 model Event {
@@ -31,22 +42,3 @@ model Event {
   metadata                Json?
 }
 
-model SingleEventOption {
-  id              String          @id @default(uuid())
-  maxParticipants Int?            @default(2147483647)
-  title           String
-  description     String?
-  eventId         String
-  event           Event           @relation(fields: [eventId], references: [id])
-  metadata        Json?
-  StudentOption   StudentOption[]
-}
-
-model StudentOption {
-  studentId String
-  optionId  String
-  option    SingleEventOption @relation(fields: [optionId], references: [id])
-  student   Student           @relation(fields: [studentId], references: [id])
-
-  @@id([studentId, optionId])
-}
