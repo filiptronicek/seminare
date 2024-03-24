@@ -24,3 +24,17 @@ export const formatHourCount = (hours: number) => {
 
     return `${hours} hodin`;
 };
+
+export const formatFreeSpots = (freeSpots: number) => {
+    if (freeSpots === 0) {
+        return "Plno";
+    }
+    if (freeSpots === 1) {
+        return "1 volné místo";
+    }
+    if (freeSpots < 5) {
+        return `${freeSpots} volná místa`;
+    }
+
+    return `${freeSpots} volných míst`;
+};

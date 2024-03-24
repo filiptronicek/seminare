@@ -7,9 +7,8 @@ import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 import { Pen } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { type Branch, type seminarOptionMetadataSchema } from "~/utils/schemas";
+import type { SeminarOptionEnrichedWithUserCount, Branch, seminarOptionMetadataSchema } from "~/utils/schemas";
 import { type z } from "zod";
-import { type SingleEventOption } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 const displayHoursWithSelected = (hours: number) => {
@@ -23,7 +22,7 @@ const displayHoursWithSelected = (hours: number) => {
     return `Vybráno všech ${hours} hodin`;
 };
 
-type SeminarOptionEnrichedWithMeta = SingleEventOption & {
+type SeminarOptionEnrichedWithMeta = SeminarOptionEnrichedWithUserCount & {
     metadata: z.infer<typeof seminarOptionMetadataSchema>;
 };
 

@@ -239,6 +239,11 @@ export const eventOptionsRouter = createTRPCRouter({
 
         return ctx.db.singleEventOption.findMany({
             where: { eventId: input.id },
+            include: {
+                _count: {
+                    select: { students: true },
+                },
+            },
         });
     }),
     update: publicProcedure.input(singleOptionUpdateSchema).mutation(async ({ input, ctx }) => {

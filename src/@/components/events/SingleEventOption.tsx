@@ -11,18 +11,19 @@ import { api } from "~/utils/api";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { toast } from "../ui/use-toast";
+import type { SeminarOptionEnrichedWithUserCount } from "~/utils/schemas";
+import { formatFreeSpots } from "~/utils/display";
 
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
 
-interface OptionProps {
-    option: SingleEventOption;
-    selected: SingleEventOption[] | undefined;
-    refetchSelected: () => void;
+type Props = {
+    option: SeminarOptionEnrichedWithUserCount;
+    selected?: SingleEventOption[];
     event: Event;
-}
-
-export const SingleOption = ({ option, selected, event, refetchSelected }: OptionProps) => {
+    refetchSelected: () => void;
+};
+export const SingleOption = ({ option, selected, event, refetchSelected }: Props) => {
     const { data: user } = api.user.get.useQuery();
 
     const registerMutation = api.eventOptions.join.useMutation();
@@ -51,9 +52,10 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
     const buttonShown = useMemo<boolean>(() => {
         if (!user?.class) return false;
         if (event.visibleToClasses && !event.visibleToClasses.includes(user.class)) return false;
+        if (option.maxParticipants !== null && option._count.students >= option.maxParticipants) return false;
 
         return isSignupOpen && (noOptionSelected || isOptionSelected || event.allowMultipleSelections);
-    }, [event.allowMultipleSelections, event.visibleToClasses, isOptionSelected, isSignupOpen, noOptionSelected, user]);
+    }, [event, option, isOptionSelected, isSignupOpen, noOptionSelected, user]);
 
     const isLoading = useMemo(() => {
         return registerMutation.isLoading || leaveMutation.isLoading;
@@ -102,10 +104,24 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Optio
         }
     };
 
+    const remainingSpots = option.maxParticipants !== null ? option.maxParticipants - option._count.students : null;
+
     return (
         <Card key={option.id} className="w-96 min-h-[10rem] flex flex-col justify-between">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl">{option.title}</CardTitle>
+                <CardTitle className="flex justify-between items-baseline text-base">
+                    <h2 className="text-2xl">{option.title}</h2>
+                    {option.maxParticipants !== null &&
+                        (remainingSpots !== null ?
+                            remainingSpots <= 0 ?
+                                <span className="text-red-500">
+                                    Plno ({option.maxParticipants}/{option._count.students})
+                                </span>
+                            :   <span className="text-green-500">
+                                    {formatFreeSpots(remainingSpots - (isOptionSelected ? 1 : 0))}
+                                </span>
+                        :   <span className="text-gray-500">Nelze určit</span>)}
+                </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 px-5">
                 <div className="flex gap-2 items-center w-full *:w-full">

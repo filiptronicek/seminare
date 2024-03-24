@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { CLASSES, EVENT_TYPE } from "./constants";
+import type { SingleEventOption } from "@prisma/client";
 
 export const seminarBranchSchema = z.object({
     id: z.string(),
@@ -11,6 +12,9 @@ export const seminarBranchSchema = z.object({
     type: z.enum(["unbound", "oneof"]).default("unbound"),
 });
 export type Branch = z.infer<typeof seminarBranchSchema>;
+export type SeminarOptionEnrichedWithUserCount = SingleEventOption & {
+    _count: { students: number };
+};
 
 export const seminarMetadataSchema = z.object({
     requiredHours: z.number().int().positive("Počet hodin musí být vyšší než 0"),

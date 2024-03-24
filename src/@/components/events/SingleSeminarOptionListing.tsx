@@ -11,14 +11,15 @@ import { parseSeminarOptionMeta } from "~/utils/seminars";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { toast } from "../ui/use-toast";
-import { formatHourCount } from "~/utils/display";
+import { formatFreeSpots, formatHourCount } from "~/utils/display";
+import type { SeminarOptionEnrichedWithUserCount } from "~/utils/schemas";
 
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
 
 interface Props {
-    option: SingleEventOption;
-    selected: SingleEventOption[] | undefined;
+    option: SeminarOptionEnrichedWithUserCount;
+    selected?: SingleEventOption[];
     event: Event;
     canSelect: boolean;
     refetchSelected: () => void;
@@ -44,9 +45,10 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
     const buttonShown = useMemo<boolean>(() => {
         if (!user?.class) return false;
         if (event.visibleToClasses && !event.visibleToClasses.includes(user.class)) return false;
+        if (option.maxParticipants !== null && option._count.students >= option.maxParticipants) return false;
 
         return isSignupOpen && (noOptionSelected || isOptionSelected || event.allowMultipleSelections);
-    }, [event.allowMultipleSelections, event.visibleToClasses, isOptionSelected, isSignupOpen, noOptionSelected, user]);
+    }, [event, option, isOptionSelected, isSignupOpen, noOptionSelected, user]);
 
     const isLoading = useMemo(() => {
         return registerMutation.isLoading || leaveMutation.isLoading;
@@ -57,6 +59,8 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
 
         return parseSeminarOptionMeta(option.metadata);
     }, [option]);
+
+    const remainingSpots = option.maxParticipants !== null ? option.maxParticipants - option._count.students : null;
 
     const handleUpdate = async () => {
         const change = isOptionSelected ? "leave" : "join";
@@ -104,7 +108,19 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
     return (
         <Card key={option.id} className="w-96 min-h-[10rem] flex flex-col justify-between">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl">{option.title}</CardTitle>
+                <CardTitle className="flex justify-between items-baseline text-base">
+                    <h2 className="text-2xl">{option.title}</h2>
+                    {option.maxParticipants !== null &&
+                        (remainingSpots !== null ?
+                            remainingSpots <= 0 ?
+                                <span className="text-red-500">
+                                    Plno ({option.maxParticipants}/{option._count.students})
+                                </span>
+                            :   <span className="text-green-500">
+                                    {formatFreeSpots(remainingSpots - (isOptionSelected ? 1 : 0))}
+                                </span>
+                        :   <span className="text-gray-500">Nelze určit</span>)}
+                </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 px-5">
                 {optionMeta?.hoursPerWeek && <span>{formatHourCount(optionMeta.hoursPerWeek)} týdně</span>}
