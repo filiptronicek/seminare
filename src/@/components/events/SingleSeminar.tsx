@@ -12,6 +12,17 @@ import { type z } from "zod";
 import { type SingleEventOption } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
+const displayHoursWithSelected = (hours: number) => {
+    if (hours === 1) {
+        return "Vybrána 1 hodina";
+    }
+    if (hours < 5) {
+        return `Vybrány všechny ${hours} hodiny`;
+    }
+
+    return `Vybráno všech ${hours} hodin`;
+};
+
 type SeminarOptionEnrichedWithMeta = SingleEventOption & {
     metadata: z.infer<typeof seminarOptionMetadataSchema>;
 };
@@ -141,7 +152,7 @@ export const SingleSeminar = ({ id }: Props) => {
                             <>
                                 Zbývající hodiny k vybrání: {remainingToSelect} z {seminarMetadata?.requiredHours}
                             </>
-                        :   <>Vybráno všech {seminarMetadata?.requiredHours} hodin ✔︎</>}
+                        :   `${displayHoursWithSelected(hoursSelected)} ✅`}
                     </span>
 
                     <br className="my-2" />

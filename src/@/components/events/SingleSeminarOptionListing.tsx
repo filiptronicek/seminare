@@ -11,19 +11,10 @@ import { parseSeminarOptionMeta } from "~/utils/seminars";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { toast } from "../ui/use-toast";
+import { formatHourCount } from "~/utils/display";
 
 dayjs.extend(calendar);
 dayjs.locale(czechLocale);
-
-const formatHourCount = (hours: number) => {
-    if (hours === 1) {
-        return "1 hodina";
-    }
-    if (hours < 5) {
-        return `${hours} hodiny`;
-    }
-    return `${hours} hodin`;
-};
 
 interface Props {
     option: SingleEventOption;
