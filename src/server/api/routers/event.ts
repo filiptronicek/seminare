@@ -5,9 +5,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureAdmin, ensureUser } from "~/server/auth";
 import { AVAILABLE_BRANCHES, CLASSES, EVENT_TYPE } from "~/utils/constants";
 import { generateExcelForEvent } from "~/utils/data";
-import { singleEventSchema, singleEventUpdateSchema } from "~/utils/schemas";
-
-const idType = z.string().uuid();
+import { singleEventSchema, singleEventUpdateSchema, uuid } from "~/utils/schemas";
 
 export const eventRouter = createTRPCRouter({
     list: publicProcedure
@@ -70,7 +68,7 @@ export const eventRouter = createTRPCRouter({
                 },
             });
         }),
-    generateExcel: publicProcedure.input(z.object({ eventId: idType })).mutation(async ({ input, ctx }) => {
+    generateExcel: publicProcedure.input(z.object({ eventId: uuid })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
 
         const event = await ctx.db.event.findUnique({
@@ -108,7 +106,7 @@ export const eventRouter = createTRPCRouter({
             },
         });
     }),
-    get: publicProcedure.input(z.object({ id: idType })).query(async ({ input, ctx }) => {
+    get: publicProcedure.input(z.object({ id: uuid })).query(async ({ input, ctx }) => {
         await ensureUser(ctx.auth, ctx.db);
 
         return ctx.db.event.findUnique({ where: { id: input.id } });
@@ -139,7 +137,7 @@ export const eventRouter = createTRPCRouter({
             },
         });
     }),
-    delete: publicProcedure.input(z.object({ id: idType })).mutation(async ({ input, ctx }) => {
+    delete: publicProcedure.input(z.object({ id: uuid })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
 
         return ctx.db.event.delete({

@@ -72,3 +72,5 @@ export const singleUserUpdateSchema = z.object({
     id: z.string().uuid().optional(),
     data: singleUserSchema.partial(),
 });
+
+export const uuid = z.string().uuid();

@@ -5,11 +5,11 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureAdmin, ensureUser } from "~/server/auth";
 import { EVENT_TYPE } from "~/utils/constants";
-import { singleOptionCreateSchema, singleOptionUpdateSchema } from "~/utils/schemas";
+import { singleOptionCreateSchema, singleOptionUpdateSchema, uuid } from "~/utils/schemas";
 import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
 export const eventOptionsRouter = createTRPCRouter({
-    listStudentOptions: publicProcedure.input(z.object({ eventId: z.string() })).query(async ({ ctx, input }) => {
+    listStudentOptions: publicProcedure.input(z.object({ eventId: uuid })).query(async ({ ctx, input }) => {
         const student = await ensureUser(ctx.auth, ctx.db);
 
         const studentWithOptions = await ctx.db.student.findUnique({
@@ -29,14 +29,14 @@ export const eventOptionsRouter = createTRPCRouter({
 
         return studentWithOptions.options;
     }),
-    join: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
+    join: publicProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
         const user = await ensureUser(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
             include: { event: true },
         });
-        if (!option) throw new Error("Event option not found");
+        if (!option) throw new TRPCError({ code: "NOT_FOUND", message: "Event option not found" });
 
         // Guards against joining options before signup period starts or after it ends
         // todo: optionally, allow admins to remove students from options anyway
@@ -76,12 +76,18 @@ export const eventOptionsRouter = createTRPCRouter({
                 },
             });
             if (existingSelection) {
-                throw new Error("Multiple selections not allowed for this event");
+                throw new TRPCError({
+                    code: "PRECONDITION_FAILED",
+                    message: "Multiple selections not allowed for this event",
+                });
             }
         }
 
         if (option.event.visibleToClasses && !option.event.visibleToClasses.includes(user.class)) {
-            throw new Error("This event is not available to your class");
+            throw new TRPCError({
+                code: "PRECONDITION_FAILED",
+                message: "This event is not available to your class",
+            });
         }
 
         if (option.event.type === EVENT_TYPE.SEMINAR.toString()) {
@@ -174,7 +180,7 @@ export const eventOptionsRouter = createTRPCRouter({
 
         return option;
     }),
-    leave: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
+    leave: publicProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
         const student = await ensureUser(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
@@ -228,7 +234,7 @@ export const eventOptionsRouter = createTRPCRouter({
             },
         });
     }),
-    list: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input, ctx }) => {
+    list: publicProcedure.input(z.object({ id: uuid })).query(async ({ input, ctx }) => {
         await ensureUser(ctx.auth, ctx.db);
 
         return ctx.db.singleEventOption.findMany({
@@ -248,7 +254,7 @@ export const eventOptionsRouter = createTRPCRouter({
             },
         });
     }),
-    delete: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
+    delete: publicProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
 
         const option = await ctx.db.singleEventOption.findUnique({
