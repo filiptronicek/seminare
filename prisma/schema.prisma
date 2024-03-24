@@ -19,7 +19,7 @@ model Student {
 
 model SingleEventOption {
   id              String    @id @default(uuid())
-  maxParticipants Int?      @default(2147483647)
+  maxParticipants Int?
   title           String
   description     String?
   eventId         String

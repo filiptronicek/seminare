@@ -32,7 +32,7 @@ export const SingleEvent = ({ id }: Props) => {
     }, [event?.signupEndDate]);
 
     if (error || optionsError) {
-        return <div>Chyba v načítání</div>;
+        return <div>Chyba v načítání: {error?.message ?? optionsError?.message}</div>;
     }
 
     return (

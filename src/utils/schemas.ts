@@ -48,7 +48,7 @@ export const singleEventUpdateSchema = z.object({
 
 export const singleOptionSchema = z.object({
     title: z.string().max(255, "Možnost nesmí mít delší název než 255 znaků").min(1, "Možnost musí mít název"),
-    maxParticipants: z.number().int().nonnegative().optional(),
+    maxParticipants: z.number().int().optional(),
     description: z.string().optional(),
     metadata: seminarOptionMetadataSchema.partial().optional(),
 });

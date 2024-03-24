@@ -215,10 +215,13 @@ export const eventOptionsRouter = createTRPCRouter({
     }),
     create: publicProcedure.input(singleOptionCreateSchema).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
+        // Ensure maxParticipants is not negative, and if it is, disable the limit
+        const maxParticipants = (input.data?.maxParticipants ?? -1) >= 0 ? input.data.maxParticipants : null;
 
         return ctx.db.singleEventOption.create({
             data: {
                 ...input.data,
+                maxParticipants,
                 event: {
                     connect: { id: input.eventId },
                 },
@@ -234,10 +237,15 @@ export const eventOptionsRouter = createTRPCRouter({
     }),
     update: publicProcedure.input(singleOptionUpdateSchema).mutation(async ({ input, ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
+        // Ensure maxParticipants is not negative, and if it is, disable the limit
+        const maxParticipants = (input.data?.maxParticipants ?? -1) >= 0 ? input.data.maxParticipants : null;
 
         return ctx.db.singleEventOption.update({
             where: { id: input.id },
-            data: input.data,
+            data: {
+                ...input.data,
+                maxParticipants,
+            },
         });
     }),
     delete: publicProcedure.input(z.object({ optionId: z.string() })).mutation(async ({ input, ctx }) => {
