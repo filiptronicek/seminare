@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useUser } from "~/utils/hooks";
 
-export default function Home() {
+export default function Login() {
     const { data: userData } = useUser();
     const supabase = createClientComponentClient();
     const router = useRouter();
