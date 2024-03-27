@@ -63,14 +63,10 @@ export const EventOptionTable = ({ event }: Props) => {
             },
             {
                 header: "Kapacita",
-                accessorFn: (row) => {
-                    const value = row.maxParticipants;
-                    if (value === 2147483647 || !value) {
-                        return "∞";
-                    }
-
-                    return value;
+                cell: (cell) => {
+                    return <div>{cell.row.original.maxParticipants ?? "Neomezená"}</div>;
                 },
+                accessorKey: "maxParticipants",
             },
         ];
 
