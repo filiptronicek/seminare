@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from "@/components/ui/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { AuthError } from "@supabase/supabase-js";
+import { Loader2 } from "lucide-react";
 import Head from "next/head";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
@@ -11,7 +12,7 @@ import { useEffect } from "react";
 import { useUser } from "~/utils/hooks";
 
 export default function Login() {
-    const { data: userData } = useUser();
+    const { data: userData, isLoading } = useUser();
     const supabase = createClientComponentClient();
     const router = useRouter();
     const search = useSearchParams();
@@ -42,6 +43,14 @@ export default function Login() {
             });
         }
     }, [search]);
+
+    if (isLoading) {
+        return (
+            <div className="flex h-full items-center justify-center">
+                <Loader2 className="size-8 animate-spin" />
+            </div>
+        );
+    }
 
     return (
         <>
