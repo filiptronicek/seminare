@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { ensureAdmin, ensureUser, getUser } from "~/server/auth";
+import { ensureAdmin, ensureUser } from "~/server/auth";
 import { singleUserUpdateSchema } from "~/utils/schemas";
 
 export const userRouter = createTRPCRouter({
     get: publicProcedure.query(async ({ ctx }) => {
-        return getUser(ctx.auth, ctx.db);
+        return ensureUser(ctx.auth, ctx.db);
     }),
     list: publicProcedure.query(async ({ ctx }) => {
         await ensureAdmin(ctx.auth, ctx.db);
