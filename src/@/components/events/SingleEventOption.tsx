@@ -51,7 +51,8 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Props
 
     const buttonShown = useMemo<boolean>(() => {
         if (!user?.class) return false;
-        if (event.visibleToClasses && !event.visibleToClasses.includes(user.class)) return false;
+        if (event.visibleToClasses && event.visibleToClasses.length > 0 && !event.visibleToClasses.includes(user.class))
+            return false;
         if (option.maxParticipants !== null && option._count.students >= option.maxParticipants) return false;
 
         return isSignupOpen && (noOptionSelected || isOptionSelected || event.allowMultipleSelections);
