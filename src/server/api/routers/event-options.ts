@@ -83,7 +83,7 @@ export const eventOptionsRouter = createTRPCRouter({
             }
         }
 
-        if (option.event.visibleToClasses && !option.event.visibleToClasses.includes(user.class)) {
+        if (option.event.visibleToClasses && option.event.visibleToClasses.length >= 0 && !option.event.visibleToClasses.includes(user.class)) {
             throw new TRPCError({
                 code: "PRECONDITION_FAILED",
                 message: "This event is not available to your class",
