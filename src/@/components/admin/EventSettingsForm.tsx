@@ -1,4 +1,4 @@
-import { type z } from "zod";
+import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -278,7 +278,7 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                     render={({ field }) => {
                         const fieldProps = {
                             onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-                                const parsed = event.target.value.split(",").map((v) => v.trim());
+                                const parsed = event.target.value.split(",").map((v) => v.trim()).filter(Boolean) as Class[];
 
                                 field.onChange(parsed);
                             },
