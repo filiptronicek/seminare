@@ -278,7 +278,10 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                     render={({ field }) => {
                         const fieldProps = {
                             onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-                                const parsed = event.target.value.split(",").map((v) => v.trim()).filter(Boolean) as Class[];
+                                const parsed = event.target.value
+                                    .split(",")
+                                    .map((v) => v.trim())
+                                    .filter(Boolean) as Class[];
 
                                 field.onChange(parsed);
                             },
