@@ -106,15 +106,15 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
     };
 
     return (
-        <Card key={option.id} className="w-96 min-h-[10rem] flex flex-col justify-between">
+        <Card key={option.id} className="flex min-h-[10rem] w-96 flex-col justify-between">
             <CardHeader className="space-y-1">
-                <CardTitle className="flex justify-between items-baseline text-base">
+                <CardTitle className="flex items-baseline justify-between text-base">
                     <h2 className="text-2xl">{option.title}</h2>
                     {option.maxParticipants !== null &&
                         (remainingSpots !== null ?
                             remainingSpots <= 0 ?
                                 <span className="text-red-500">
-                                    Plno ({option.maxParticipants}/{option._count.students})
+                                    Plno ({option._count.students}/{option.maxParticipants})
                                 </span>
                             :   <span className="text-green-500">
                                     {formatFreeSpots(remainingSpots - (isOptionSelected ? 1 : 0))}
@@ -124,11 +124,11 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
             </CardHeader>
             <CardContent className="grid gap-4 px-5">
                 {optionMeta?.hoursPerWeek && <span>{formatHourCount(optionMeta.hoursPerWeek)} týdně</span>}
-                <div className="flex gap-2 items-center w-full *:w-full">
+                <div className="flex w-full items-center gap-2 *:w-full">
                     {option.description && (
                         <Button
                             onClick={() => setIsDetailsDialogOpen(true)}
-                            className="flex gap-2 my-2 max-w-sm"
+                            className="my-2 flex max-w-sm gap-2"
                             variant={"secondary"}
                         >
                             Zobrazit anotaci
@@ -151,14 +151,14 @@ export const SingleSeminarOptionListing = ({ option, selected, event, canSelect,
                         </Button>
                     )}
                 </div>
-                {isOptionSelected && !buttonShown && <span className="text-green-500 font-bold">Tebou zvoleno</span>}
+                {isOptionSelected && !buttonShown && <span className="font-bold text-green-500">Tebou zvoleno</span>}
             </CardContent>
             <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
-                <DialogContent className="max-h-[90%] overflow-y-scroll max-w-2xl">
+                <DialogContent className="max-h-[90%] max-w-2xl overflow-y-scroll">
                     <DialogHeader>
                         <DialogTitle>Možnost: {option.title}</DialogTitle>
                     </DialogHeader>
-                    <p className="whitespace-pre-line text-balance max-w-3xl">{option.description}</p>
+                    <p className="max-w-3xl whitespace-pre-line text-balance">{option.description}</p>
                 </DialogContent>
             </Dialog>
         </Card>
