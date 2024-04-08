@@ -53,7 +53,8 @@ export const SingleOption = ({ option, selected, event, refetchSelected }: Props
         if (!user?.class) return false;
         if (event.visibleToClasses && event.visibleToClasses.length > 0 && !event.visibleToClasses.includes(user.class))
             return false;
-        if (option.maxParticipants !== null && option._count.students >= option.maxParticipants) return false;
+        if (option.maxParticipants !== null && option._count.students >= option.maxParticipants && !isOptionSelected)
+            return false;
 
         return isSignupOpen && (noOptionSelected || isOptionSelected || event.allowMultipleSelections);
     }, [event, option, isOptionSelected, isSignupOpen, noOptionSelected, user]);
