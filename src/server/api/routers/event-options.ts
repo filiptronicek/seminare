@@ -157,15 +157,16 @@ export const eventOptionsRouter = createTRPCRouter({
         }
 
         if (option.maxParticipants !== null) {
-            const participants = await ctx.db.singleEventOption.count({
+            const participantCount = await ctx.db.student.count({
                 where: {
-                    id: option.id,
-                    students: {
-                        some: {},
+                    options: {
+                        some: {
+                            id: option.id,
+                        },
                     },
                 },
             });
-            if (participants >= option.maxParticipants) {
+            if (participantCount >= option.maxParticipants) {
                 throw new TRPCError({
                     code: "PRECONDITION_FAILED",
                     message: "Možnost je již plná",
