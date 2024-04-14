@@ -33,8 +33,8 @@ const ActionCell = ({ row, refetch }: { row: { original: Student }; refetch: () 
     );
 };
 
-export const OptionParticipantsTable = ({optionId}: {optionId: string}) => {
-    const { error, data: users, isLoading, refetch } = api.eventOptions.listOptionParticipants.useQuery({optionId});
+export const OptionParticipantsTable = ({ optionId }: { optionId: string }) => {
+    const { error, data: users, isLoading, refetch } = api.eventOptions.listOptionParticipants.useQuery({ optionId });
 
     const columns = useMemo<ColumnDef<Student>[]>(
         () => [

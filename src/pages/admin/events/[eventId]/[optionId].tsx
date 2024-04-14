@@ -10,6 +10,14 @@ import { toast } from "@/components/ui/use-toast";
 import { OptionSettingsForm } from "@/components/admin/OptionForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OptionParticipantsTable } from "@/components/admin/users/ParticipantsTable";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 export default function EventOption() {
     const { query, push } = useRouter();
@@ -56,8 +64,29 @@ export default function EventOption() {
     }
 
     return (
-        <section className="flex flex-col items-start gap-8 pb-8">
-            <div className="mt-8">
+        <section className="flex flex-col items-start gap-8 pb-8 mt-4">
+            <Breadcrumb>
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink asChild>
+                            <Link href="/admin/events/">Akce</Link>
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbLink asChild>
+                            <Link href={`/admin/events/${eventId}`}>{event.title}</Link>
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbLink asChild>
+                            <Link href={`/admin/events/${eventId}/${optionId}`}>{option.title}</Link>
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
+            <div className="w-full max-w-lg">
                 <Tabs defaultValue="settings" className="w-full">
                     <TabsList>
                         <TabsTrigger key={"settings"} value={"settings"}>
@@ -68,7 +97,13 @@ export default function EventOption() {
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent key={"settings"} value={"settings"}>
-                        <OptionSettingsForm event={event} option={option} onSubmit={handleFormSubmit} isLoading={updateOption.isLoading} onDelete={() => setIsDeleteDialogOpen(true)} />
+                        <OptionSettingsForm
+                            event={event}
+                            option={option}
+                            onSubmit={handleFormSubmit}
+                            isLoading={updateOption.isLoading}
+                            onDelete={() => setIsDeleteDialogOpen(true)}
+                        />
                     </TabsContent>
                     <TabsContent key={"participants"} value={"participants"}>
                         {/* todo: participants user table */}

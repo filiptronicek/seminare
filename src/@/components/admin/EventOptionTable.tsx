@@ -13,13 +13,7 @@ import { DataTable } from "../ui/DataTable";
 import { NewOptionDialog } from "./NewOptionDialog";
 import Link from "next/link";
 
-const ActionCell = ({
-    row,
-    event,
-}: {
-    row: { original: SingleEventOption };
-    event: Event;
-}) => {
+const ActionCell = ({ row, event }: { row: { original: SingleEventOption }; event: Event }) => {
     return (
         <>
             <Button type="button" variant={"secondary"} asChild>
