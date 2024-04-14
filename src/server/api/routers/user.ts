@@ -1,16 +1,13 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { ensureAdmin, ensureUser } from "~/server/auth";
+import { adminProcedure, authedProcedure, createTRPCRouter } from "~/server/api/trpc";
 import { singleUserUpdateSchema } from "~/utils/schemas";
 
 export const userRouter = createTRPCRouter({
-    get: publicProcedure.query(async ({ ctx }) => {
-        return ensureUser(ctx.auth, ctx.db);
+    get: authedProcedure.query(async ({ ctx }) => {
+        return ctx.user;
     }),
-    list: publicProcedure.query(async ({ ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
-
+    list: adminProcedure.query(async ({ ctx }) => {
         return ctx.db.student.findMany({
             select: {
                 id: true,
@@ -21,8 +18,8 @@ export const userRouter = createTRPCRouter({
             },
         });
     }),
-    update: publicProcedure.input(singleUserUpdateSchema).mutation(async ({ input, ctx }) => {
-        const user = await ensureUser(ctx.auth, ctx.db);
+    update: authedProcedure.input(singleUserUpdateSchema).mutation(async ({ input, ctx }) => {
+        const {user} = ctx;
 
         // only admins can update other users
         if (input.id && input.id !== user.id) {
@@ -51,9 +48,8 @@ export const userRouter = createTRPCRouter({
             },
         });
     }),
-    delete: publicProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ input, ctx }) => {
-        const user = await ensureAdmin(ctx.auth, ctx.db);
-        if (input.id === user.id) {
+    delete: adminProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ input, ctx }) => {
+        if (input.id === ctx.user.id) {
             throw new Error("You are not allowed to delete yourself");
         }
 
