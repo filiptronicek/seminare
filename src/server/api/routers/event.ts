@@ -1,14 +1,13 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { ensureAdmin, ensureUser } from "~/server/auth";
+import { adminProcedure, authedProcedure, createTRPCRouter } from "~/server/api/trpc";
 import { AVAILABLE_BRANCHES, CLASSES, EVENT_TYPE } from "~/utils/constants";
 import { generateExcelForEvent } from "~/utils/data";
 import { singleEventSchema, singleEventUpdateSchema, uuid } from "~/utils/schemas";
 
 export const eventRouter = createTRPCRouter({
-    list: publicProcedure
+    list: authedProcedure
         .input(
             z.object({
                 active: z.boolean().optional(),
@@ -17,8 +16,7 @@ export const eventRouter = createTRPCRouter({
         )
         .query(async ({ ctx, input }) => {
             const now = new Date();
-            const student = await ensureUser(ctx.auth, ctx.db);
-            if (!input.class && !student.admin) {
+            if (!input.class && !ctx.user.admin) {
                 throw new TRPCError({ code: "FORBIDDEN", message: "You must specify a class" });
             }
 
@@ -68,9 +66,7 @@ export const eventRouter = createTRPCRouter({
                 },
             });
         }),
-    generateExcel: publicProcedure.input(z.object({ eventId: uuid })).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
-
+    generateExcel: adminProcedure.input(z.object({ eventId: uuid })).mutation(async ({ input, ctx }) => {
         const event = await ctx.db.event.findUnique({
             where: { id: input.eventId },
         });
@@ -82,9 +78,7 @@ export const eventRouter = createTRPCRouter({
 
         return { dataUrl };
     }),
-    create: publicProcedure.input(singleEventSchema).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
-
+    create: adminProcedure.input(singleEventSchema).mutation(async ({ input, ctx }) => {
         return ctx.db.event.create({
             data: {
                 id: crypto.randomUUID(),
@@ -106,14 +100,10 @@ export const eventRouter = createTRPCRouter({
             },
         });
     }),
-    get: publicProcedure.input(z.object({ id: uuid })).query(async ({ input, ctx }) => {
-        await ensureUser(ctx.auth, ctx.db);
-
+    get: authedProcedure.input(z.object({ id: uuid })).query(async ({ input, ctx }) => {
         return ctx.db.event.findUnique({ where: { id: input.id } });
     }),
-    update: publicProcedure.input(singleEventUpdateSchema).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
-
+    update: adminProcedure.input(singleEventUpdateSchema).mutation(async ({ input, ctx }) => {
         const event = await ctx.db.event.findUnique({
             where: { id: input.id },
             select: {
@@ -137,9 +127,7 @@ export const eventRouter = createTRPCRouter({
             },
         });
     }),
-    delete: publicProcedure.input(z.object({ id: uuid })).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
-
+    delete: adminProcedure.input(z.object({ id: uuid })).mutation(async ({ input, ctx }) => {
         return ctx.db.event.delete({
             where: { id: input.id },
         });
