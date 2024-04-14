@@ -14,7 +14,15 @@ export interface DataTableProps<TData, TValue> {
     data: TData[];
 }
 
-const ActionCell = ({ row, optionId, refetch }: { row: { original: Student }; optionId: string; refetch: () => void }) => {
+const ActionCell = ({
+    row,
+    optionId,
+    refetch,
+}: {
+    row: { original: Student };
+    optionId: string;
+    refetch: () => void;
+}) => {
     const leaveMutation = api.eventOptions.leaveUnconditionally.useMutation();
 
     return (

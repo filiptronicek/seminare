@@ -237,28 +237,30 @@ export const eventOptionsRouter = createTRPCRouter({
         return option;
     }),
     // think about putting this into an admin-only router
-    leaveUnconditionally: adminProcedure.input(z.object({ optionId: uuid, userId: uuid })).mutation(async ({ input, ctx }) => {
-        const option = await ctx.db.singleEventOption.findUnique({
-            where: { id: input.optionId },
-            include: { event: true },
-        });
-        if (!option)
-            throw new TRPCError({
-                code: "NOT_FOUND",
-                message: "Event option not found",
+    leaveUnconditionally: adminProcedure
+        .input(z.object({ optionId: uuid, userId: uuid }))
+        .mutation(async ({ input, ctx }) => {
+            const option = await ctx.db.singleEventOption.findUnique({
+                where: { id: input.optionId },
+                include: { event: true },
+            });
+            if (!option)
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Event option not found",
+                });
+
+            await ctx.db.student.update({
+                where: { id: input.userId },
+                data: {
+                    options: {
+                        disconnect: [{ id: input.optionId }],
+                    },
+                },
             });
 
-        await ctx.db.student.update({
-            where: { id: input.userId },
-            data: {
-                options: {
-                    disconnect: [{ id: input.optionId }],
-                },
-            },
-        });
-
-        return option;
-    }),
+            return option;
+        }),
     create: adminProcedure.input(singleOptionCreateSchema).mutation(async ({ input, ctx }) => {
         // Ensure maxParticipants is not negative, and if it is, disable the limit
         const maxParticipants = (input.data?.maxParticipants ?? -1) >= 0 ? input.data.maxParticipants : null;
