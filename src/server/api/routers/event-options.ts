@@ -2,19 +2,16 @@ import { TRPCError } from "@trpc/server";
 import { endOfDay } from "date-fns";
 import { z } from "zod";
 
-import { authedProcedure, createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { ensureAdmin, ensureUser } from "~/server/auth";
+import { adminProcedure, authedProcedure, createTRPCRouter } from "~/server/api/trpc";
 import { EVENT_TYPE } from "~/utils/constants";
 import { singleOptionCreateSchema, singleOptionUpdateSchema, uuid } from "~/utils/schemas";
 import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
 export const eventOptionsRouter = createTRPCRouter({
-    listStudentOptions: publicProcedure.input(z.object({ eventId: uuid })).query(async ({ ctx, input }) => {
-        const student = await ensureUser(ctx.auth, ctx.db);
-
+    listStudentOptions: authedProcedure.input(z.object({ eventId: uuid })).query(async ({ ctx, input }) => {
         const studentWithOptions = await ctx.db.student.findUnique({
             where: {
-                id: student.id,
+                id: ctx.user.id,
             },
             include: {
                 options: {
@@ -183,9 +180,7 @@ export const eventOptionsRouter = createTRPCRouter({
 
         return option;
     }),
-    leave: publicProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
-        const student = await ensureUser(ctx.auth, ctx.db);
-
+    leave: authedProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
             include: { event: true },
@@ -212,7 +207,7 @@ export const eventOptionsRouter = createTRPCRouter({
         }
 
         await ctx.db.student.update({
-            where: { id: student.id },
+            where: { id: ctx.user.id },
             data: {
                 options: {
                     disconnect: [{ id: input.optionId }],
@@ -222,8 +217,7 @@ export const eventOptionsRouter = createTRPCRouter({
 
         return option;
     }),
-    create: publicProcedure.input(singleOptionCreateSchema).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
+    create: adminProcedure.input(singleOptionCreateSchema).mutation(async ({ input, ctx }) => {
         // Ensure maxParticipants is not negative, and if it is, disable the limit
         const maxParticipants = (input.data?.maxParticipants ?? -1) >= 0 ? input.data.maxParticipants : null;
 
@@ -237,9 +231,7 @@ export const eventOptionsRouter = createTRPCRouter({
             },
         });
     }),
-    list: publicProcedure.input(z.object({ id: uuid })).query(async ({ input, ctx }) => {
-        await ensureUser(ctx.auth, ctx.db);
-
+    list: authedProcedure.input(z.object({ id: uuid })).query(async ({ input, ctx }) => {
         return ctx.db.singleEventOption.findMany({
             where: { eventId: input.id },
             include: {
@@ -249,8 +241,7 @@ export const eventOptionsRouter = createTRPCRouter({
             },
         });
     }),
-    update: publicProcedure.input(singleOptionUpdateSchema).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
+    update: adminProcedure.input(singleOptionUpdateSchema).mutation(async ({ input, ctx }) => {
         // Ensure maxParticipants is not negative, and if it is, disable the limit
         const maxParticipants = (input.data?.maxParticipants ?? -1) >= 0 ? input.data.maxParticipants : null;
 
@@ -262,9 +253,7 @@ export const eventOptionsRouter = createTRPCRouter({
             },
         });
     }),
-    delete: publicProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
-        await ensureAdmin(ctx.auth, ctx.db);
-
+    delete: adminProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
         });

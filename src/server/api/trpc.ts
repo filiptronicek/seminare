@@ -13,7 +13,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "~/server/db";
-import { ensureUser } from "../auth";
+import { ensureAdmin, ensureUser } from "../auth";
 import { Student } from "@prisma/client";
 
 /**
@@ -56,7 +56,7 @@ const createInnerTRPCContext = (opts: CreateInnerContextOptions) => {
  */
 export const createTRPCContext = (opts: CreateNextContextOptions) => {
     const supabase = createPagesServerClient(opts);
-    const contextInner = createInnerTRPCContext({ auth: supabase.auth, user: null});
+    const contextInner = createInnerTRPCContext({ auth: supabase.auth, user: null });
     return {
         ...contextInner,
         req: opts.req,
@@ -101,22 +101,35 @@ export const createTRPCRouter = t.router;
 
 /**
  * Public (unauthenticated) procedure
- *
- * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
- * guarantee that a user querying is authorized, but you can still access user session data if they
- * are logged in.
  */
 export const publicProcedure = t.procedure;
 
+/**
+ * Authenticated procedure. The procedure ensures that the user is authenticated before running and responds with a 401 if they are not.
+ */
 export const authedProcedure = t.procedure.use(async function isAuthed(opts) {
     const { ctx } = opts;
 
     const user = await ensureUser(ctx.auth, db);
-   
+
     return opts.next({
-      ctx: {
-        // ✅ user value is known to be non-null now
-        user,
-      },
+        ctx: {
+            user,
+        },
     });
-  });
+});
+
+/**
+ * Admin procedure. The procedure ensures that the user is authenticated and an admin before running and responds with a 403 if they are not.
+*/
+export const adminProcedure = t.procedure.use(async function isAuthed(opts) {
+    const { ctx } = opts;
+
+    const user = await ensureAdmin(ctx.auth, db);
+
+    return opts.next({
+        ctx: {
+            user,
+        },
+    });
+});
