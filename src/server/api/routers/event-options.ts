@@ -26,6 +26,25 @@ export const eventOptionsRouter = createTRPCRouter({
 
         return studentWithOptions.options;
     }),
+    /**
+     * Lists all users who have joined a specific event option
+     */
+    listOptionParticipants: adminProcedure.input(z.object({ optionId: uuid })).query(async ({ ctx, input }) => {
+        const event = await ctx.db.singleEventOption.findUnique({
+            where: { id: input.optionId },
+            include: {
+                students: true,
+            },
+        });
+        if (!event) {
+            throw new TRPCError({
+                code: "NOT_FOUND",
+                message: "Event option not found",
+            });
+        }
+
+        return event?.students;
+    }),
     join: authedProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
