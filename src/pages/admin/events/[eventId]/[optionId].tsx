@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { toast } from "@/components/ui/use-toast";
 import { OptionSettingsForm } from "@/components/admin/OptionForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { OptionParticipantsTable } from "@/components/admin/users/ParticipantsTable";
+import { OptionParticipantsTable } from "@/components/admin/users/OptionParticipantsTable";
 import {
     Breadcrumb,
     BreadcrumbItem,

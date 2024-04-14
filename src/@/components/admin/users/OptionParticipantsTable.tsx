@@ -14,18 +14,17 @@ export interface DataTableProps<TData, TValue> {
     data: TData[];
 }
 
-const ActionCell = ({ row, refetch }: { row: { original: Student }; refetch: () => void }) => {
+const ActionCell = ({ row, optionId, refetch }: { row: { original: Student }; optionId: string; refetch: () => void }) => {
+    const leaveMutation = api.eventOptions.leaveUnconditionally.useMutation();
+
     return (
         <>
             <Button
                 type="button"
                 variant={"secondary"}
                 onClick={() => {
-                    // todo: implement leave mutation for a given user id
-                    //leaveMutation.mutate({ optionId: row.original.id });
-                    refetch();
+                    leaveMutation.mutate({ optionId, userId: row.original.id }, { onSuccess: refetch });
                 }}
-                disabled
             >
                 Odhlásit
             </Button>
@@ -33,7 +32,10 @@ const ActionCell = ({ row, refetch }: { row: { original: Student }; refetch: () 
     );
 };
 
-export const OptionParticipantsTable = ({ optionId }: { optionId: string }) => {
+type Props = {
+    optionId: string;
+};
+export const OptionParticipantsTable = ({ optionId }: Props) => {
     const { error, data: users, isLoading, refetch } = api.eventOptions.listOptionParticipants.useQuery({ optionId });
 
     const columns = useMemo<ColumnDef<Student>[]>(
@@ -51,7 +53,7 @@ export const OptionParticipantsTable = ({ optionId }: { optionId: string }) => {
             {
                 id: "actions",
                 cell: (cell) => {
-                    return <ActionCell refetch={refetch} row={cell.row} />;
+                    return <ActionCell row={cell.row} optionId={optionId} refetch={refetch} />;
                 },
             },
         ],
