@@ -4,7 +4,7 @@ import { adminProcedure, authedProcedure, createTRPCRouter } from "~/server/api/
 import { singleUserUpdateSchema } from "~/utils/schemas";
 
 export const userRouter = createTRPCRouter({
-    get: authedProcedure.query(async ({ ctx }) => {
+    get: authedProcedure.query(({ ctx }) => {
         return ctx.user;
     }),
     list: adminProcedure.query(async ({ ctx }) => {
@@ -19,7 +19,7 @@ export const userRouter = createTRPCRouter({
         });
     }),
     update: authedProcedure.input(singleUserUpdateSchema).mutation(async ({ input, ctx }) => {
-        const {user} = ctx;
+        const { user } = ctx;
 
         // only admins can update other users
         if (input.id && input.id !== user.id) {

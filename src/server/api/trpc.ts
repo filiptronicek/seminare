@@ -14,7 +14,7 @@ import { ZodError } from "zod";
 
 import { db } from "~/server/db";
 import { ensureAdmin, ensureUser } from "../auth";
-import { Student } from "@prisma/client";
+import type { Student } from "@prisma/client";
 
 /**
  * 1. CONTEXT
@@ -121,7 +121,7 @@ export const authedProcedure = t.procedure.use(async function isAuthed(opts) {
 
 /**
  * Admin procedure. The procedure ensures that the user is authenticated and an admin before running and responds with a 403 if they are not.
-*/
+ */
 export const adminProcedure = t.procedure.use(async function isAuthed(opts) {
     const { ctx } = opts;
 
