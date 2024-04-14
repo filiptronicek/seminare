@@ -10,37 +10,20 @@ import { api } from "~/utils/api";
 import { EVENT_TYPE } from "~/utils/constants";
 import { parseSeminarMetaSafe, parseSeminarOptionMetaSafe } from "~/utils/seminars";
 import { DataTable } from "../ui/DataTable";
-import { EditOptionDialog } from "./EditOptionDialog";
 import { NewOptionDialog } from "./NewOptionDialog";
+import Link from "next/link";
 
 const ActionCell = ({
     row,
     event,
-    refetch,
 }: {
     row: { original: SingleEventOption };
     event: Event;
-    refetch: () => void;
 }) => {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-
     return (
         <>
-            <EditOptionDialog
-                refetch={refetch}
-                option={row.original}
-                open={isDialogOpen}
-                onOpenChange={setIsDialogOpen}
-                event={event}
-            />
-            <Button
-                type="button"
-                variant={"secondary"}
-                onClick={() => {
-                    setIsDialogOpen(true);
-                }}
-            >
-                Upravit
+            <Button type="button" variant={"secondary"} asChild>
+                <Link href={`/admin/events/${event.id}/${row.original.id}`}>Zobrazit</Link>
             </Button>
         </>
     );
@@ -99,7 +82,7 @@ export const EventOptionTable = ({ event }: Props) => {
         cols.push({
             id: "actions",
             cell: (cell) => {
-                return <ActionCell refetch={refetch} row={cell.row} event={event} />;
+                return <ActionCell row={cell.row} event={event} />;
             },
         });
 

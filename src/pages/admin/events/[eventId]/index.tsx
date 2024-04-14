@@ -10,7 +10,7 @@ import { type z } from "zod";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 
-export default function EventOption() {
+export default function Event() {
     const { query, push } = useRouter();
     const eventId = query.eventId as string;
 

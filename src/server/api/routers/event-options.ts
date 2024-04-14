@@ -250,6 +250,11 @@ export const eventOptionsRouter = createTRPCRouter({
             },
         });
     }),
+    get: authedProcedure.input(z.object({ optionId: uuid })).query(async ({ input, ctx }) => {
+        return ctx.db.singleEventOption.findUnique({
+            where: { id: input.optionId },
+        });
+    }),
     list: authedProcedure.input(z.object({ id: uuid })).query(async ({ input, ctx }) => {
         return ctx.db.singleEventOption.findMany({
             where: { eventId: input.id },

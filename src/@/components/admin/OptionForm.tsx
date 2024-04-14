@@ -153,7 +153,7 @@ export const OptionSettingsForm = ({ option, event, isLoading, onSubmit, onDelet
                 <div className="flex justify-between space-x-4">
                     {option && (
                         <Button type="button" variant="destructive" onClick={onDelete}>
-                            Odstranit
+                            Smazat možnost
                         </Button>
                     )}
                     <Button type="submit" disabled={!form.formState.isDirty}>
