@@ -13,7 +13,7 @@ import { singleUserSchema } from "~/utils/schemas";
 export const ClassForm = () => {
     const updateMutation = api.user.update.useMutation();
     const { data: student, isLoading: isStudentLoading, isError: isStudentError, refetch } = api.user.get.useQuery();
-    const utils = api.useContext();
+    const utils = api.useUtils();
 
     const form = useForm<z.infer<typeof singleUserSchema>>({
         resolver: zodResolver(singleUserSchema),

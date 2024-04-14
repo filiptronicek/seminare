@@ -6,7 +6,7 @@ import { useCallback, useEffect } from "react";
 export default function Logout() {
     const supabase = createClientComponentClient();
     const router = useRouter();
-    const utils = api.useContext();
+    const utils = api.useUtils();
 
     const handleLogout = useCallback(async () => {
         await supabase.auth.signOut();

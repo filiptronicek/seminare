@@ -14,7 +14,7 @@ type Props = {
     refetch: () => void;
 };
 export const EditUserDialog = ({ open, user, onOpenChange, refetch }: Props) => {
-    const utils = api.useContext();
+    const utils = api.useUtils();
 
     const updateUser = api.user.update.useMutation();
     const deleteUser = api.user.delete.useMutation();
