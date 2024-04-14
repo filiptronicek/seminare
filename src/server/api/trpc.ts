@@ -13,6 +13,8 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "~/server/db";
+import { ensureUser } from "../auth";
+import { Student } from "@prisma/client";
 
 /**
  * 1. CONTEXT
@@ -26,6 +28,7 @@ import { db } from "~/server/db";
 
 interface CreateInnerContextOptions extends Partial<CreateNextContextOptions> {
     auth: SupabaseClient["auth"];
+    user: Student | null;
 }
 
 /**
@@ -53,7 +56,7 @@ const createInnerTRPCContext = (opts: CreateInnerContextOptions) => {
  */
 export const createTRPCContext = (opts: CreateNextContextOptions) => {
     const supabase = createPagesServerClient(opts);
-    const contextInner = createInnerTRPCContext({ auth: supabase.auth });
+    const contextInner = createInnerTRPCContext({ auth: supabase.auth, user: null});
     return {
         ...contextInner,
         req: opts.req,
@@ -104,3 +107,16 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+
+export const authedProcedure = t.procedure.use(async function isAuthed(opts) {
+    const { ctx } = opts;
+
+    const user = await ensureUser(ctx.auth, db);
+   
+    return opts.next({
+      ctx: {
+        // ✅ user value is known to be non-null now
+        user,
+      },
+    });
+  });

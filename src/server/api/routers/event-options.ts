@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { endOfDay } from "date-fns";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { authedProcedure, createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { ensureAdmin, ensureUser } from "~/server/auth";
 import { EVENT_TYPE } from "~/utils/constants";
 import { singleOptionCreateSchema, singleOptionUpdateSchema, uuid } from "~/utils/schemas";
@@ -29,9 +29,7 @@ export const eventOptionsRouter = createTRPCRouter({
 
         return studentWithOptions.options;
     }),
-    join: publicProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
-        const user = await ensureUser(ctx.auth, ctx.db);
-
+    join: authedProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
             include: { event: true },
@@ -57,7 +55,7 @@ export const eventOptionsRouter = createTRPCRouter({
             }
         }
 
-        if (!user.class) {
+        if (!ctx.user.class) {
             throw new TRPCError({
                 code: "PRECONDITION_FAILED",
                 message: "You need to set your class before you can join events",
@@ -67,7 +65,7 @@ export const eventOptionsRouter = createTRPCRouter({
         if (!option.event.allowMultipleSelections) {
             const existingSelection = await ctx.db.student.findFirst({
                 where: {
-                    id: user.id,
+                    id: ctx.user.id,
                     options: {
                         some: {
                             eventId: option.eventId,
@@ -86,7 +84,7 @@ export const eventOptionsRouter = createTRPCRouter({
         if (
             option.event.visibleToClasses &&
             option.event.visibleToClasses.length > 0 &&
-            !option.event.visibleToClasses.includes(user.class)
+            !option.event.visibleToClasses.includes(ctx.user.class)
         ) {
             throw new TRPCError({
                 code: "PRECONDITION_FAILED",
@@ -104,7 +102,7 @@ export const eventOptionsRouter = createTRPCRouter({
             const parsedData = parseSeminarMeta(option.event.metadata);
             const student = await ctx.db.student.findUnique({
                 where: {
-                    id: user.id,
+                    id: ctx.user.id,
                 },
                 include: {
                     options: {
@@ -175,7 +173,7 @@ export const eventOptionsRouter = createTRPCRouter({
         }
 
         await ctx.db.student.update({
-            where: { id: user.id },
+            where: { id: ctx.user.id },
             data: {
                 options: {
                     connect: { id: input.optionId },
