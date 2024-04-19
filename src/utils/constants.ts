@@ -19,8 +19,8 @@ export type Class = (typeof CLASSES)[number];
 
 export const AVAILABLE_BRANCHES = [
     { id: "universal", label: "Univerzální", type: "unbound" },
-    { id: "humanitarian", label: "Humanitní", type: "oneof" },
-    { id: "science", label: "Přírodovědná", type: "oneof" },
+    { id: "humanitarian", label: "Humanitní", type: "oneof", boundWith: "A" },
+    { id: "science", label: "Přírodovědná", type: "oneof", boundWith: "A" },
 ] as const satisfies Branch[];
 
 export enum EVENT_TYPE {
