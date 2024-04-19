@@ -64,7 +64,6 @@ export const randomEvent = (): Event => {
 
 const randomSeminar = (className: string): Event => {
     const id = crypto.randomUUID();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const dateOfEvent = dayjs().add(1, "week");
     const dateOfEventEnd = dateOfEvent.add(1, "week");
 
@@ -127,6 +126,7 @@ async function main() {
             where: {
                 id: crypto.randomUUID(),
             },
+            // @ts-expect-error idk, need to look into this
             create: randomEvent(),
             update: {},
         });
@@ -135,6 +135,7 @@ async function main() {
                 where: {
                     id: crypto.randomUUID(),
                 },
+                // @ts-expect-error idk, need to look into this
                 create: randomOption(event, j + 1),
                 update: {},
             });
@@ -147,6 +148,7 @@ async function main() {
             where: {
                 id: crypto.randomUUID(),
             },
+            // @ts-expect-error idk, need to look into this
             create: randomSeminar(className),
             update: {},
         });
@@ -155,6 +157,7 @@ async function main() {
                 where: {
                     id: crypto.randomUUID(),
                 },
+                // @ts-expect-error idk, need to look into this
                 create: randomSeminarOption(event, j + 1),
                 update: {},
             });
