@@ -2,15 +2,21 @@ import { z } from "zod";
 import { CLASSES, EVENT_TYPE } from "./constants";
 import type { SingleEventOption } from "@prisma/client";
 
-export const seminarBranchSchema = z.object({
-    id: z.string(),
-    label: z.string(),
-    /**
-     * An unbound branch is an independent branch whose options can be selected without any restrictions.
-     * A oneof branch is a branch that is mutually exclusive with other oneof branches.
-     */
-    type: z.enum(["unbound", "oneof"]).default("unbound"),
-});
+export const seminarBranchSchema = z
+    .object({
+        id: z.string(),
+        label: z.string(),
+        type: z.literal("unbound"),
+    })
+    .or(
+        z.object({
+            id: z.string(),
+            label: z.string(),
+            type: z.literal("oneof"),
+            boundWith: z.string(),
+        }),
+    );
+
 export type Branch = z.infer<typeof seminarBranchSchema>;
 export type SeminarOptionEnrichedWithUserCount = SingleEventOption & {
     _count: { students: number };

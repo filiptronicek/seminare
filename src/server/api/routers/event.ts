@@ -124,6 +124,10 @@ export const eventRouter = createTRPCRouter({
                 signupStartDate: input.data.signup?.from,
                 endDate: input.data.happening?.to,
                 startDate: input.data.happening?.from,
+                metadata: {
+                    requiredHours: input.data.metadata?.requiredHours,
+                    availableBranches: input.data.metadata?.availableBranches,
+                },
             },
         });
     }),
