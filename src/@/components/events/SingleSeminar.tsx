@@ -143,9 +143,9 @@ export const SingleSeminar = ({ id }: Props) => {
                                 {/* todo: convert to `<time>` */}
                                 Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
                             </>
-                            : signupInThePast ?
-                                <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
-                                : <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
+                        : signupInThePast ?
+                            <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
+                        :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
                     </span>
 
                     <span className="font-bold">
@@ -153,7 +153,7 @@ export const SingleSeminar = ({ id }: Props) => {
                             <>
                                 Zbývající hodiny k vybrání: {remainingToSelect} z {seminarMetadata?.requiredHours}
                             </>
-                            : `${displayHoursWithSelected(hoursSelected)} ✅`}
+                        :   `${displayHoursWithSelected(hoursSelected)} ✅`}
                     </span>
 
                     <br className="my-2" />
@@ -170,7 +170,7 @@ export const SingleSeminar = ({ id }: Props) => {
                                         metadata ?
                                             metadata.hoursPerWeek <=
                                             (seminarMetadata?.requiredHours ?? 0) - hoursSelected
-                                            : false;
+                                        :   false;
 
                                     return (
                                         <SingleSeminarOptionListing
@@ -216,7 +216,7 @@ export const SingleSeminar = ({ id }: Props) => {
                                                     metadata ?
                                                         metadata.hoursPerWeek <=
                                                         (seminarMetadata?.requiredHours ?? 0) - hoursSelected
-                                                        : false;
+                                                    :   false;
 
                                                 return (
                                                     <SingleSeminarOptionListing
