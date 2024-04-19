@@ -8,7 +8,7 @@ import { type Event } from "@prisma/client";
 import { Checkbox } from "../ui/checkbox";
 import { type CheckedState } from "@radix-ui/react-checkbox";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { singleEventSchema as formSchema, seminarBranchSchema } from "~/utils/schemas";
+import { singleEventSchema as formSchema } from "~/utils/schemas";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";

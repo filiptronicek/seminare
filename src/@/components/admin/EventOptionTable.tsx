@@ -81,7 +81,7 @@ export const EventOptionTable = ({ event }: Props) => {
         });
 
         return cols;
-    }, [event, refetch]);
+    }, [event]);
 
     if (isLoading) {
         return <Loader2 className="animate-spin" />;

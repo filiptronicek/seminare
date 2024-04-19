@@ -65,7 +65,7 @@ export const OptionParticipantsTable = ({ optionId }: Props) => {
                 },
             },
         ],
-        [refetch],
+        [optionId, refetch],
     );
 
     if (isLoading) {
