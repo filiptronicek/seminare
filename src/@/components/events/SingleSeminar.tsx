@@ -7,7 +7,7 @@ import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 import { Pen } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import type { SeminarOptionEnrichedWithUserCount, Branch, seminarOptionMetadataSchema } from "~/utils/schemas";
+import type { Letter, SeminarOptionEnrichedWithUserCount, Branch, seminarOptionMetadataSchema } from "~/utils/schemas";
 import { type z } from "zod";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
@@ -66,20 +66,22 @@ export const SingleSeminar = ({ id }: Props) => {
         );
     }, [options]);
 
-    const selectedOneofBranch = useMemo<null | string>(() => {
-        if (!selectedOptions) return null;
-        if (!options) return null;
+    const selectedOneofBranches = useMemo<Map<Letter, string>>(() => {
+        const usedCategories = new Map<Letter, string>();
+
+        if (!selectedOptions) return usedCategories;
+        if (!options) return usedCategories;
 
         for (const option of selectedOptions) {
             const meta = optionMeta.get(option.id);
             const branchData = seminarMetadata?.availableBranches.find((branch) => branch.id === meta?.branch);
 
-            if (branchData && branchData.type === "oneof") {
-                return branchData.id;
+            if (branchData && branchData.type === "oneof" && !usedCategories.has(branchData.boundWith)) {
+                usedCategories.set(branchData.boundWith, branchData.id);
             }
         }
 
-        return null;
+        return usedCategories;
     }, [optionMeta, options, selectedOptions, seminarMetadata?.availableBranches]);
 
     const hoursSelected = useMemo(() => {
@@ -195,8 +197,8 @@ export const SingleSeminar = ({ id }: Props) => {
                                         if (!branchedOptions[branch.id]) return null;
                                         const disabled =
                                             branch.type === "oneof" &&
-                                            selectedOneofBranch !== null &&
-                                            selectedOneofBranch !== branch.id;
+                                            selectedOneofBranches.has(branch.boundWith) &&
+                                            selectedOneofBranches.get(branch.boundWith) !== branch.id;
 
                                         return (
                                             <TabsTrigger key={branch.id} value={branch.id} disabled={disabled}>

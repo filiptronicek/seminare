@@ -2,15 +2,52 @@ import { z } from "zod";
 import { CLASSES, EVENT_TYPE } from "./constants";
 import type { SingleEventOption } from "@prisma/client";
 
-export const seminarBranchSchema = z.object({
-    id: z.string(),
-    label: z.string(),
-    /**
-     * An unbound branch is an independent branch whose options can be selected without any restrictions.
-     * A oneof branch is a branch that is mutually exclusive with other oneof branches.
-     */
-    type: z.enum(["unbound", "oneof"]).default("unbound"),
-});
+// A bit of a stretch, but it looks actually pretty cool tbh
+export const letterSchema = z.union([
+    z.literal("A"),
+    z.literal("B"),
+    z.literal("C"),
+    z.literal("D"),
+    z.literal("E"),
+    z.literal("F"),
+    z.literal("G"),
+    z.literal("H"),
+    z.literal("I"),
+    z.literal("J"),
+    z.literal("K"),
+    z.literal("L"),
+    z.literal("M"),
+    z.literal("N"),
+    z.literal("O"),
+    z.literal("P"),
+    z.literal("Q"),
+    z.literal("R"),
+    z.literal("S"),
+    z.literal("T"),
+    z.literal("U"),
+    z.literal("V"),
+    z.literal("W"),
+    z.literal("X"),
+    z.literal("Y"),
+    z.literal("Z"),
+]);
+
+export const seminarBranchSchema = z
+    .object({
+        id: z.string(),
+        label: z.string(),
+        type: z.literal("unbound"),
+    })
+    .or(
+        z.object({
+            id: z.string(),
+            label: z.string(),
+            type: z.literal("oneof"),
+            boundWith: letterSchema,
+        }),
+    );
+
+export type Letter = z.infer<typeof letterSchema>;
 export type Branch = z.infer<typeof seminarBranchSchema>;
 export type SeminarOptionEnrichedWithUserCount = SingleEventOption & {
     _count: { students: number };

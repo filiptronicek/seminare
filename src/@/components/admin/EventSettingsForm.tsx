@@ -15,10 +15,11 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 import { formatDate } from "~/utils/dates";
 import { type Class, EVENT_TYPE } from "~/utils/constants";
-import { displayEventType } from "~/utils/display";
+import { abc, displayEventType } from "~/utils/display";
 import { parseSeminarMetaSafe } from "~/utils/seminars";
 import { Textarea } from "../ui/textarea";
 import { useEffect } from "react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 type FormValues = z.infer<typeof formSchema>;
 type Props = {
@@ -249,27 +250,122 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                 />
 
                 {eventIsSeminar && (
-                    <FormField
-                        control={form.control}
-                        name="metadata.requiredHours"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Hodin týdně</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="number"
-                                        min={1}
-                                        {...field}
-                                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                                    />
-                                </FormControl>
-                                <FormDescription>
-                                    Kolik hodin seminářů na týden si musí studenti vybrat?
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <>
+                        <FormField
+                            control={form.control}
+                            name="metadata.requiredHours"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Hodin týdně</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            min={1}
+                                            {...field}
+                                            onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Kolik hodin seminářů na týden si musí studenti vybrat?
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="metadata.availableBranches"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Dostupné větve</FormLabel>
+                                    <FormControl>
+                                        <>
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead scope="col">Název</TableHead>
+                                                        <TableHead scope="col">Kategorie vylučování</TableHead>
+                                                        <TableHead scope="col">Možnosti</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {field.value?.map((branch, index) => (
+                                                        <TableRow key={branch.id}>
+                                                            <TableCell>
+                                                                <span>{branch.label}</span>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Select
+                                                                    onValueChange={(value) => {
+                                                                        const newBranch = {
+                                                                            ...branch,
+                                                                            type: value ? "oneof" : "unbound",
+                                                                            boundWith: value,
+                                                                        };
+                                                                        if (
+                                                                            value === "none" &&
+                                                                            "boundWith" in newBranch
+                                                                        ) {
+                                                                            newBranch.type = "unbound";
+                                                                            // @ts-expect-error the types do not understand the relationship between the none value for `type` and the `boundWith` key
+                                                                            delete newBranch.boundWith;
+                                                                        }
+
+                                                                        field.onChange(
+                                                                            field.value?.map((b) =>
+                                                                                b.id === branch.id ? newBranch : b,
+                                                                            ),
+                                                                        );
+                                                                    }}
+                                                                    value={
+                                                                        branch.type === "oneof" ?
+                                                                            branch.boundWith
+                                                                        :   "none"
+                                                                    }
+                                                                >
+                                                                    <SelectTrigger defaultValue={"none"}>
+                                                                        <SelectValue placeholder="Nevylučuje se" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        <SelectItem value="none">
+                                                                            Nevylučuje se
+                                                                        </SelectItem>
+                                                                        {field.value?.map((_, index) => {
+                                                                            const letter = abc[index % abc.length]!;
+
+                                                                            return (
+                                                                                <SelectItem key={letter} value={letter}>
+                                                                                    {letter}
+                                                                                </SelectItem>
+                                                                            );
+                                                                        })}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Button
+                                                                    variant={"destructiveSecondary"}
+                                                                    onClick={() => {
+                                                                        field.onChange(
+                                                                            field.value?.filter((_, i) => i !== index),
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    Odstranit
+                                                                </Button>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </>
+                                    </FormControl>
+                                    <FormDescription>Obory, které mohou studenti vybrat.</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </>
                 )}
 
                 <FormField

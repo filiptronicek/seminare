@@ -155,14 +155,26 @@ export const eventOptionsRouter = createTRPCRouter({
 
             // Ensure oneof branches are not selected together
             const selectedBranches = selectedOptions.map(
-                (selectedOption) => parseSeminarOptionMeta(selectedOption.metadata).branch,
+                (selectedOption) =>
+                    parsedData.availableBranches.find(
+                        (b) => b.id === parseSeminarOptionMeta(selectedOption.metadata).branch,
+                    )!,
             );
-            const selectedOneofBranches = selectedBranches.filter((branch) => {
-                return parsedData.availableBranches.find((b) => b.id === branch)?.type === "oneof";
-            });
+
             const { branch: newBranch } = parseSeminarOptionMeta(option.metadata);
-            const isNewBranchOneof = parsedData.availableBranches.find((b) => b.id === newBranch)?.type === "oneof";
-            if (isNewBranchOneof && selectedOneofBranches.length > 0 && !selectedOneofBranches.includes(newBranch)) {
+            const branchOfOption = parsedData.availableBranches.find((b) => b.id === newBranch)!;
+            const selectedOneofBranchesOfSameCategory = selectedBranches.filter((branch) => {
+                const parsedBranchData = parsedData.availableBranches.find((b) => b.id === branch.id);
+                return (
+                    parsedBranchData?.type === "oneof" &&
+                    branchOfOption.type === "oneof" &&
+                    parsedBranchData.boundWith === branchOfOption.boundWith
+                );
+            });
+            if (
+                selectedOneofBranchesOfSameCategory.length > 0 &&
+                !selectedOneofBranchesOfSameCategory.some((b) => b.id === newBranch)
+            ) {
                 throw new TRPCError({
                     code: "PRECONDITION_FAILED",
                     message: "You cannot select multiple oneof branches",

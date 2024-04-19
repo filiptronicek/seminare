@@ -1,10 +1,10 @@
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import { singleOptionSchema } from "~/utils/schemas";
+import type { singleOptionSchema } from "~/utils/schemas";
+import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { useCallback, useState } from "react";
-import { type z } from "zod";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import { OptionSettingsForm } from "@/components/admin/OptionForm";
@@ -57,7 +57,7 @@ export default function EventOption() {
                 },
             },
         );
-    }, [deleteOption, push]);
+    }, [deleteOption, eventId, optionId, push]);
 
     if (!optionId || !option || !event) {
         return <Loader2 className="animate-spin" />;

@@ -38,3 +38,35 @@ export const formatFreeSpots = (freeSpots: number) => {
 
     return `${freeSpots} volných míst`;
 };
+
+/**
+ * The entire english alphabet
+ */
+export const abc = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+] as const;
