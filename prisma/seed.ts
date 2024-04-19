@@ -31,6 +31,7 @@ export const randomEvent = (): Event => {
     ] as const;
 
     const id = crypto.randomUUID();
+    // @ts-expect-error the future and past methods are not in the types
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const dateOfEvent = (Math.random() > 0.5 ? (dayjs.future() as dayjs.Dayjs) : (dayjs.past() as dayjs.Dayjs)).add(
         1,
@@ -98,7 +99,7 @@ const randomSeminarOption = (event: Event, i: number): SingleEventOption => {
         description: lorem.generateParagraphs(1),
         maxParticipants: null,
         metadata: {
-            hoursPerWeek: random(1, 2)!,
+            hoursPerWeek: random(1, 2),
             branch: sample(AVAILABLE_BRANCHES)?.id,
         },
     };
