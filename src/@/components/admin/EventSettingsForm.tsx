@@ -291,7 +291,7 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                 field.onChange([newBranch, ...(field.value ?? [])]);
                                             }}
                                         >
-                                            Přidat možnost
+                                            Přidat větev
                                         </Button>
                                     </div>
                                     <FormControl>
