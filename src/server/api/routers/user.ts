@@ -1,23 +1,35 @@
 import { z } from "zod";
 
 import { adminProcedure, authedProcedure, createTRPCRouter } from "~/server/api/trpc";
+import { CLASSES } from "~/utils/constants";
 import { singleUserUpdateSchema } from "~/utils/schemas";
 
 export const userRouter = createTRPCRouter({
     get: authedProcedure.query(({ ctx }) => {
         return ctx.user;
     }),
-    list: adminProcedure.query(async ({ ctx }) => {
-        return ctx.db.student.findMany({
-            select: {
-                id: true,
-                fullName: true,
-                class: true,
-                avatar: true,
-                admin: true,
-            },
-        });
-    }),
+    list: adminProcedure
+        .input(
+            z
+                .object({
+                    class: z.enum(CLASSES),
+                })
+                .partial(),
+        )
+        .query(async ({ input, ctx }) => {
+            return ctx.db.student.findMany({
+                select: {
+                    id: true,
+                    fullName: true,
+                    class: true,
+                    avatar: true,
+                    admin: true,
+                },
+                where: {
+                    class: input.class,
+                },
+            });
+        }),
     update: authedProcedure.input(singleUserUpdateSchema).mutation(async ({ input, ctx }) => {
         const { user } = ctx;
 

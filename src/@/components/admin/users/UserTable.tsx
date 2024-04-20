@@ -36,7 +36,7 @@ const ActionCell = ({ row, refetch }: { row: { original: Student }; refetch: () 
 };
 
 export const UserTable = () => {
-    const { error, data: users, isLoading, refetch } = api.user.list.useQuery();
+    const { error, data: users, isLoading, refetch } = api.user.list.useQuery({});
 
     const columns = useMemo<ColumnDef<Student>[]>(
         () => [
