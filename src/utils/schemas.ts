@@ -1,36 +1,9 @@
 import { z } from "zod";
 import { CLASSES, EVENT_TYPE } from "./constants";
 import type { SingleEventOption } from "@prisma/client";
+import { abc } from "./display";
 
-// A bit of a stretch, but it looks actually pretty cool tbh
-export const letterSchema = z.union([
-    z.literal("A"),
-    z.literal("B"),
-    z.literal("C"),
-    z.literal("D"),
-    z.literal("E"),
-    z.literal("F"),
-    z.literal("G"),
-    z.literal("H"),
-    z.literal("I"),
-    z.literal("J"),
-    z.literal("K"),
-    z.literal("L"),
-    z.literal("M"),
-    z.literal("N"),
-    z.literal("O"),
-    z.literal("P"),
-    z.literal("Q"),
-    z.literal("R"),
-    z.literal("S"),
-    z.literal("T"),
-    z.literal("U"),
-    z.literal("V"),
-    z.literal("W"),
-    z.literal("X"),
-    z.literal("Y"),
-    z.literal("Z"),
-]);
+const letterSchema = z.enum(abc);
 
 export const seminarBranchSchema = z
     .object({
