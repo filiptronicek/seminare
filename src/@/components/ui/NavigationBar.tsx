@@ -24,7 +24,7 @@ export const NavigationBar = () => {
                     <Image src={mmpLogo as string} alt="" width={30} height={30} />
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <Link href="/" legacyBehavior passHref>
+                    <Link href="/" prefetch legacyBehavior passHref>
                         <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "gap-2")}>
                             <Home className="size-6" />
                             <span className="hidden sm:block">Nadcházející Akce</span>
@@ -46,7 +46,7 @@ export const NavigationBar = () => {
                 {student?.admin && (
                     <>
                         <NavigationMenuItem>
-                            <Link href="/admin/events" legacyBehavior passHref>
+                            <Link href="/admin/events" prefetch legacyBehavior passHref>
                                 <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "gap-2")}>
                                     <Brush className="size-6" />
                                     <span className="hidden sm:block">Správa Akcí</span>
@@ -54,7 +54,7 @@ export const NavigationBar = () => {
                             </Link>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <Link href="/admin/users" legacyBehavior passHref>
+                            <Link href="/admin/users" prefetch legacyBehavior passHref>
                                 <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "gap-2")}>
                                     <Users className="size-6" />
                                     <span className="hidden sm:block">Správa Uživatelů</span>
