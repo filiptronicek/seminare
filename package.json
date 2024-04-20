@@ -73,7 +73,7 @@
     "prettier-plugin-tailwindcss": "^0.5.1",
     "prisma": "^5.12.1",
     "tailwindcss": "3.4.1",
-    "typescript": "5.4"
+    "typescript": "^5.4.5"
   },
   "ct3aMetadata": {
     "initVersion": "7.20.2"

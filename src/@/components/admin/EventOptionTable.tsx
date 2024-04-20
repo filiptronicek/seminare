@@ -60,7 +60,6 @@ export const EventOptionTable = ({ event }: Props) => {
                 header: "Větev",
                 accessorFn: (row) => {
                     const metadata = parseSeminarOptionMetaSafe(row.metadata);
-
                     if (metadata) {
                         const eventMetadata = parseSeminarMetaSafe(event.metadata);
                         const displayName =
@@ -69,6 +68,8 @@ export const EventOptionTable = ({ event }: Props) => {
 
                         return displayName;
                     }
+
+                    return "Neznámá větev";
                 },
             });
         }

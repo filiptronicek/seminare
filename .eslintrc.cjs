@@ -27,6 +27,8 @@ const config = {
             },
         ],
         "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+        "@typescript-eslint/prefer-includes": "error",
+        "no-return-await": "error",
     },
 };
 

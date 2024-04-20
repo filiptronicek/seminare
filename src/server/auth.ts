@@ -7,7 +7,7 @@ export const createUser = async (auth: SupabaseAuthClient, db: PrismaClient) => 
     const user = await auth.getUser();
     if (!user.data.user) return null;
 
-    return await db.student.create({
+    return db.student.create({
         data: {
             id: user.data.user.id,
             fullName: getUserName(user.data.user),
