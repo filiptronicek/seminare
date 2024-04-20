@@ -1,4 +1,4 @@
-import type { z } from "zod";
+import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 import { formatDate } from "~/utils/dates";
-import { type Class, EVENT_TYPE } from "~/utils/constants";
+import { type Class, EVENT_TYPE, DEFAULT_AVAILABLE_BRANCHES } from "~/utils/constants";
 import { abc, displayEventType } from "~/utils/display";
 import { parseSeminarMetaSafe } from "~/utils/seminars";
 import { Textarea } from "../ui/textarea";
@@ -227,7 +227,7 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                             </>
                                                         :   formatDate(field.value.from)
                                                     :   <span>Vyberte datum</span>}
-                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                    <CalendarIcon className="ml-auto size-4 opacity-50" />
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
@@ -277,22 +277,51 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                             name="metadata.availableBranches"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Dostupné větve</FormLabel>
+                                    <div className="flex justify-between items-center">
+                                        <FormLabel>Dostupné větve</FormLabel>
+                                        <Button
+                                            variant="secondary"
+                                            type="button"
+                                            onClick={() => {
+                                                const newBranch = {
+                                                    id: Math.random().toString(36).substring(7),
+                                                    label: "Nepojmenovaná",
+                                                    type: "unbound",
+                                                };
+                                                field.onChange([newBranch, ...(field.value ?? [])]);
+                                            }}
+                                        >
+                                            Přidat možnost
+                                        </Button>
+                                    </div>
                                     <FormControl>
-                                        <>
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead scope="col">Název</TableHead>
-                                                        <TableHead scope="col">Kategorie vylučování</TableHead>
-                                                        <TableHead scope="col">Možnosti</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {field.value?.map((branch, index) => (
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead scope="col">Název</TableHead>
+                                                    <TableHead scope="col">Kategorie vylučování</TableHead>
+                                                    <TableHead scope="col">Možnosti</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {field.value?.length ?
+                                                    field.value?.map((branch, index) => (
                                                         <TableRow key={branch.id}>
                                                             <TableCell>
-                                                                <span>{branch.label}</span>
+                                                                <input
+                                                                    value={branch.label}
+                                                                    onChange={(e) => {
+                                                                        const newBranch = {
+                                                                            ...branch,
+                                                                            label: e.target.value,
+                                                                        };
+                                                                        field.onChange(
+                                                                            field.value?.map((b) =>
+                                                                                b.id === branch.id ? newBranch : b,
+                                                                            ),
+                                                                        );
+                                                                    }}
+                                                                />
                                                             </TableCell>
                                                             <TableCell>
                                                                 <Select
@@ -345,6 +374,7 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                             <TableCell>
                                                                 <Button
                                                                     variant={"destructiveSecondary"}
+                                                                    type="button"
                                                                     onClick={() => {
                                                                         field.onChange(
                                                                             field.value?.filter((_, i) => i !== index),
@@ -355,10 +385,25 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                                                                 </Button>
                                                             </TableCell>
                                                         </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </>
+                                                    ))
+                                                :   <TableRow>
+                                                        <TableCell colSpan={3}>
+                                                            <span>
+                                                                Žádné větve nebyly přidány.
+                                                                <Button
+                                                                    variant={"link"}
+                                                                    onClick={() =>
+                                                                        field.onChange(DEFAULT_AVAILABLE_BRANCHES)
+                                                                    }
+                                                                >
+                                                                    Načíst základní nastavení
+                                                                </Button>
+                                                            </span>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                }
+                                            </TableBody>
+                                        </Table>
                                     </FormControl>
                                     <FormDescription>Obory, které mohou studenti vybrat.</FormDescription>
                                     <FormMessage />

@@ -1,6 +1,6 @@
 import type { Event, SingleEventOption } from "@prisma/client";
 import { db } from "../src/server/db";
-import { AVAILABLE_BRANCHES, CLASSES, EVENT_TYPE } from "../src/utils/constants";
+import { DEFAULT_AVAILABLE_BRANCHES, CLASSES, EVENT_TYPE } from "../src/utils/constants";
 import { LoremIpsum } from "lorem-ipsum";
 import { random, sampleSize, sample } from "lodash";
 
@@ -85,7 +85,7 @@ const randomSeminar = (className: string): Event => {
         visibleToClasses: [className],
         metadata: {
             requiredHours,
-            availableBranches: AVAILABLE_BRANCHES,
+            availableBranches: DEFAULT_AVAILABLE_BRANCHES,
         },
     };
 };
@@ -99,7 +99,7 @@ const randomSeminarOption = (event: Event, i: number): SingleEventOption => {
         maxParticipants: null,
         metadata: {
             hoursPerWeek: random(1, 2),
-            branch: sample(AVAILABLE_BRANCHES)?.id,
+            branch: sample(DEFAULT_AVAILABLE_BRANCHES)?.id,
         },
     };
 };

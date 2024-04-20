@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { adminProcedure, authedProcedure, createTRPCRouter } from "~/server/api/trpc";
-import { AVAILABLE_BRANCHES, CLASSES, EVENT_TYPE } from "~/utils/constants";
+import { DEFAULT_AVAILABLE_BRANCHES, CLASSES, EVENT_TYPE } from "~/utils/constants";
 import { generateExcelForEvent } from "~/utils/data";
 import { singleEventSchema, singleEventUpdateSchema, uuid } from "~/utils/schemas";
 
@@ -95,7 +95,7 @@ export const eventRouter = createTRPCRouter({
                     requiredHours: input.metadata?.requiredHours,
                     // If metadata is specified, but availableBranches is not, use the default
                     availableBranches:
-                        input.metadata ? input.metadata?.availableBranches ?? AVAILABLE_BRANCHES : undefined,
+                        input.metadata ? input.metadata?.availableBranches ?? DEFAULT_AVAILABLE_BRANCHES : undefined,
                 },
             },
         });

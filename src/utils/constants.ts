@@ -17,7 +17,7 @@ export const CLASSES = [
 ] as const;
 export type Class = (typeof CLASSES)[number];
 
-export const AVAILABLE_BRANCHES = [
+export const DEFAULT_AVAILABLE_BRANCHES = [
     { id: "universal", label: "Univerzální", type: "unbound" },
     { id: "humanitarian", label: "Humanitní", type: "oneof", boundWith: "A" },
     { id: "science", label: "Přírodovědná", type: "oneof", boundWith: "A" },
