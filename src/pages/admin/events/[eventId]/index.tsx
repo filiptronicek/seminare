@@ -1,4 +1,4 @@
-import { FileDown, Loader2 } from "lucide-react";
+import { Eye, FileDown, Loader2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { EventOptionTable } from "@/components/admin/EventOptionTable";
 import { api } from "~/utils/api";
@@ -93,7 +93,14 @@ export default function Event() {
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
-            <EventSettingsForm event={event} onSubmit={handleFormSubmit} isLoading={updateEvent.isLoading} />
+            <div className="flex justify-between items-start w-full">
+                <EventSettingsForm event={event} onSubmit={handleFormSubmit} isLoading={updateEvent.isLoading} />
+                <Button variant={"secondary"} asChild className="flex items-center gap-2">
+                    <Link href={`/events/${event.id}`}>
+                        <Eye size={16} /> Zobrazit náhled
+                    </Link>
+                </Button>
+            </div>
             <div className="w-full max-w-2xl">
                 <EventOptionTable event={event} />
             </div>
