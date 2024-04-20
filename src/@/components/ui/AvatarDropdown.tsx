@@ -12,6 +12,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "./dropdown-menu";
+import { REPOSITORY } from "~/utils/constants";
 
 export const AvatarDropdown = ({ user }: { user: User }) => (
     <DropdownMenu>
@@ -38,6 +39,9 @@ export const AvatarDropdown = ({ user }: { user: User }) => (
                 </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
+            <a href={`${REPOSITORY}/commit/${process.env.GIT_COMMIT}`} target={"_blank"} rel="noopener noreferrer">
+                <DropdownMenuItem>Verze aplikace: {process.env.GIT_COMMIT}</DropdownMenuItem>
+            </a>
             <Link href={"/logout"}>
                 <DropdownMenuItem>Odhlásit se</DropdownMenuItem>
             </Link>

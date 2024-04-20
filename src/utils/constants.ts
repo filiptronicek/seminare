@@ -29,3 +29,5 @@ export enum EVENT_TYPE {
     PROJECT_WEEK = "PROJECT_WEEK",
     UNSPECIFIED = "UNSPECIFIED",
 }
+
+export const REPOSITORY = "https://github.com/filiptronicek/seminare"

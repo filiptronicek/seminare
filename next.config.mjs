@@ -4,6 +4,11 @@
  */
 await import("./src/env.mjs");
 
+import cp from 'child_process';
+const currentCommit = cp.execSync('git rev-parse --short HEAD', {
+  encoding: 'utf8'
+});
+
 /** @type {import("next").NextConfig} */
 const config = {
     reactStrictMode: true,
@@ -16,6 +21,9 @@ const config = {
     i18n: {
         locales: ["en"],
         defaultLocale: "en",
+    },
+    env: {
+        GIT_COMMIT: currentCommit.trim(),
     },
 };
 
