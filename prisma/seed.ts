@@ -1,4 +1,4 @@
-import type { Event, SingleEventOption } from "@prisma/client";
+import type { Event, SingleEventOption, Student } from "@prisma/client";
 import { db } from "../src/server/db";
 import { DEFAULT_AVAILABLE_BRANCHES, CLASSES, EVENT_TYPE } from "../src/utils/constants";
 import { LoremIpsum } from "lorem-ipsum";
@@ -115,6 +115,16 @@ export const randomOption = ({ id }: { id: string }, i: number): SingleEventOpti
     };
 };
 
+const randomUser = (): Student => {
+    return {
+        id: crypto.randomUUID(),
+        fullName: lorem.generateWords(2),
+        class: sample(CLASSES),
+        avatar: `https://api.dicebear.com/8.x/pixel-art/svg?seed=${crypto.randomUUID()}`,
+        admin: false,
+    };
+}
+
 async function main() {
     // Clear database
     await db.singleEventOption.deleteMany({});
@@ -162,6 +172,12 @@ async function main() {
                 update: {},
             });
         }
+    }
+
+    for (let i = 0; i < 200; i++) {
+        await db.student.create({
+            data: randomUser(),
+        });
     }
 }
 

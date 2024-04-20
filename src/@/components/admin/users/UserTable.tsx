@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import { DataTable } from "@/components/ui/DataTable";
 import { EditUserDialog } from "./EditUserDialog";
 import { useMemo, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -44,6 +45,17 @@ export const UserTable = () => {
                 header: "Jméno",
                 enableSorting: true,
                 sortUndefined: -1,
+                cell: (cell) => {
+                    return (
+                        <div className="flex items-center gap-2">
+                            <Avatar className="w-8 h-8">
+                                <AvatarImage src={cell.row.original.avatar ?? undefined} alt="" />
+                                <AvatarFallback>{cell.row.original.fullName}</AvatarFallback>
+                            </Avatar>
+                            <span className="capitalize">{cell.row.original.fullName}</span>
+                        </div>
+                    );
+                }
             },
             {
                 header: "Třída",
