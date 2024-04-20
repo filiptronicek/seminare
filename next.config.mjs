@@ -4,9 +4,9 @@
  */
 await import("./src/env.mjs");
 
-import cp from 'child_process';
-const currentCommit = cp.execSync('git rev-parse --short HEAD', {
-  encoding: 'utf8'
+import cp from "child_process";
+const currentCommit = cp.execSync("git rev-parse --short HEAD", {
+    encoding: "utf8",
 });
 
 /** @type {import("next").NextConfig} */

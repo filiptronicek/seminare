@@ -30,4 +30,4 @@ export enum EVENT_TYPE {
     UNSPECIFIED = "UNSPECIFIED",
 }
 
-export const REPOSITORY = "https://github.com/filiptronicek/seminare"
+export const REPOSITORY = "https://github.com/filiptronicek/seminare";

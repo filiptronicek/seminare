@@ -55,7 +55,7 @@ export const UserTable = () => {
                             <span className="capitalize">{cell.row.original.fullName}</span>
                         </div>
                     );
-                }
+                },
             },
             {
                 header: "Třída",

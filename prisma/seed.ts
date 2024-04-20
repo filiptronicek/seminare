@@ -123,7 +123,7 @@ const randomUser = (): Student => {
         avatar: `https://api.dicebear.com/8.x/pixel-art/svg?seed=${crypto.randomUUID()}`,
         admin: false,
     };
-}
+};
 
 async function main() {
     // Clear database
