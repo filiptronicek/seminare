@@ -122,6 +122,7 @@ const randomUser = (): Student => {
         class: sample(CLASSES),
         avatar: `https://api.dicebear.com/8.x/pixel-art/svg?seed=${crypto.randomUUID()}`,
         admin: false,
+        suspended: Math.random() > 0.95,
     };
 };
 
@@ -174,7 +175,7 @@ async function main() {
         }
     }
 
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 30; i++) {
         await db.student.create({
             data: randomUser(),
         });
