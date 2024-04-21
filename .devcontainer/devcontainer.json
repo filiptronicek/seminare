@@ -1,0 +1,33 @@
+{
+    "name": "Semináře",
+    "dockerComposeFile": "docker-compose.yaml",
+    "service": "devcontainer",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "moby": true,
+            "azureDnsAutoDetection": true,
+            "installDockerBuildx": true,
+            "installDockerComposeSwitch": true,
+            "version": "latest",
+            "dockerDashComposeVersion": "latest"
+        },
+        "ghcr.io/shyim/devcontainers-features/bun:0": {},
+        "ghcr.io/itsmechlark/features/postgresql:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "nodeGypDependencies": true,
+            "version": "lts",
+            "nvmVersion": "latest"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": ["oven.bun-vscode", "bradlc.vscode-tailwindcss", "rvest.vs-code-prettier-eslint"]
+        }
+    },
+    "remoteUser": "root",
+    "postCreateCommand": "bun run db:push && bun run prisma/seed.ts && bun i && bun dev",
+    "forwardPorts": [3000, 5555, 5432]
+}
