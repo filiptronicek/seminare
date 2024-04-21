@@ -9,12 +9,13 @@ datasource db {
 }
 
 model Student {
-  id       String              @id @default(uuid())
-  class    String?
-  fullName String
-  avatar   String?
-  options  SingleEventOption[] @relation("StudentOptions")
-  admin    Boolean             @default(false)
+  id        String              @id @default(uuid())
+  class     String?
+  fullName  String
+  avatar    String?
+  options   SingleEventOption[] @relation("StudentOptions")
+  admin     Boolean             @default(false)
+  suspended Boolean             @default(false)
 }
 
 model SingleEventOption {

@@ -3,10 +3,12 @@ import { NavigationBar } from "@/components/ui/NavigationBar";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 
 import Head from "next/head";
+import { api } from "~/utils/api";
 import { useUser } from "~/utils/hooks";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const { data: userData } = useUser();
+    const { isError } = api.user.get.useQuery();
 
     return (
         <>
@@ -17,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                 <main className="flex min-h-screen h-screen flex-1 flex-col space-y-8 p-8">
                     <header className="flex flex-row items-center justify-between">
-                        {userData && (
+                        {userData && !isError && (
                             <>
                                 <NavigationBar />
                                 <AvatarDropdown user={userData} />

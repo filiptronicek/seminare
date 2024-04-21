@@ -7,10 +7,12 @@ import { singleUserSchema } from "~/utils/schemas";
 import { Select, SelectTrigger, SelectValue, SelectItem, SelectContent } from "@/components/ui/select";
 import { CLASSES, type Class } from "~/utils/constants";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { type CheckedState } from "@radix-ui/react-checkbox";
 
 type Props = {
     user: Student;
@@ -26,6 +28,7 @@ export const UserForm = ({ user, isLoading, onSubmit, onDelete }: Props) => {
         defaultValues: {
             role: user.admin ? "admin" : "user",
             class: user.class as Class | undefined,
+            suspended: user.suspended,
         },
     });
 
@@ -109,6 +112,36 @@ export const UserForm = ({ user, isLoading, onSubmit, onDelete }: Props) => {
                     }}
                 />
 
+                <FormField
+                    control={form.control}
+                    name="suspended"
+                    render={({ field }) => {
+                        const newField = {
+                            onCheckedChange: (state: CheckedState) => {
+                                field.onChange(state === true);
+                            },
+                            checked: field.value,
+                            ref: field.ref,
+                        };
+
+                        return (
+                            <FormItem>
+                                <div className="flex items-center">
+                                    <FormControl>
+                                        <Checkbox className="mr-2" {...newField} />
+                                    </FormControl>
+                                    <FormLabel>Blokovat Uživatele</FormLabel>
+                                </div>
+                                <FormDescription>
+                                    Blokování uživatele mu znemožní přihlášení na Akce a zobrazí mu hlášku o blokování,
+                                    když se bude snažit přihlásit.
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        );
+                    }}
+                />
+
                 <div className="flex justify-between space-x-4">
                     <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                         <DialogContent className="max-h-[90%] overflow-y-scroll max-w-2xl">
@@ -128,8 +161,13 @@ export const UserForm = ({ user, isLoading, onSubmit, onDelete }: Props) => {
                             </div>
                         </DialogContent>
                     </Dialog>
-                    <Button type="button" variant="destructive" onClick={() => setIsDeleteDialogOpen(true)}>
-                        Odstranit
+                    <Button
+                        type="button"
+                        className="flex gap-1"
+                        variant="destructive"
+                        onClick={() => setIsDeleteDialogOpen(true)}
+                    >
+                        <Trash size={16} /> Odstranit Uživatele
                     </Button>
                     <Button type="submit" disabled={!form.formState.isDirty}>
                         {isLoading ?

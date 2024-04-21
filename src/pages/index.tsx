@@ -6,22 +6,18 @@ import { Loader2 } from "lucide-react";
 import { api } from "~/utils/api";
 
 export default function Home() {
-    const { data: user, isLoading, isError } = api.user.get.useQuery();
+    const { data: user, isLoading, error } = api.user.get.useQuery();
 
-    if (!user?.class) {
-        if (isLoading) {
-            return <Loader2 className="animate-spin" />;
-        }
-
-        return <ClassDialog />;
+    if (error || !user) {
+        return "Naskytla se chyba v načítání uživatelských dat: " + error?.message;
     }
 
     if (isLoading) {
         return <Loader2 className="animate-spin" />;
     }
 
-    if (isError || !user) {
-        return "Naskytla se chyba v načítání uživatelských dat";
+    if (!user?.class) {
+        return <ClassDialog />;
     }
 
     return (

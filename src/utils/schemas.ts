@@ -80,6 +80,7 @@ export const singleOptionCreateSchema = z.object({
 export const singleUserSchema = z.object({
     class: z.enum(CLASSES),
     role: z.enum(["user", "admin"]).optional(),
+    suspended: z.boolean().optional(),
 });
 
 export const singleUserUpdateSchema = z.object({

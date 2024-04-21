@@ -10,6 +10,7 @@ import { DataTable } from "@/components/ui/DataTable";
 import { EditUserDialog } from "./EditUserDialog";
 import { useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 export interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -49,10 +50,16 @@ export const UserTable = () => {
                     return (
                         <div className="flex items-center gap-2">
                             <Avatar className="w-8 h-8">
-                                <AvatarImage src={cell.row.original.avatar ?? undefined} alt="" />
+                                <AvatarImage
+                                    src={cell.row.original.avatar ?? undefined}
+                                    className={cn(cell.row.original.suspended && "opacity-50")}
+                                    alt=""
+                                />
                                 <AvatarFallback>{cell.row.original.fullName}</AvatarFallback>
                             </Avatar>
-                            <span className="capitalize">{cell.row.original.fullName}</span>
+                            <span className={cn(cell.row.original.suspended && "capitalize line-through")}>
+                                {cell.row.original.fullName}
+                            </span>
                         </div>
                     );
                 },

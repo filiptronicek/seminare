@@ -14,7 +14,10 @@ import {
 } from "./dropdown-menu";
 import { REPOSITORY } from "~/utils/constants";
 
-export const AvatarDropdown = ({ user }: { user: User }) => (
+type Props = {
+    user: User;
+};
+export const AvatarDropdown = ({ user }: Props) => (
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">

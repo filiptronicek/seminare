@@ -44,12 +44,19 @@ export const ensureUser = async (auth: SupabaseAuthClient, db: PrismaClient) => 
             message: "User not found",
         });
 
+    if (user.suspended) {
+        throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Your account has been suspended",
+        });
+    }
+
     return user;
 };
 
 export const ensureAdmin = async (auth: SupabaseAuthClient, db: PrismaClient) => {
     const user = await getUser(auth, db);
-    if (!user || !user.admin)
+    if (!user || user.suspended || !user.admin)
         throw new TRPCError({
             code: "FORBIDDEN",
             message: "Lacking admin privileges",

@@ -24,9 +24,13 @@ export const userRouter = createTRPCRouter({
                     class: true,
                     avatar: true,
                     admin: true,
+                    suspended: true,
                 },
                 where: {
                     class: input.class,
+                },
+                orderBy: {
+                    fullName: "asc",
                 },
             });
         }),
@@ -39,11 +43,14 @@ export const userRouter = createTRPCRouter({
                 throw new Error("You are not allowed to update other users");
             }
 
+            console.log(input.data);
+
             return ctx.db.student.update({
                 where: { id: input.id },
                 data: {
                     class: input.data.class,
                     admin: input.data.role === "admin",
+                    suspended: input.data.suspended,
                 },
             });
         }
