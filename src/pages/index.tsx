@@ -8,7 +8,7 @@ import { api } from "~/utils/api";
 export default function Home() {
     const { data: user, isLoading, error } = api.user.get.useQuery();
 
-    if (error || !user) {
+    if (error || (!user && !isLoading)) {
         return "Naskytla se chyba v načítání uživatelských dat: " + error?.message;
     }
 
