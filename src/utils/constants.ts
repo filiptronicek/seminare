@@ -11,8 +11,8 @@ export const CLASSES = [
     "8G",
     "1N",
     "2N",
+    "3N",
     // todo: uncomment when available
-    // "3N",
     // "4N",
 ] as const;
 export type Class = (typeof CLASSES)[number];
