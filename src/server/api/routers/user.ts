@@ -86,4 +86,14 @@ export const userRouter = createTRPCRouter({
             where: { id: input.id },
         });
     }),
+    /**
+     * Reset the class attribution for all students, forcing them to reselect their class when they next log in
+     */
+    resetClassAttribution: adminProcedure.mutation(async ({ ctx }) => {
+        return ctx.db.student.updateMany({
+            data: {
+                class: null,
+            },
+        });
+    }),
 });
