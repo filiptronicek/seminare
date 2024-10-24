@@ -43,3 +43,11 @@ model Event {
   visibleToClasses        String[]
   metadata                Json?
 }
+
+model AuditLog {
+  id        String   @id @default(uuid(7))
+  action    String
+  timestamp DateTime @default(now())
+  actor     String
+  metadata  Json?
+}
