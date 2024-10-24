@@ -38,6 +38,10 @@ export const seminarOptionMetadataSchema = z.object({
     branch: z.string().default("universal"),
 });
 
+export const classSchema = z.array(z.enum(CLASSES), {
+    invalid_type_error: "Třída musí být jedna z těchto hodnot: " + CLASSES.join(", "),
+});
+
 export const singleEventSchema = z.object({
     title: z.string().max(255, "Akce nesmí mít delší název než 255 znaků").min(1, "Akce musí mít název"),
     description: z.string().optional(),
@@ -51,7 +55,7 @@ export const singleEventSchema = z.object({
         to: z.date(),
     }),
     metadata: seminarMetadataSchema.partial().optional(),
-    visibleToClasses: z.array(z.enum(CLASSES)),
+    visibleToClasses: classSchema,
     type: z.nativeEnum(EVENT_TYPE),
 });
 

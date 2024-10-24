@@ -8,13 +8,13 @@ import { type Event } from "@prisma/client";
 import { Checkbox } from "../ui/checkbox";
 import { type CheckedState } from "@radix-ui/react-checkbox";
 import { CalendarIcon, Loader2, Trash } from "lucide-react";
-import { singleEventSchema as formSchema } from "~/utils/schemas";
+import { classSchema, singleEventSchema as formSchema } from "~/utils/schemas";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 import { formatDate } from "~/utils/dates";
-import { type Class, EVENT_TYPE, DEFAULT_AVAILABLE_BRANCHES } from "~/utils/constants";
+import { type Class, EVENT_TYPE, DEFAULT_AVAILABLE_BRANCHES, CLASSES } from "~/utils/constants";
 import { abc, displayEventType } from "~/utils/display";
 import { parseSeminarMetaSafe } from "~/utils/seminars";
 import { Textarea } from "../ui/textarea";
@@ -420,14 +420,20 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                     render={({ field }) => {
                         const fieldProps = {
                             onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-                                const parsed = event.target.value
-                                    .split(",")
-                                    .map((v) => v.trim())
-                                    .filter(Boolean) as Class[];
+                                // We need to do manual validation here, because the zod form schema has issues with our schema.
+                                const parsed = event.target.value.split(",").map((v) => v.trim());
+                                if (!classSchema.safeParse(parsed.filter(Boolean)).success) {
+                                    form.setError("visibleToClasses", {
+                                        type: "manual",
+                                        message: "Třída musí být jedna z: " + Object.values(CLASSES).join(", "),
+                                    });
+                                } else {
+                                    form.clearErrors("visibleToClasses");
+                                }
 
                                 field.onChange(parsed);
                             },
-                            value: field.value.join(", "),
+                            value: field.value.join(","),
                             ref: field.ref,
                         };
 
@@ -435,11 +441,11 @@ export const EventSettingsForm = ({ event, isLoading, onSubmit }: Props) => {
                             <FormItem>
                                 <FormLabel>Omezení tříd</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="" {...fieldProps} />
+                                    <Input placeholder="1G,2G,3N" {...fieldProps} />
                                 </FormControl>
                                 <FormDescription className="max-w-md">
-                                    Třídy, které mohou tuto Akci vidět a přihlašovat se na ni. Pokud je pole prázdné,
-                                    Akce je dostupná pro všechny.
+                                    Třídy, které mohou tuto Akci vidět a přihlašovat se na ni, oddělené čárkami. Pokud
+                                    je pole prázdné, Akce je dostupná pro všechny.
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
