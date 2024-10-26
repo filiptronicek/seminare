@@ -43,8 +43,6 @@ export const userRouter = createTRPCRouter({
                 throw new Error("You are not allowed to update other users");
             }
 
-            console.log(input.data);
-
             return ctx.db.student.update({
                 where: { id: input.id },
                 data: {
