@@ -15,7 +15,7 @@ export const auditLogsRouter = createTRPCRouter({
             const now = new Date();
 
             return ctx.db.auditLog.findMany({
-                take: 100,
+                take: 500,
                 where: {
                     ...(input.from || input.to ?
                         {
