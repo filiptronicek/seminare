@@ -47,10 +47,12 @@ export const SingleEventCard = ({ event }: Props) => {
                     <div className="flex flew-row gap-2">
                         {event.startDate === event.endDate ?
                             <>
-                                <Calendar />Konání: {formatDate(dayjs(event.startDate))}
+                                <Calendar />
+                                Konání: {formatDate(dayjs(event.startDate))}
                             </>
                         :   <>
-                                <Calendar />Konání: {formatDate(dayjs(event.startDate))}&nbsp;-&nbsp;
+                                <Calendar />
+                                Konání: {formatDate(dayjs(event.startDate))}&nbsp;-&nbsp;
                                 {formatDate(dayjs(event.endDate))}
                             </>
                         }
