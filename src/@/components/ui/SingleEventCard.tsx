@@ -36,10 +36,10 @@ export const SingleEventCard = ({ event }: Props) => {
                     <div className="flex flew-row gap-2">
                         {event.signupStartDate === event.signupEndDate ?
                             <>
-                                <Mail /> {formatDate(dayjs(event.signupStartDate))}
+                                <Mail /> Přihlašování: {formatDate(dayjs(event.signupStartDate))}
                             </>
                         :   <>
-                                <Mail /> {formatDate(dayjs(event.signupStartDate))}&nbsp;-&nbsp;
+                                <Mail /> Přihlašování: {formatDate(dayjs(event.signupStartDate))}&nbsp;-&nbsp;
                                 {formatDate(dayjs(event.signupEndDate))}
                             </>
                         }
@@ -47,10 +47,12 @@ export const SingleEventCard = ({ event }: Props) => {
                     <div className="flex flew-row gap-2">
                         {event.startDate === event.endDate ?
                             <>
-                                <Calendar /> {formatDate(dayjs(event.startDate))}
+                                <Calendar />
+                                Konání: {formatDate(dayjs(event.startDate))}
                             </>
                         :   <>
-                                <Calendar /> {formatDate(dayjs(event.startDate))}&nbsp;-&nbsp;
+                                <Calendar />
+                                Konání: {formatDate(dayjs(event.startDate))}&nbsp;-&nbsp;
                                 {formatDate(dayjs(event.endDate))}
                             </>
                         }

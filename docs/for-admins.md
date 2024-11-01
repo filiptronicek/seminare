@@ -233,7 +233,9 @@ ještě tato:
     třídy](#povýšení-uživatele-na-správce-a-oprava-výběru-třídy).
 
 [^2]: Třídy se identifikují jejich dvouznakovou zkratkou (např. 1G, 1N).
+
 [^3]: Kategorie, do které daný seminář zapadá.
+
 [^4]:
     Tato data se vztahují k časovému pásmu počítače, na kterém se Akce
     vytváří. To znamená, že kdyby vytvářel Akci uživatel v Anglii,

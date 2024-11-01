@@ -110,7 +110,7 @@ export const randomOption = ({ id }: { id: string }, i: number): SingleEventOpti
         eventId: id,
         title: `Možnost ${i}`,
         description: lorem.generateParagraphs(1),
-        maxParticipants: Math.floor(Math.random() * 10),
+        maxParticipants: Math.ceil(Math.random() * 10),
         metadata: null,
     };
 };
