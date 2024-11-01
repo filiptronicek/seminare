@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     timestamp: new Date(),
                 },
             });
-        } catch (e) { } // we have already logged the error, so we can ignore it here
+        } catch (e) {} // we have already logged the error, so we can ignore it here
     }
 
     res.status(200).json({
