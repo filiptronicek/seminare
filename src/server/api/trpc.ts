@@ -104,13 +104,38 @@ export const createTRPCRouter = t.router;
  */
 export const publicProcedure = t.procedure;
 
+// We do not want to log these paths as they happen too frequently and are not useful for auditing
+const NON_PARTICIPATING_PATHS = [
+    "user.get",
+    "user.list",
+    "event.get",
+    "event.list",
+    "eventOptions.get",
+    "eventOptions.list",
+    "eventOptions.listStudentOptions",
+    "auditLogs.list",
+    "auditLogs.get",
+];
+
 /**
  * Authenticated procedure. The procedure ensures that the user is authenticated before running and responds with a 401 if they are not.
  */
-export const authedProcedure = t.procedure.use(async function isAuthed(opts) {
+export const authedProcedure = publicProcedure.use(async function isAuthed(opts) {
     const { ctx } = opts;
 
     const user = await ensureUser(ctx.auth, db);
+
+    if (!NON_PARTICIPATING_PATHS.includes(opts.path)) {
+        const meta = { args: opts.rawInput as never };
+        await db.auditLog.create({
+            data: {
+                action: opts.path,
+                actor: user.id,
+                metadata: meta,
+                timestamp: new Date(),
+            },
+        });
+    }
 
     return opts.next({
         ctx: {
@@ -122,7 +147,7 @@ export const authedProcedure = t.procedure.use(async function isAuthed(opts) {
 /**
  * Admin procedure. The procedure ensures that the user is authenticated and an admin before running and responds with a 403 if they are not.
  */
-export const adminProcedure = t.procedure.use(async function isAuthed(opts) {
+export const adminProcedure = authedProcedure.use(async function isAuthed(opts) {
     const { ctx } = opts;
 
     const user = await ensureAdmin(ctx.auth, db);

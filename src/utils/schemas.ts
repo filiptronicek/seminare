@@ -4,6 +4,7 @@ import type { SingleEventOption } from "@prisma/client";
 import { abc } from "./display";
 
 const letterSchema = z.enum(abc);
+export const uuid = z.string().uuid();
 
 export const seminarBranchSchema = z
     .object({
@@ -60,7 +61,7 @@ export const singleEventSchema = z.object({
 });
 
 export const singleEventUpdateSchema = z.object({
-    id: z.string().uuid(),
+    id: uuid,
     data: singleEventSchema.partial(),
 });
 
@@ -72,12 +73,12 @@ export const singleOptionSchema = z.object({
 });
 
 export const singleOptionUpdateSchema = z.object({
-    id: z.string().uuid(),
+    id: uuid,
     data: singleOptionSchema.partial(),
 });
 
 export const singleOptionCreateSchema = z.object({
-    eventId: z.string().uuid(),
+    eventId: uuid,
     data: singleOptionSchema,
 });
 
@@ -88,8 +89,18 @@ export const singleUserSchema = z.object({
 });
 
 export const singleUserUpdateSchema = z.object({
-    id: z.string().uuid().optional(),
+    id: uuid.optional(),
     data: singleUserSchema.partial(),
 });
 
-export const uuid = z.string().uuid();
+export const auditLogEntrySchema = z.object({
+    id: uuid,
+    action: z.string(),
+    timestamp: z.date(),
+    actor: z.string(),
+    metadata: z
+        .object({
+            args: z.unknown(),
+        })
+        .optional(),
+});
