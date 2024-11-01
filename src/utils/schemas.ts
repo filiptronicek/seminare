@@ -98,8 +98,9 @@ export const auditLogEntrySchema = z.object({
     action: z.string(),
     timestamp: z.date(),
     actor: z.string(),
-    metadata: z.object({
-        args: z.unknown(),
-    }).optional(),
+    metadata: z
+        .object({
+            args: z.unknown(),
+        })
+        .optional(),
 });
-

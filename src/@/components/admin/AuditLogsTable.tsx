@@ -18,7 +18,7 @@ export const AuditLogsTable = () => {
     const { isError, data: events, isLoading } = api.auditLogs.list.useQuery({});
     const [selectedLog, setSelectedLog] = useState<string | null>(null);
 
-    const columns = useMemo<ColumnDef<{ id: string; action: string; timestamp: Date; actor: string; }>[]>(() => {
+    const columns = useMemo<ColumnDef<{ id: string; action: string; timestamp: Date; actor: string }>[]>(() => {
         return [
             {
                 accessorKey: "action",
@@ -89,4 +89,4 @@ export const AuditLogDetail = ({ id }: { id: string }) => {
             Payload: <pre>{JSON.stringify(logDetails.metadata, null, 2)}</pre>
         </div>
     );
-}
+};

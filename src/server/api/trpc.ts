@@ -105,7 +105,17 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 // We do not want to log these paths as they happen too frequently and are not useful for auditing
-const NON_PARTICIPATING_PATHS = ["user.get", "user.list", "event.get", "event.list", "eventOptions.get", "eventOptions.list", "eventOptions.listStudentOptions", "auditLogs.list", "auditLogs.get"];
+const NON_PARTICIPATING_PATHS = [
+    "user.get",
+    "user.list",
+    "event.get",
+    "event.list",
+    "eventOptions.get",
+    "eventOptions.list",
+    "eventOptions.listStudentOptions",
+    "auditLogs.list",
+    "auditLogs.get",
+];
 
 /**
  * Authenticated procedure. The procedure ensures that the user is authenticated before running and responds with a 401 if they are not.

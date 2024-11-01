@@ -24,7 +24,7 @@ export const auditLogsRouter = createTRPCRouter({
                                 lte: input.to ?? now,
                             },
                         }
-                        : {}),
+                    :   {}),
                 },
                 select: {
                     id: true,
