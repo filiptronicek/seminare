@@ -3,7 +3,7 @@ import { ClassForm } from "./ClassForm";
 
 export const ClassDialog = () => {
     return (
-        <Dialog open={true}>
+        <Dialog open>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Dokonči nastavení</DialogTitle>

@@ -21,7 +21,7 @@ export const EventList = ({ user }: Props) => {
         isLoading,
     } = api.event.list.useQuery({
         active: true,
-        class: user.class! as Class,
+        class: (user.class as Class) ?? undefined,
     });
 
     const sortedEvents = useMemo<Event[]>(() => {
@@ -43,7 +43,7 @@ export const EventList = ({ user }: Props) => {
     return (
         <>
             <h1 className="text-4xl font-bold">
-                Nadcházející akce pro <u>{user.class}</u>
+                Nadcházející akce pro <u>{user.class ?? "všechny třídy"}</u>
             </h1>
             <div className="mt-8 flex flex-row flex-wrap gap-3 justify-around md:justify-start">
                 {sortedEvents.map((event) => (

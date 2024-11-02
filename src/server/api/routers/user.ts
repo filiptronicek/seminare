@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { adminProcedure, authedProcedure, createTRPCRouter } from "~/server/api/trpc";
@@ -40,13 +41,19 @@ export const userRouter = createTRPCRouter({
         // only admins can update other users
         if (input.id && input.id !== user.id) {
             if (!user.admin) {
-                throw new Error("You are not allowed to update other users");
+                throw new TRPCError({code: "FORBIDDEN", message: "You are not allowed to update other users"});
+            }
+
+            let newClass = input.data.class as string | null;
+            if (input.data.role === "admin") {
+                // admins do not have a class
+                newClass = null;
             }
 
             return ctx.db.student.update({
                 where: { id: input.id },
                 data: {
-                    class: input.data.class,
+                    class: newClass,
                     admin: input.data.role === "admin",
                     suspended: input.data.suspended,
                 },
@@ -54,7 +61,10 @@ export const userRouter = createTRPCRouter({
         }
 
         if (input.data.role === "user" && user.admin) {
-            throw new Error("You are not allowed to demote yourself to a user");
+            throw new TRPCError({ code: "BAD_REQUEST", message: "You are not allowed to demote yourself to a user" });
+        }
+        if (input.data.role === "admin" && !user.admin) {
+            throw new TRPCError({ code: "FORBIDDEN", message: "You are not allowed to promote yourself to an admin" });
         }
 
         // users can only update their own class
@@ -67,7 +77,7 @@ export const userRouter = createTRPCRouter({
     }),
     delete: adminProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ input, ctx }) => {
         if (input.id === ctx.user.id) {
-            throw new Error("You are not allowed to delete yourself");
+            throw new TRPCError({ code: "BAD_REQUEST", message: "You are not allowed to delete yourself" });
         }
 
         // clean up if the student has selected any options on any events
