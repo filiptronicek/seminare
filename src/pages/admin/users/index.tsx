@@ -13,12 +13,12 @@ export default function Home() {
 
     const handleDelete = () => {
         resetClassAttributions.mutate(undefined, {
-            onSuccess: async () => {
+            onSuccess: async (res) => {
                 setClassAttributionDialogOpen(false);
                 await utils.eventOptions.list.invalidate();
                 await refetchUsers();
                 toast({
-                    title: "Třídy byly resetovány",
+                    title: `Třídy byly resetovány pro ${res.count} uživatelů`,
                 });
             },
             onError: (error) => {
