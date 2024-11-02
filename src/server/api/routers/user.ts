@@ -41,7 +41,7 @@ export const userRouter = createTRPCRouter({
         // only admins can update other users
         if (input.id && input.id !== user.id) {
             if (!user.admin) {
-                throw new TRPCError({code: "FORBIDDEN", message: "You are not allowed to update other users"});
+                throw new TRPCError({ code: "FORBIDDEN", message: "You are not allowed to update other users" });
             }
 
             let newClass = input.data.class as string | null;

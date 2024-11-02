@@ -20,7 +20,7 @@ type Props = {
 export const AvatarDropdown = ({ user }: Props) => (
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+            <Button variant="ghost" className="relative h-8 w-8 rounded-full" aria-label="Otevřít uživatelské menu">
                 <Avatar className="h-9 w-9">
                     <AvatarImage src={getUserAvatar(user)} alt="" />
                     <AvatarFallback>{getUserName(user)}</AvatarFallback>
