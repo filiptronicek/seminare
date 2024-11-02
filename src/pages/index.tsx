@@ -11,12 +11,10 @@ export default function Home() {
     if (error || (!user && !isLoading)) {
         return "Naskytla se chyba v načítání uživatelských dat: " + error?.message;
     }
-
     if (isLoading) {
         return <Loader2 className="animate-spin" />;
     }
-
-    if (!user?.class) {
+    if (!user?.class && !user?.admin) {
         return <ClassDialog />;
     }
 
