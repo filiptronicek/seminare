@@ -18,7 +18,9 @@ export const AuditLogsTable = () => {
     const { isError, data: events, isLoading } = api.auditLogs.list.useQuery({});
     const [selectedLog, setSelectedLog] = useState<string | null>(null);
 
-    const columns = useMemo<ColumnDef<{ id: string; action: string; timestamp: Date; actor: { name: string; id: string} }>[]>(() => {
+    const columns = useMemo<
+        ColumnDef<{ id: string; action: string; timestamp: Date; actor: { name: string; id: string } }>[]
+    >(() => {
         return [
             {
                 accessorKey: "action",
@@ -84,7 +86,9 @@ export const AuditLogDetail = ({ id }: { id: string }) => {
     return (
         <div className="flex flex-col gap-2">
             <h2>Action: {logDetails.action}</h2>
-            <p>Actor: {logDetails.actor.name} ({logDetails.actor.id})</p>
+            <p>
+                Actor: {logDetails.actor.name} ({logDetails.actor.id})
+            </p>
             <p>Time: {logDetails.timestamp.toLocaleString()}</p>
             Payload: <pre>{JSON.stringify(logDetails.metadata, null, 2)}</pre>
         </div>

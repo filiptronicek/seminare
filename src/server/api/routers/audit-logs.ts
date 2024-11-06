@@ -38,7 +38,7 @@ export const auditLogsRouter = createTRPCRouter({
                 },
             });
             const users = new Map<string, string | null>();
-            for (const auditLog of auditLogs) { 
+            for (const auditLog of auditLogs) {
                 const userId = auditLog.actor;
                 if (users.get(userId) !== undefined) {
                     continue;
@@ -52,7 +52,7 @@ export const auditLogsRouter = createTRPCRouter({
                 actor: {
                     id: auditLog.actor,
                     name: users.get(auditLog.actor) ?? "Unknown",
-                }
+                },
             }));
         }),
     get: adminProcedure

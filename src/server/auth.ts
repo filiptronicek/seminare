@@ -45,7 +45,7 @@ export const getUser = async (db: PrismaClient, id: string) => {
     return db.student.findUnique({
         where: { id },
     });
-}
+};
 
 export const isAdmin = async (auth: SupabaseAuthClient, db: PrismaClient) => {
     const student = await getCurrentUser(auth, db);
