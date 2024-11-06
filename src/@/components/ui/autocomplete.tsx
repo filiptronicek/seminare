@@ -1,3 +1,5 @@
+// taken from https://github.com/Balastrong/shadcn-autocomplete-demo/blob/784335f8a4d970de9f18fa91dfa90715fb8d5364/src/components/autocomplete.tsx
+
 import { cn } from "@/lib/utils";
 import { Command as CommandPrimitive } from "cmdk";
 import { Check } from "lucide-react";
