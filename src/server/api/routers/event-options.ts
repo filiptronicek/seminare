@@ -211,6 +211,43 @@ export const eventOptionsRouter = createTRPCRouter({
 
         return option;
     }),
+    joinUnconditionally: adminProcedure
+        .input(z.object({ optionId: uuid, userId: uuid }))
+        .mutation(async ({ input, ctx }) => {
+            const option = await ctx.db.singleEventOption.findUnique({
+                where: { id: input.optionId },
+                include: { event: true },
+            });
+            if (!option) throw new TRPCError({ code: "NOT_FOUND", message: "Event option not found" });
+            // see if the student is already in the option
+            const existingSelection = await ctx.db.student.findFirst({
+                where: {
+                    id: input.userId,
+                    options: {
+                        some: {
+                            id: input.optionId,
+                        },
+                    },
+                },
+            });
+            if (existingSelection) {
+                throw new TRPCError({
+                    code: "PRECONDITION_FAILED",
+                    message: "Student is already in the option",
+                });
+            }
+
+            await ctx.db.student.update({
+                where: { id: input.userId },
+                data: {
+                    options: {
+                        connect: { id: input.optionId },
+                    },
+                },
+            });
+
+            return option;
+        }),
     leave: authedProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
         const option = await ctx.db.singleEventOption.findUnique({
             where: { id: input.optionId },
