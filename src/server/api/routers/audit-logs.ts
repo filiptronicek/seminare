@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { adminProcedure, createTRPCRouter } from "~/server/api/trpc";
+import { getUser } from "~/server/auth";
 import { auditLogEntrySchema } from "~/utils/schemas";
 
 export const auditLogsRouter = createTRPCRouter({
@@ -14,7 +15,7 @@ export const auditLogsRouter = createTRPCRouter({
         .query(async ({ ctx, input }) => {
             const now = new Date();
 
-            return ctx.db.auditLog.findMany({
+            const auditLogs = await ctx.db.auditLog.findMany({
                 take: 500,
                 where: {
                     ...(input.from || input.to ?
@@ -36,6 +37,23 @@ export const auditLogsRouter = createTRPCRouter({
                     timestamp: "desc",
                 },
             });
+            const users = new Map<string, string | null>();
+            for (const auditLog of auditLogs) { 
+                const userId = auditLog.actor;
+                if (users.get(userId) !== undefined) {
+                    continue;
+                }
+                const user = await getUser(ctx.db, userId);
+                users.set(userId, user?.fullName ?? null);
+            }
+
+            return auditLogs.map((auditLog) => ({
+                ...auditLog,
+                actor: {
+                    id: auditLog.actor,
+                    name: users.get(auditLog.actor) ?? "Unknown",
+                }
+            }));
         }),
     get: adminProcedure
         .input(
@@ -44,11 +62,22 @@ export const auditLogsRouter = createTRPCRouter({
             }),
         )
         .query(async ({ ctx, input }) => {
-            return ctx.db.auditLog.findUnique({
+            const auditLog = await ctx.db.auditLog.findUnique({
                 where: {
                     id: input.id,
                 },
             });
+            if (!auditLog) {
+                throw new Error("Audit log entry not found");
+            }
+            const user = await getUser(ctx.db, auditLog.actor);
+            return {
+                ...auditLog,
+                actor: {
+                    id: auditLog.actor,
+                    name: user?.fullName ?? "Unknown",
+                },
+            };
         }),
     create: adminProcedure.input(auditLogEntrySchema).mutation(async ({ input, ctx }) => {
         return ctx.db.auditLog.create({
