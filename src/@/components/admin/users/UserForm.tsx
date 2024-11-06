@@ -42,6 +42,13 @@ export const UserForm = ({ user, isLoading, onSubmit, onDelete }: Props) => {
                     </FormControl>
                     <FormMessage />
                 </FormItem>
+                <FormItem>
+                    <FormLabel>ID</FormLabel>
+                    <FormControl>
+                        <Input value={user.id} readOnly />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
 
                 <FormField
                     control={form.control}
@@ -80,6 +87,7 @@ export const UserForm = ({ user, isLoading, onSubmit, onDelete }: Props) => {
                         );
                     }}
                 />
+
                 <FormField
                     control={form.control}
                     name="role"
