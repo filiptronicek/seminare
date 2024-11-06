@@ -1,6 +1,7 @@
 import type { PrismaClient } from "@prisma/client";
 import type { SupabaseAuthClient } from "@supabase/supabase-js/dist/module/lib/SupabaseAuthClient";
 import { TRPCError } from "@trpc/server";
+import { SYSTEM_USER } from "~/utils/constants";
 import { getUserName } from "~/utils/user";
 
 export const createUser = async (auth: SupabaseAuthClient, db: PrismaClient) => {
@@ -17,7 +18,7 @@ export const createUser = async (auth: SupabaseAuthClient, db: PrismaClient) => 
     });
 };
 
-export const getUser = async (auth: SupabaseAuthClient, db: PrismaClient) => {
+export const getCurrentUser = async (auth: SupabaseAuthClient, db: PrismaClient) => {
     const user = await auth.getUser();
     if (!user.data.user) return null;
 
@@ -29,15 +30,32 @@ export const getUser = async (auth: SupabaseAuthClient, db: PrismaClient) => {
     return userInDb;
 };
 
+export const getUser = async (db: PrismaClient, id: string) => {
+    if (id === SYSTEM_USER) {
+        return {
+            id: SYSTEM_USER,
+            fullName: "Systém",
+            class: null,
+            avatar: null,
+            admin: true,
+            suspended: false,
+        };
+    }
+
+    return db.student.findUnique({
+        where: { id },
+    });
+};
+
 export const isAdmin = async (auth: SupabaseAuthClient, db: PrismaClient) => {
-    const student = await getUser(auth, db);
+    const student = await getCurrentUser(auth, db);
     if (!student) return false;
 
     return student.admin;
 };
 
 export const ensureUser = async (auth: SupabaseAuthClient, db: PrismaClient) => {
-    const user = await getUser(auth, db);
+    const user = await getCurrentUser(auth, db);
     if (!user)
         throw new TRPCError({
             code: "UNAUTHORIZED",
@@ -55,7 +73,7 @@ export const ensureUser = async (auth: SupabaseAuthClient, db: PrismaClient) => 
 };
 
 export const ensureAdmin = async (auth: SupabaseAuthClient, db: PrismaClient) => {
-    const user = await getUser(auth, db);
+    const user = await getCurrentUser(auth, db);
     if (!user || user.suspended || !user.admin)
         throw new TRPCError({
             code: "FORBIDDEN",

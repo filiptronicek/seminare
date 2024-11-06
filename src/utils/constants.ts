@@ -31,3 +31,5 @@ export enum EVENT_TYPE {
 }
 
 export const REPOSITORY = "https://github.com/filiptronicek/seminare";
+
+export const SYSTEM_USER = "system";
