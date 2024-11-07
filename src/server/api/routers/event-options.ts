@@ -219,7 +219,7 @@ export const eventOptionsRouter = createTRPCRouter({
                 include: { event: true },
             });
             if (!option) throw new TRPCError({ code: "NOT_FOUND", message: "Event option not found" });
-            // see if the student is already in the option
+
             const existingSelection = await ctx.db.student.findFirst({
                 where: {
                     id: input.userId,
