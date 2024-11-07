@@ -8,7 +8,7 @@ export const createUser = async (auth: SupabaseAuthClient, db: PrismaClient) => 
     const user = await auth.getUser();
     if (!user.data.user) return null;
 
-    return db.student.create({
+    const newUser = db.student.create({
         data: {
             id: user.data.user.id,
             fullName: getUserName(user.data.user),
@@ -16,6 +16,21 @@ export const createUser = async (auth: SupabaseAuthClient, db: PrismaClient) => 
             avatar: user.data.user.user_metadata.picture as string,
         },
     });
+
+    await db.auditLog
+        .create({
+            data: {
+                actor: SYSTEM_USER,
+                action: "user.create",
+                metadata: {
+                    user: user as never,
+                },
+                timestamp: new Date(),
+            },
+        })
+        .catch((e) => console.error(`Recording audit log failed: ${e}`));
+
+    return newUser;
 };
 
 export const getCurrentUser = async (auth: SupabaseAuthClient, db: PrismaClient) => {
