@@ -14,6 +14,7 @@ export const userRouter = createTRPCRouter({
             z
                 .object({
                     class: z.enum(CLASSES),
+                    search: z.string().optional(),
                 })
                 .partial(),
         )
@@ -29,7 +30,24 @@ export const userRouter = createTRPCRouter({
                 },
                 where: {
                     class: input.class,
+                    ...(input.search && {
+                        OR: [
+                            {
+                                fullName: {
+                                    contains: input.search,
+                                    mode: "insensitive",
+                                },
+                            },
+                            {
+                                id: {
+                                    contains: input.search,
+                                    mode: "insensitive",
+                                },
+                            },
+                        ],
+                    }),
                 },
+                take: 500, // todo(ft): add proper pagination
                 orderBy: {
                     fullName: "asc",
                 },

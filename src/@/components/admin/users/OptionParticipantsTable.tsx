@@ -8,6 +8,7 @@ import { api } from "~/utils/api";
 import { Loader2 } from "lucide-react";
 import { DataTable } from "@/components/ui/DataTable";
 import { useMemo } from "react";
+import { AddUserPopover } from "./AddUserPopover";
 
 export interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -76,5 +77,10 @@ export const OptionParticipantsTable = ({ optionId }: Props) => {
         return `Naskytla se chyba v načítání dat: ${error.message}`;
     }
 
-    return <DataTable columns={columns} data={users} />;
+    return (
+        <>
+            <DataTable columns={columns} data={users} />
+            <AddUserPopover optionId={optionId} refetch={refetch} />
+        </>
+    );
 };
