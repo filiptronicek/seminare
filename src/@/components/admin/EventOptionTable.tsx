@@ -23,6 +23,12 @@ const ActionCell = ({ row, event }: { row: { original: SingleEventOption }; even
     );
 };
 
+type SignleEventOptionWithAtendeeCount = SingleEventOption & {
+    _count: {
+        students: number;
+    };
+};
+
 type Props = {
     event: Event;
 };
@@ -30,8 +36,8 @@ export const EventOptionTable = ({ event }: Props) => {
     const { isError, data, isLoading, refetch } = api.eventOptions.list.useQuery({ id: event.id });
     const [showNewDialog, setShowNewDialog] = useState(false);
 
-    const columns = useMemo<ColumnDef<SingleEventOption>[]>(() => {
-        const cols: ColumnDef<SingleEventOption>[] = [
+    const columns = useMemo<ColumnDef<SignleEventOptionWithAtendeeCount>[]>(() => {
+        const cols: ColumnDef<SignleEventOptionWithAtendeeCount>[] = [
             {
                 accessorKey: "title",
                 header: "Název",
@@ -39,9 +45,15 @@ export const EventOptionTable = ({ event }: Props) => {
                 sortUndefined: -1,
             },
             {
-                header: "Kapacita",
+                header: "Účastníci",
                 cell: (cell) => {
-                    return <div>{cell.row.original.maxParticipants ?? "Neomezená"}</div>;
+                    return (
+                        <div>
+                            {cell.row.original.maxParticipants ?
+                                `${cell.row.original._count.students}/${cell.row.original.maxParticipants}`
+                            :   cell.row.original._count.students}
+                        </div>
+                    );
                 },
                 accessorKey: "maxParticipants",
             },
