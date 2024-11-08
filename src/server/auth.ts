@@ -13,6 +13,7 @@ export const createUser = async (auth: SupabaseAuthClient, db: PrismaClient) => 
             id: user.data.user.id,
             fullName: getUserName(user.data.user),
             class: undefined,
+            admin: process.env.NODE_ENV === "development",
             avatar: user.data.user.user_metadata.picture as string,
         },
     });
