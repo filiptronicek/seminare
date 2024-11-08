@@ -8,3 +8,4 @@ gp ports await 5432
 
 bun run db:push
 bun run prisma/seed.ts
+bun run prisma/fill-events.ts
