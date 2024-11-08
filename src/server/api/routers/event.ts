@@ -11,6 +11,7 @@ export const eventRouter = createTRPCRouter({
         .input(
             z.object({
                 active: z.boolean().optional(),
+                signupActive: z.boolean().optional(),
                 class: z.enum(CLASSES).optional(),
             }),
         )
@@ -43,6 +44,22 @@ export const eventRouter = createTRPCRouter({
                             ],
                         }
                     :   {}),
+                    ...(input.signupActive ?
+                        {
+                            AND: [
+                                {
+                                    signupStartDate: {
+                                        lte: now,
+                                    },
+                                },
+                                {
+                                    signupEndDate: {
+                                        gte: now,
+                                    },
+                                },
+                            ],
+                        }
+                :  {}),
                     ...(input.class ?
                         {
                             OR: [
