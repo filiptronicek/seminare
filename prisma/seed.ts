@@ -132,7 +132,7 @@ async function main() {
     await db.event.deleteMany({});
     await db.student.deleteMany({});
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 15; i++) {
         const event = await db.event.upsert({
             where: {
                 id: crypto.randomUUID(),
@@ -141,7 +141,7 @@ async function main() {
             create: randomEvent(),
             update: {},
         });
-        for (let j = 0; j < 10; j++) {
+        for (let j = 0; j < 20; j++) {
             await db.singleEventOption.upsert({
                 where: {
                     id: crypto.randomUUID(),
@@ -175,7 +175,7 @@ async function main() {
         }
     }
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 300; i++) {
         await db.student.create({
             data: randomUser(),
         });
