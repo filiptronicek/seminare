@@ -9,41 +9,39 @@ import { parseSeminarMeta, parseSeminarOptionMeta } from "~/utils/seminars";
 
 export const eventOptionsRouter = createTRPCRouter({
     listStudentOptions: authedProcedure.input(z.object({ eventId: uuid })).query(async ({ ctx, input }) => {
-        const studentWithOptions = await ctx.db.student.findUnique({
-            where: {
-                id: ctx.user.id,
-            },
-            include: {
-                options: {
-                    where: {
-                        eventId: input.eventId,
+        const selectedOptions = await ctx.db.event
+            .findUnique({
+                where: { id: input.eventId },
+            })
+            .options({
+                where: {
+                    students: {
+                        some: {
+                            id: ctx.user.id,
+                        },
                     },
                 },
-            },
-        });
+            });
 
-        if (!studentWithOptions) return [];
-
-        return studentWithOptions.options;
+        return selectedOptions ?? [];
     }),
     /**
      * Lists all users who have joined a specific event option
      */
     listOptionParticipants: adminProcedure.input(z.object({ optionId: uuid })).query(async ({ ctx, input }) => {
-        const event = await ctx.db.singleEventOption.findUnique({
-            where: { id: input.optionId },
-            include: {
-                students: true,
-            },
-        });
-        if (!event) {
+        const students = await ctx.db.singleEventOption
+            .findUnique({
+                where: { id: input.optionId },
+            })
+            .students();
+        if (!students) {
             throw new TRPCError({
                 code: "NOT_FOUND",
                 message: "Event option not found",
             });
         }
 
-        return event?.students;
+        return students;
     }),
     join: authedProcedure.input(z.object({ optionId: uuid })).mutation(async ({ input, ctx }) => {
         const option = await ctx.db.singleEventOption.findUnique({

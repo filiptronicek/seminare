@@ -59,7 +59,7 @@ export const eventRouter = createTRPCRouter({
                                 },
                             ],
                         }
-                :  {}),
+                    :   {}),
                     ...(input.class ?
                         {
                             OR: [
