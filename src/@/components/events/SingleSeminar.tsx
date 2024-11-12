@@ -118,6 +118,26 @@ export const SingleSeminar = ({ id }: Props) => {
         return branched;
     }, [options]);
 
+    const intlFormatter = useMemo(() => new Intl.RelativeTimeFormat("cs", { numeric: "auto" }), []);
+    const formattedSignUpStartDate = useMemo<string>(() => {
+        if (!event) return "";
+        const dayDiff = dayjs(event.signupStartDate).startOf("day").diff(dayjs().startOf("day"), "days");
+        if (dayDiff < 7) {
+            return intlFormatter.format(dayDiff, "day");
+        }
+
+        return formatDate(dayjs(event.signupEndDate));
+    }, [event, intlFormatter]);
+    const formattedSignUpEndDate = useMemo<string>(() => {
+        if (!event) return "";
+        const dayDiff = dayjs(event.signupEndDate).startOf("day").diff(dayjs().startOf("day"), "days");
+        if (dayDiff < 7) {
+            return intlFormatter.format(dayDiff, "day");
+        }
+
+        return formatDate(dayjs(event.signupEndDate));
+    }, [event, intlFormatter]);
+
     if (error || optionsError) {
         return <div>Chyba v načítání</div>;
     }
@@ -141,11 +161,11 @@ export const SingleSeminar = ({ id }: Props) => {
                         {isSignupOpen ?
                             <>
                                 {/* todo: convert to `<time>` */}
-                                Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
+                                Přihlašování končí {formattedSignUpEndDate}
                             </>
                         : signupInThePast ?
-                            <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
-                        :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
+                            <>Přihlašování skončilo {formattedSignUpEndDate}</>
+                        :   <>Přihlašování začíná {formattedSignUpStartDate}</>}
                     </span>
 
                     <span className="font-bold">

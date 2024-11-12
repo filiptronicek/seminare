@@ -16,7 +16,6 @@ export const SingleEvent = ({ id }: Props) => {
         id,
     });
     const { data: student } = api.user.get.useQuery();
-
     const { data: selectedOptions, refetch: refetchSelected } = api.eventOptions.listStudentOptions.useQuery({
         eventId: id,
     });
@@ -30,6 +29,26 @@ export const SingleEvent = ({ id }: Props) => {
         const currentDate = dayjs();
         return currentDate.isAfter(dayjs(event?.signupEndDate));
     }, [event?.signupEndDate]);
+
+    const intlFormatter = useMemo(() => new Intl.RelativeTimeFormat("cs", { numeric: "auto" }), []);
+    const formattedSignUpStartDate = useMemo<string>(() => {
+        if (!event) return "";
+        const dayDiff = dayjs(event.signupStartDate).startOf("day").diff(dayjs().startOf("day"), "days");
+        if (dayDiff < 7) {
+            return intlFormatter.format(dayDiff, "day");
+        }
+
+        return formatDate(dayjs(event.signupEndDate));
+    }, [event, intlFormatter]);
+    const formattedSignUpEndDate = useMemo<string>(() => {
+        if (!event) return "";
+        const dayDiff = dayjs(event.signupEndDate).startOf("day").diff(dayjs().startOf("day"), "days");
+        if (dayDiff < 7) {
+            return intlFormatter.format(dayDiff, "day");
+        }
+
+        return formatDate(dayjs(event.signupEndDate));
+    }, [event, intlFormatter]);
 
     if (error || optionsError) {
         return <div>Chyba v načítání: {error?.message ?? optionsError?.message}</div>;
@@ -60,11 +79,11 @@ export const SingleEvent = ({ id }: Props) => {
                         {isSignupOpen ?
                             <>
                                 {/* todo: convert to `<time>` */}
-                                Přihlašování končí {formatDate(dayjs(event.signupEndDate))}
+                                Přihlašování končí {formattedSignUpEndDate}
                             </>
                         : signupInThePast ?
-                            <>Přihlašování skončilo {formatDate(dayjs(event.signupEndDate))}</>
-                        :   <>Přihlašování začíná {formatDate(dayjs(event.signupStartDate))}</>}
+                            <>Přihlašování skončilo {formattedSignUpEndDate}</>
+                        :   <>Přihlašování začíná {formattedSignUpStartDate}</>}
                     </span>
 
                     <br className="mb-4" />
